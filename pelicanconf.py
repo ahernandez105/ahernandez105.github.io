@@ -18,8 +18,6 @@ FEED_ALL_RSS = 'feeds/all.rss.xml'
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
-AUTHOR_FEED_RSS = 'feeds/%s.rss.xml'
-RSS_FEED_SUMMARY_ONLY = False
 
 # Blogroll
 LINKS = (('Pelican', 'http://getpelican.com/'),
