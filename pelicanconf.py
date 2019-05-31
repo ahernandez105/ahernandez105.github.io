@@ -36,3 +36,4 @@ DEFAULT_PAGINATION = 10
 
 
 STATIC_PATHS = ['images']
+THEMES = 'themes/pelican-alchemy/alchemy'
