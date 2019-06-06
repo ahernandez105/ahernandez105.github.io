@@ -45,4 +45,4 @@ RELATIVE_URLS = True
 STATIC_PATHS = ['images']
 THEME = 'themes/pelican-alchemy/alchemy'
 PLUGIN_PATHS=['/Users/angelhernandez/GitHub/ach_blog/pelican-plugins']
-PLUGINS = ['render_math']
+PLUGINS = ['render_math','latex']
