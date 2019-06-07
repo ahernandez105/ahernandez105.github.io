@@ -1,2 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>angel's blog - Angel C. Hernandez</title><link>/</link><description>My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be an engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be as beneficial to you as some of ones I have linked below.</description><lastBuildDate>Mon, 27 Nov 2017 12:30:00 -0500</lastBuildDate><item><title>My first post</title><link>/MY%20FIRST%20POST.html</link><description>&lt;p&gt;HERE IS A SUMMARY OF THIS POST&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Angel C. Hernandez</dc:creator><pubDate>Sun, 26 Nov 2017 10:01:00 -0500</pubDate><guid isPermaLink="false">tag:None,2017-11-26:/MY FIRST POST.html</guid><category>first</category><category>misc</category></item></channel></rss>
+<rss version="2.0"><channel><title>angel's blog - Angel C. Hernandez</title><link>/</link><description>My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be a contracted engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be as beneficial to you, as some of ones I have linked below.</description><lastBuildDate>Mon, 27 Nov 2017 12:30:00 -0500</lastBuildDate><item><title>My first post</title><link>/MY%20FIRST%20POST.html</link><description>&lt;!-- rendering path --&gt;
+
+&lt;p&gt;&lt;link rel="stylesheet" 
+type="text/css" 
+href="/theme/css/md-style.css"&gt;&lt;/p&gt;
+&lt;!-- previewing path --&gt;
+
+&lt;p&gt;&lt;link rel="stylesheet" 
+type="text/css" 
+href="/Users/angelhernandez/GitHub/ach_blog/output/theme/css/md-style.css"&gt;&lt;/p&gt;
+&lt;p class = "body"&gt;
+If you're a working data scientist then you have likely heard of Variational Autoencoders and their interesting applications in data generation. There are a fair amount of posts about VAEs, but most brush over the statistical derivation and focus on the high-level intuition and applications. While the statistical make-up can come off as intimidating, I firmly believe grasping the core mathematical concepts acts as an excellent exercise and is must for any aspiring machine learning researcher. As a result, I will do my best to open up VAEs with an emphasis on the statistical components, while still guiding the qualitative intuition. 
+This is some text!
+&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Contemporary feedback is vital for lucid blog posts, so comments of mistakes, likes and/or dislikes is greatly appreciated. :)&lt;/em&gt; &lt;/p&gt;
+&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;At its core, Variational Autoencoders are &lt;/p&gt;
+&lt;h1&gt;Mehthodology and Derivation&lt;/h1&gt;
+&lt;p&gt;Like all generative models, VAEs are concerned with learning a valid probablity over a given dataset.&lt;br&gt;
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+x
+$$&lt;/div&gt;
+&lt;p&gt;&lt;/body&gt;
+&lt;!-- &lt;details&gt;
+&lt;summary&gt; Read More &lt;/summary&gt;
+&lt;p&gt; All your information will want to have hidden or shown on click will go here.&lt;/p&gt;
+&lt;/details&gt; --&gt;&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        fonts: ['STIX', 'TeX']," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Angel C. Hernandez</dc:creator><pubDate>Sun, 26 Nov 2017 10:01:00 -0500</pubDate><guid isPermaLink="false">tag:None,2017-11-26:/MY FIRST POST.html</guid><category>first</category><category>misc</category></item></channel></rss>
