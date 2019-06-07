@@ -1,4 +1,9 @@
 .body{
-    font-family:"Arial Black";
-    color:red;
+    font-family:"Sans-Serif";
+    font-size: 25px;
+}
+.head{
+    font-family:"Sans-Serif";
+    font-size: 45px;
+    font-weight:bold;
 }

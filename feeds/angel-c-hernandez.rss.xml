@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>angel's blog - Angel C. Hernandez</title><link>/</link><description>My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be a contracted engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be as beneficial to you, as some of ones I have linked below.</description><lastBuildDate>Mon, 27 Nov 2017 12:30:00 -0500</lastBuildDate><item><title>My first post</title><link>/MY%20FIRST%20POST.html</link><description>&lt;!-- rendering path --&gt;
+<rss version="2.0"><channel><title>angel's blog - Angel C. Hernandez</title><link>/</link><description>My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be a contracted engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be as beneficial to you, as some of ones I have linked below.</description><lastBuildDate>Mon, 27 Nov 2017 12:30:00 -0500</lastBuildDate><item><title></title><link>/MY%20FIRST%20POST.html</link><description>&lt;!-- rendering path --&gt;
 
 &lt;p&gt;&lt;link rel="stylesheet" 
 type="text/css" 
@@ -14,14 +14,16 @@ If you're a working data scientist then you have likely heard of Variational Aut
 This is some text!
 &lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;Contemporary feedback is vital for lucid blog posts, so comments of mistakes, likes and/or dislikes is greatly appreciated. :)&lt;/em&gt; &lt;/p&gt;
-&lt;h1&gt;Introduction&lt;/h1&gt;
-&lt;p&gt;At its core, Variational Autoencoders are &lt;/p&gt;
+&lt;p&gt;&lt;h class = "head"&gt; Introduction &lt;/h&gt;
+&lt;p class="body"&gt;
+At its core, Variational Autoencoders are 
+&lt;/p&gt;&lt;/p&gt;
 &lt;h1&gt;Mehthodology and Derivation&lt;/h1&gt;
 &lt;p&gt;Like all generative models, VAEs are concerned with learning a valid probablity over a given dataset.&lt;br&gt;
 &lt;/p&gt;
 &lt;div class="math"&gt;$$
-x
+x \\
+\mathcal{D}
 $$&lt;/div&gt;
 &lt;p&gt;&lt;/body&gt;
 &lt;!-- &lt;details&gt;
