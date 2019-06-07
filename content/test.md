@@ -7,15 +7,35 @@ Slug: MY FIRST POST
 Authors: Angel C. Hernandez
 Summary: HERE IS A SUMMARY OF THIS POST
 
+<!-- rendering path -->
+<link rel="stylesheet" 
+type="text/css" 
+href="/theme/css/md-style.css">
+
+<!-- previewing path -->
+<link rel="stylesheet" 
+type="text/css" 
+href="/Users/angelhernandez/GitHub/ach_blog/output/theme/css/md-style.css">
+
+<p class = "body">
 If you're a working data scientist then you have likely heard of Variational Autoencoders and their interesting applications in data generation. There are a fair amount of posts about VAEs, but most brush over the statistical derivation and focus on the high-level intuition and applications. While the statistical make-up can come off as intimidating, I firmly believe grasping the core mathematical concepts acts as an excellent exercise and is must for any aspiring machine learning researcher. As a result, I will do my best to open up VAEs with an emphasis on the statistical components, while still guiding the qualitative intuition. 
+This is some text!
+</p>
+
 
 _Contemporary feedback is vital for lucid blog posts, so comments of mistakes, likes and/or dislikes is greatly appreciated. :)_ 
 # Introduction
 At its core, Variational Autoencoders are 
 
 # Mehthodology and Derivation
-Like all generative models, VAEs are concerned with learning a valid probablity over a given dataset $\mathcal{D}$.  
+Like all generative models, VAEs are concerned with learning a valid probablity over a given dataset.  
 $$
-p(x)  = \int dx
+x
 $$
+
+</body>
+<!-- <details>
+<summary> Read More </summary>
+<p> All your information will want to have hidden or shown on click will go here.</p>
+</details> -->
 
