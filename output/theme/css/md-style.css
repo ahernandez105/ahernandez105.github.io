@@ -1,4 +1,22 @@
 .body{
-    font-family:"Arial Black";
-    color:red;
+    font-family:"Sans-Serif";
+    font-size: 25px;
+}
+.head{
+    font-family:"Sans-Serif";
+    font-size: 45px;
+    font-weight:bold;
+}
+.fig{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.figcaption{
+    text-align: center;
+    font-family: "Sans-Serif";
+    font-size: 20px;
+}
+.formula{
+    font-size: 20px;
 }
