@@ -72,7 +72,9 @@ There are some underlining takeaways from the above distribution:
 </li>
 </ul>
 <p class="body">
-Since our current distribution is intractable, we must resort to variational inference to learn <span class = "math">\( \boldsymbol{\theta} \). </span>
+Since our current distribution is intractable, we must resort to variational inference to learn 
+<span class = "math">\( \boldsymbol{\theta} \). 
+</span>
 </p>
 <h1 class = "head"> 3. Variational Inference </h1>
 <p class="body">
