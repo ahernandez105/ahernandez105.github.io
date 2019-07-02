@@ -6,9 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>   | angel's blog
+  <title>  Variational Autoencoders | angel's blog
 </title>
-  <link rel="canonical" href="/MY FIRST POST.html">
+  <link rel="canonical" href="/test-post.html">
 
 
   <link rel="stylesheet" href="/theme/css/bootstrap.min.css">
@@ -19,8 +19,9 @@
   <link rel="alternate" type="application/atom+xml" title="Full Atom Feed"
         href="/feeds/all.atom.xml">
   <link rel="alternate" type="application/rss+xml" title="Full RSS Feed"
-        href="/feeds/all.rss.xml">  
-  <meta name="description" content="HERE IS A SUMMARY OF THIS POST">
+        href="/feeds/all.rss.xml">  <link rel="alternate" type="application/atom+xml" title="Categories Atom Feed"
+        href="/feeds/{slug}.atom.xml">  
+  <meta name="description" content="SOME TEXT">
 
 
 </head>
@@ -36,7 +37,7 @@
     </div>
   <div class="col-sm-8">
     <h1 class="title"><a href="/">angel's blog</a></h1>
-      <p class="text-muted">My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be a contracted engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be as beneficial to you, as some of ones I have linked below.</p>
+      <p class="text-muted">My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be an engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be a benefit to you.</p>
       <ul class="list-inline">
           <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/ahernandez105" target="_blank"></a></li>
           <li class="list-inline-item"><a class="fa fa-instagram" href="https://www.instagram.com/angel__christopher/" target="_blank"></a></li>
@@ -48,61 +49,68 @@
 
   <div class="main">
     <div class="container">
-      <h1>  
+      <h1>  Variational Autoencoders
 </h1>
       <hr>
   <article class="article">
     <header>
       <ul class="list-inline">
-        <li class="list-inline-item text-muted" title="2017-11-26T10:01:00-05:00">
+        <li class="list-inline-item text-muted" title="2019-01-01T00:00:00-05:00">
           <i class="fa fa-clock-o"></i>
-          Sun 26 November 2017
+          Tue 01 January 2019
         </li>
         <li class="list-inline-item">
           <i class="fa fa-folder-open-o"></i>
-          <a href="/category/graphical-models.html">graphical models</a>
+          <a href="/category/pgm.html">pgm</a>
         </li>
           <li class="list-inline-item">
             <i class="fa fa-user-o"></i>
               <a href="/author/angel-c-hernandez.html">Angel C. Hernandez</a>          </li>
           <li class="list-inline-item">
             <i class="fa fa-files-o"></i>
-              <a href="/tag/first.html">#first</a>,               <a href="/tag/misc.html">#misc</a>          </li>
+              <a href="/tag/pgm.html">#pgm</a>,               <a href="/tag/generative_models.html">#generative_models</a>          </li>
       </ul>
     </header>
     <div class="content">
-      <!-- rendering path -->
-
-<p><link rel="stylesheet" 
+      <p><link rel="stylesheet" 
 type="text/css" 
 href="/theme/css/md-style.css"></p>
-<!-- previewing path -->
+<h1 class="head">1. Introduction </h1>
 
-<p><link rel="stylesheet" 
-type="text/css" 
-href="/Users/angelhernandez/GitHub/ach_blog/output/theme/css/md-style.css"></p>
-<p class = "body">
-If you're a working data scientist then you have likely heard of Variational Autoencoders and their interesting applications in data generation. There are a fair amount of posts about VAEs, but most brush over the statistical derivation and focus on the high-level intuition and applications. While the statistical make-up can come off as intimidating, I firmly believe grasping the core mathematical concepts acts as an excellent exercise and is must for any aspiring machine learning researcher. As a result, I will do my best to open up VAEs with an emphasis on the statistical components, while still guiding the qualitative intuition. 
-This is some text!
-</p>
-
-<p><h class = "head"> Introduction </h>
 <p class="body">
-At its core, Variational Autoencoders are 
-</p></p>
-<h1>Mehthodology and Derivation</h1>
-<p>Like all generative models, VAEs are concerned with learning a valid probablity over a given dataset.<br>
+
+Like all 
+<a href="https://openai.com/blog/generative-models/" style="color:#FF7D33">
+generative models</a>, VAEs are concerned with learning a valid probability distribution from which our dataset was <i>generated</i> from. They do this by learning a set of latent variables, 
+<span class="math">\(\boldsymbol{z}\)</span>,
+which are essentially the underlining features that best explain our observed data
+<span class = "math">\(\boldsymbol{x}\)</span>.
+We can then condition on these variables and sample from the distribution, 
+<span class = "math">
+\( 
+\boldsymbol{x}_{new} \sim 
+p(\boldsymbol{x}_{observed}|\boldsymbol{z}) \)
+</span>, 
+to generate a new data point. This distribution happens to be tractable 
+but using the posterior,
+<span class = "math">
+\( 
+\boldsymbol{z} \sim 
+p(\boldsymbol{z}|\boldsymbol{x}_{observed}) \)
+</span>,
+is the distribution that has plagued machine learning since the beginning of time.
+Furthermore, it is challenging to learn the parameters of both distributions in an end-to-end fashion. <a href='#wakeSleep' id='ref-wakeSleep-1'>(Hinton et al., 1995)</a> developed the Wake-sleep algorithm which was able to learn all parameters to this exact problem via two objective functions and back-propagation. While this algorithm <i> masked </i> the problem at hand, even Geoffrey Hinton 
+<a href="https://www.youtube.com/watch?v=VKpc_z7b9I0" style="color:#FF7D33"> 
+acknowledged</a>, and I quote, <i> "the basic idea behind these variational methods sounds crazy." </i> Luckily, <a href='#vae' id='ref-vae-1'>(Diederik and Max, 2014)</a> offered a better solution using the <i>
+reparameterization trick </i> and deep generative models have really been in resurgence since! 
+
 </p>
-<div class="math">$$
-x \\
-\mathcal{D}
-$$</div>
-<p></body>
-<!-- <details>
-<summary> Read More </summary>
-<p> All your information will want to have hidden or shown on click will go here.</p>
-</details> --></p>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+
+<h1 class="head"> 2. Problem Scenario </h1>
+
+<script type="text/javascript">
+
+if (!document.getElementById('mathjaxscript_pelican_#%&#64;#$&#64;#')) {
     var align = "center",
         indent = "0em",
         linebreak = "false";
@@ -114,7 +122,7 @@ $$</div>
     }
 
     var mathjaxscript = document.createElement('script');
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%&#64;#$&#64;#';
     mathjaxscript.type = 'text/javascript';
     mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
 
@@ -162,7 +170,18 @@ $$</div>
     (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>
+
+</script><hr>
+<h2>Bibliography</h2>
+<p id='vae'>Kingma Diederik and Welling Max.
+Auto-encoding variational bayes.
+2014.
+URL: <a href="https://arxiv.org/pdf/1312.6114.pdf">https://arxiv.org/pdf/1312.6114.pdf</a>. <a class="cite-backref" href="#ref-vae-1" title="Jump back to reference 1">↩</a></p>
+<p id='wakeSleep'>Geoffrey Hinton, Peter Dayan, Brendan&nbsp;J Frey, and Radford&nbsp;M Neal.
+The wake-sleep alogrithm for unsupervised neural networks.
+1995.
+URL: <a href="http://www.cs.toronto.edu/~fritz/absps/ws.pdf">http://www.cs.toronto.edu/~fritz/absps/ws.pdf</a>. <a class="cite-backref" href="#ref-wakeSleep-1" title="Jump back to reference 1">↩</a></p>
+
     </div>
   </article>
     </div>

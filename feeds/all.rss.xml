@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>angel's blog</title><link>/</link><description>My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be a contracted engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be as beneficial to you, as some of ones I have linked below.</description><lastBuildDate>Mon, 27 Nov 2017 12:30:00 -0500</lastBuildDate><item><title></title><link>/MY%20FIRST%20POST.html</link><description>&lt;!-- rendering path --&gt;
-
-&lt;p&gt;&lt;link rel="stylesheet" 
+<rss version="2.0"><channel><title>angel's blog</title><link>/</link><description>My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be an engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be a benefit to you.</description><lastBuildDate>Tue, 01 Jan 2019 00:00:00 -0500</lastBuildDate><item><title>Variational Autoencoders</title><link>/test-post.html</link><description>&lt;p&gt;&lt;link rel="stylesheet" 
 type="text/css" 
 href="/theme/css/md-style.css"&gt;&lt;/p&gt;
-&lt;!-- previewing path --&gt;
+&lt;h1 class="head"&gt;1. Introduction &lt;/h1&gt;
 
-&lt;p&gt;&lt;link rel="stylesheet" 
-type="text/css" 
-href="/Users/angelhernandez/GitHub/ach_blog/output/theme/css/md-style.css"&gt;&lt;/p&gt;
-&lt;p class = "body"&gt;
-If you're a working data scientist then you have likely heard of Variational Autoencoders and their interesting applications in data generation. There are a fair amount of posts about VAEs, but most brush over the statistical derivation and focus on the high-level intuition and applications. While the statistical make-up can come off as intimidating, I firmly believe grasping the core mathematical concepts acts as an excellent exercise and is must for any aspiring machine learning researcher. As a result, I will do my best to open up VAEs with an emphasis on the statistical components, while still guiding the qualitative intuition. 
-This is some text!
-&lt;/p&gt;
-
-&lt;p&gt;&lt;h class = "head"&gt; Introduction &lt;/h&gt;
 &lt;p class="body"&gt;
-At its core, Variational Autoencoders are 
-&lt;/p&gt;&lt;/p&gt;
-&lt;h1&gt;Mehthodology and Derivation&lt;/h1&gt;
-&lt;p&gt;Like all generative models, VAEs are concerned with learning a valid probablity over a given dataset.&lt;br&gt;
+
+Like all 
+&lt;a href="https://openai.com/blog/generative-models/" style="color:#FF7D33"&gt;
+generative models&lt;/a&gt;, VAEs are concerned with learning a valid probability distribution from which our dataset was &lt;i&gt;generated&lt;/i&gt; from. They do this by learning a set of latent variables, 
+&lt;span class="math"&gt;\(\boldsymbol{z}\)&lt;/span&gt;,
+which are essentially the underlining features that best explain our observed data
+&lt;span class = "math"&gt;\(\boldsymbol{x}\)&lt;/span&gt;.
+We can then condition on these variables and sample from the distribution, 
+&lt;span class = "math"&gt;
+\( 
+\boldsymbol{x}_{new} \sim 
+p(\boldsymbol{x}_{observed}|\boldsymbol{z}) \)
+&lt;/span&gt;, 
+to generate a new data point. This distribution happens to be tractable 
+but using the posterior,
+&lt;span class = "math"&gt;
+\( 
+\boldsymbol{z} \sim 
+p(\boldsymbol{z}|\boldsymbol{x}_{observed}) \)
+&lt;/span&gt;,
+is the distribution that has plagued machine learning since the beginning of time.
+Furthermore, it is challenging to learn the parameters of both distributions in an end-to-end fashion. &lt;a href='#wakeSleep' id='ref-wakeSleep-1'&gt;(Hinton et al., 1995)&lt;/a&gt; developed the Wake-sleep algorithm which was able to learn all parameters to this exact problem via two objective functions and back-propagation. While this algorithm &lt;i&gt; masked &lt;/i&gt; the problem at hand, even Geoffrey Hinton 
+&lt;a href="https://www.youtube.com/watch?v=VKpc_z7b9I0" style="color:#FF7D33"&gt; 
+acknowledged&lt;/a&gt;, and I quote, &lt;i&gt; "the basic idea behind these variational methods sounds crazy." &lt;/i&gt; Luckily, &lt;a href='#vae' id='ref-vae-1'&gt;(Diederik and Max, 2014)&lt;/a&gt; offered a better solution using the &lt;i&gt;
+reparameterization trick &lt;/i&gt; and deep generative models have really been in resurgence since! 
+
 &lt;/p&gt;
-&lt;div class="math"&gt;$$
-x \\
-\mathcal{D}
-$$&lt;/div&gt;
-&lt;p&gt;&lt;/body&gt;
-&lt;!-- &lt;details&gt;
-&lt;summary&gt; Read More &lt;/summary&gt;
-&lt;p&gt; All your information will want to have hidden or shown on click will go here.&lt;/p&gt;
-&lt;/details&gt; --&gt;&lt;/p&gt;
-&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+
+&lt;h1 class="head"&gt; 2. Problem Scenario &lt;/h1&gt;
+
+&lt;script type="text/javascript"&gt;
+
+if (!document.getElementById('mathjaxscript_pelican_#%&amp;#64;#$&amp;#64;#')) {
     var align = "center",
         indent = "0em",
         linebreak = "false";
@@ -42,7 +49,7 @@ $$&lt;/div&gt;
     }
 
     var mathjaxscript = document.createElement('script');
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%&amp;#64;#$&amp;#64;#';
     mathjaxscript.type = 'text/javascript';
     mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
 
@@ -90,4 +97,15 @@ $$&lt;/div&gt;
     (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Angel C. Hernandez</dc:creator><pubDate>Sun, 26 Nov 2017 10:01:00 -0500</pubDate><guid isPermaLink="false">tag:None,2017-11-26:/MY FIRST POST.html</guid><category>first</category><category>misc</category></item></channel></rss>
+
+&lt;/script&gt;&lt;hr&gt;
+&lt;h2&gt;Bibliography&lt;/h2&gt;
+&lt;p id='vae'&gt;Kingma Diederik and Welling Max.
+Auto-encoding variational bayes.
+2014.
+URL: &lt;a href="https://arxiv.org/pdf/1312.6114.pdf"&gt;https://arxiv.org/pdf/1312.6114.pdf&lt;/a&gt;. &lt;a class="cite-backref" href="#ref-vae-1" title="Jump back to reference 1"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p id='wakeSleep'&gt;Geoffrey Hinton, Peter Dayan, Brendan&amp;nbsp;J Frey, and Radford&amp;nbsp;M Neal.
+The wake-sleep alogrithm for unsupervised neural networks.
+1995.
+URL: &lt;a href="http://www.cs.toronto.edu/~fritz/absps/ws.pdf"&gt;http://www.cs.toronto.edu/~fritz/absps/ws.pdf&lt;/a&gt;. &lt;a class="cite-backref" href="#ref-wakeSleep-1" title="Jump back to reference 1"&gt;↩&lt;/a&gt;&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Angel C. Hernandez</dc:creator><pubDate>Tue, 01 Jan 2019 00:00:00 -0500</pubDate><guid isPermaLink="false">tag:None,2019-01-01:/test-post.html</guid><category>pgm</category><category>generative_models</category></item></channel></rss>
