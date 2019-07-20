@@ -518,7 +518,6 @@ Now let us update the computational graph.
 &lt;/p&gt;
 
 &lt;figure&gt;
-&lt;br&gt;
   &lt;img class="fig" src="/images/vae/vae-compgraph2.png" width="50%"&gt;
   &lt;figcaption class="figcaption"&gt; 
   Fig 4. Zoomed in computational graph of VAEs with the reparameterization trick applied
