@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>angel's blog</title><link>/</link><description>My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be an engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be a benefit to you.</description><lastBuildDate>Tue, 01 Jan 2019 00:00:00 -0500</lastBuildDate><item><title>Variational Autoencoders</title><link>/test-post.html</link><description>&lt;p&gt;&lt;link rel="stylesheet" 
+<rss version="2.0"><channel><title>angel's blog</title><link>/</link><description>My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be an engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be a benefit to you.</description><lastBuildDate>Sat, 20 Jul 2019 00:00:00 -0400</lastBuildDate><item><title>Test</title><link>/Test.html</link><description>&lt;p&gt;Here is some txt.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Angel C. Hernandez</dc:creator><pubDate>Sat, 20 Jul 2019 00:00:00 -0400</pubDate><guid isPermaLink="false">tag:None,2019-07-20:/Test.html</guid></item><item><title>Variational Autoencoders</title><link>/Variational%20Autoencoders.html</link><description>&lt;p&gt;&lt;link rel="stylesheet" 
 type="text/css" 
 href="/theme/css/md-style.css"&gt;&lt;/p&gt;
 &lt;h1 class="head"&gt;1. Introduction &lt;/h1&gt;
 
 &lt;p class="body"&gt;
-
 Like all 
 &lt;a href="https://openai.com/blog/generative-models/" style="color:#FF7D33"&gt;
-generative models&lt;/a&gt;, VAEs are concerned with learning a valid probability distribution from which our dataset was &lt;i&gt;generated&lt;/i&gt; from. They do this by learning a set of latent variables, 
+generative models&lt;/a&gt;, VAEs are concerned with learning a valid probability distribution from which our dataset was &lt;i&gt;generated&lt;/i&gt; from. They do this by learning a set of latent variables,
 
 &lt;span class="math"&gt;\(\boldsymbol{z}\)&lt;/span&gt;,
 
@@ -36,8 +35,11 @@ Furthermore, it is challenging to learn the parameters of both distributions in 
 &lt;a href="https://www.youtube.com/watch?v=VKpc_z7b9I0" style="color:#FF7D33"&gt; 
 acknowledged&lt;/a&gt;, and I quote, &lt;b&gt;&lt;i&gt; "the basic idea behind these variational methods sounds crazy." &lt;/i&gt;&lt;/b&gt; Luckily, &lt;a href='#vae' id='ref-vae-1'&gt;(Kingma and Welling, 2014)&lt;/a&gt; offered a better solution using the &lt;i&gt;
 reparameterization trick &lt;/i&gt; and deep generative models have really been in resurgence since! 
-
 &lt;/p&gt;
+
+&lt;pre&gt;
+
+&lt;/pre&gt;
 
 &lt;h1 class="head"&gt; 2. Problem Scenario &lt;/h1&gt;
 
@@ -47,26 +49,26 @@ Let us begin by assuming two layers of latent variables where
 &lt;span class="math"&gt;
 \(\boldsymbol{z}=\{\boldsymbol{z}^1,\boldsymbol{z}^2\}\)&lt;/span&gt;.
 As a result, we have the following graphical model:
-
+&lt;br&gt;
 &lt;/p&gt;
 
 &lt;figure&gt;
   &lt;img class="fig" src="/images/vae/pgm.png" width="50%"&gt;
   &lt;figcaption class="figcaption"&gt; 
-  Fig 1. Graphical model in concern 
+  Fig 1. Graphical model in concern  
   &lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;/p&gt;
 
 &lt;p class="body"&gt;
-
+&lt;br&gt;
 It should be noted &lt;a href='#iwae' id='ref-iwae-1'&gt;(Burda et al., 2016)&lt;/a&gt; proposed this architecture which is a mere generalization of the original architecture used in &lt;a href='#vae' id='ref-vae-2'&gt;(Kingma and Welling, 2014)&lt;/a&gt;. The goal is to use maximum likelihood estimation to learn the parameters, 
 &lt;span class="math"&gt;\(\boldsymbol{\theta}\)&lt;/span&gt;, of the following distribution:
-
 &lt;/p&gt;
 
 &lt;div class="math"&gt;
+&lt;br&gt;
 &lt;p class="formula"&gt;
 $$
 p(\boldsymbol{x}) =  \int p_{\boldsymbol{\theta}}(\boldsymbol{x|z})
@@ -76,14 +78,13 @@ $$
 &lt;/div&gt;
 
 &lt;p class = "body"&gt;
-
+&lt;br&gt;
 There are some underlining takeaways from the above distribution:
-
 &lt;/p&gt;
 
 &lt;ul class="body"&gt;
-
-&lt;li&gt; It tends to be intractable because our model assumes 
+&lt;br&gt;
+&lt;li&gt; It tends to be intractable because our model assumes
 
 &lt;span class="math"&gt; \(z_i^l \not\!\perp\!\!\!\perp z_j^l | \ \boldsymbol{x} \ \cup \
 \boldsymbol{z^{l-1}} \ 
@@ -95,6 +96,7 @@ This requires integration over &lt;b&gt;all&lt;/b&gt; combinations our latent va
 &lt;/li&gt;
 
 &lt;li&gt; The probability density functions on the right tends to a traditional distribution, say a Gaussian, but is parameterized by some deep network. &lt;/li&gt;
+&lt;br&gt;
 &lt;/ul&gt;
 
 &lt;p class="body"&gt;
@@ -103,6 +105,10 @@ Since our current distribution is intractable, we must resort to variational inf
 &lt;span class = "math"&gt;\( \boldsymbol{\theta} \).&lt;/span&gt;
 
 &lt;/p&gt;
+
+&lt;pre&gt;
+
+&lt;/pre&gt;
 
 &lt;h1 class = "head"&gt; 3. Variational Inference &lt;/h1&gt;
 
@@ -116,7 +122,7 @@ If we recall, MLE is a simple optimization problem which returns a set of parame
 &lt;p class="body"&gt;
 
 The derivation of the lower bound is a mere byproduct of  
-&lt;a url = "https://www.probabilitycourse.com/chapter6/6_2_5_jensen's_inequality.php" style="color:#FF7D33"&gt;Jensen's Inequality&lt;/a&gt;
+&lt;a href = "https://www.probabilitycourse.com/chapter6/6_2_5_jensen's_inequality.php" style="color:#FF7D33"&gt;Jensen's Inequality&lt;/a&gt;
 
 which simply states: for any concave function, 
 
@@ -128,7 +134,7 @@ So, we layout the following:
 
 &lt;div class="math"&gt;
 &lt;p class="formula"&gt;
-
+&lt;br&gt;
 $$
 \begin{aligned}
     \log p(\boldsymbol{x}) &amp;= \log \int p_{\boldsymbol{\theta}}(\boldsymbol{x|z})
@@ -139,8 +145,8 @@ $$
     {q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x})} \ d\boldsymbol{z}
 \end{aligned}
 $$
-
 &lt;/p&gt;
+&lt;br&gt;
 &lt;/div&gt;
 
 &lt;p class="body"&gt;
@@ -155,6 +161,7 @@ for a second, all we have done thus far is rewritten our log likelihood function
 
 &lt;div class="math"&gt;
 &lt;p class="formula"&gt;
+&lt;br&gt;
 $$
 \begin{aligned}
     u &amp;= \frac{p_{\boldsymbol{\theta}}(\boldsymbol{x},\boldsymbol{z})}
@@ -173,7 +180,7 @@ $$
      \bigg] = \mathcal{L}(\boldsymbol{x}) &amp;&amp; \textit{this is the ELBO} 
 \end{aligned}
 $$
-
+&lt;br&gt;
 &lt;/p&gt;
 &lt;/div&gt;
 
@@ -195,7 +202,7 @@ Now, we define the following for
 &lt;/p&gt;
 
 &lt;div class="formula"&gt;
-
+&lt;br&gt;
 $$
 \begin{aligned}
 q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x}) &amp;= 
@@ -207,7 +214,7 @@ z_i^1 \perp z_j^1 | \boldsymbol{x}\}_{\forall \ i \neq j,l} &amp;&amp; \textit{f
 random variables}
 \end{aligned}
 $$
-
+&lt;br&gt;
 &lt;/div&gt;
 
 &lt;p class="body"&gt;
@@ -224,6 +231,7 @@ Understanding some variations of the ELBO really sheds light on the underlining 
 
 &lt;div class="math"&gt;
 &lt;p class="formula"&gt;
+&lt;br&gt;
 $$
 \begin{aligned}
 \mathcal{L}(\boldsymbol{x}) &amp;=  
@@ -251,7 +259,7 @@ $$
 p_{\boldsymbol{\theta}}(\boldsymbol{z|x}) )
 \end{aligned}
 $$
-
+&lt;br&gt;
 &lt;/p&gt;
 &lt;/div&gt;
 
@@ -267,10 +275,12 @@ has made an appearance—which is a non-negative number that quantifies the dist
 &lt;/p&gt;
 
 &lt;figure&gt;
+&lt;br&gt;
   &lt;img class="fig" src="/images/vae/kl-divergence.png" width="100%"&gt;
   &lt;figcaption class="figcaption"&gt; 
   Fig 2. Depiction of KL Divergence
   &lt;/figcaption&gt;
+&lt;br&gt;
 &lt;/figure&gt;
 
 &lt;p class = "body"&gt;
@@ -285,6 +295,10 @@ and our lower bound would be &lt;b&gt;tight&lt;/b&gt;!
 
 &lt;/p&gt;
 
+&lt;pre&gt;
+
+
+&lt;/pre&gt;
 &lt;h1 class="head"&gt; 4. Relationship to Autoencoders &lt;/h1&gt;
 
 &lt;p class = "body"&gt;
@@ -299,6 +313,7 @@ We define the following:
 &lt;/p&gt;
 
 &lt;div class="formula"&gt;
+&lt;br&gt;
 $$
 \begin{aligned}
 \text{Recognition Network }:= \ &amp; q_{\boldsymbol{\phi}}(\boldsymbol{z|x}) =
@@ -315,6 +330,7 @@ $$
 \boldsymbol{\Sigma}(\boldsymbol{x},\boldsymbol{\phi})) \\
 \end{aligned}
 $$
+&lt;br&gt;
 &lt;/div&gt;
 
 &lt;p class="body"&gt;
@@ -337,6 +353,7 @@ We define the following:
 &lt;/p&gt;
 
 &lt;div class="formula"&gt;
+&lt;br&gt;
 $$
 \begin{aligned}
 \text{Generative Network } := \ &amp; p_{\boldsymbol{\theta}}(\boldsymbol{x,z}) = 
@@ -351,6 +368,7 @@ p_{\boldsymbol{\theta}}(\boldsymbol{x}|\boldsymbol{z}^1) \\
 \boldsymbol{\Sigma}(\boldsymbol{z}^1,\boldsymbol{\theta}))
 \end{aligned}
 $$
+&lt;br&gt;
 &lt;/div&gt;
 
 &lt;p class="body"&gt;
@@ -371,9 +389,11 @@ In literature this is known as the &lt;b&gt; decoder network &lt;/b&gt; because 
 decode the information in &lt;span class="math"&gt; \(\boldsymbol{z}\)&lt;/span&gt; to generate a new example, &lt;span class="math"&gt; \(\boldsymbol{x}_{new}\)&lt;span class="math"&gt;. &lt;br&gt;&lt;br&gt;
 It should be noted the idea of a recognition and generative network is not new—where 
 Helmholtz Machines, &lt;a href='#helmholtzMachines' id='ref-helmholtzMachines-1'&gt;(Dayan, 1995)&lt;/a&gt;, used an identical architecture but were trained using the Wake-sleep algorithm. 
-
 &lt;/p&gt;
 
+&lt;pre&gt;
+
+&lt;/pre&gt;
 &lt;h1 class="head"&gt; 5. The Learning Process &lt;/h1&gt;
 &lt;p class="body"&gt;
 Let us recall the objective function we are trying to maximize:
@@ -381,6 +401,7 @@ Let us recall the objective function we are trying to maximize:
 &lt;/p&gt;
 
 &lt;div class="formula"&gt;
+&lt;br&gt;
 $$
 \begin{aligned}
 \mathcal{L}(\boldsymbol{x}) &amp;= 
@@ -398,6 +419,7 @@ $$
 (\boldsymbol{x})}
 \end{aligned}
 $$
+&lt;br&gt;
 &lt;/div&gt;
 
 &lt;p class="body"&gt;
@@ -408,10 +430,12 @@ We want to learn the parameters,
 &lt;/p&gt;
 
 &lt;figure&gt;
+&lt;br&gt;
   &lt;img class="fig" src="/images/vae/computational-graph1.png" width="80%"&gt;
   &lt;figcaption class="figcaption"&gt; 
   Fig 3. Computational graph of Variational Autoencoders
   &lt;/figcaption&gt;
+  &lt;br&gt;
 &lt;/figure&gt;
 
 &lt;p class="body"&gt;
@@ -430,6 +454,7 @@ Let us now define &lt;span class="math"&gt;
 \(\boldsymbol{z}^l\)&lt;/span&gt; as a &lt;b&gt;deterministic&lt;/b&gt; random variable:
 
 &lt;div class="formula"&gt;
+&lt;br&gt;
 $$
 \begin{aligned}
 \boldsymbol{z}^l &amp;= g\bigg(\boldsymbol{\mu}(i,\boldsymbol{\phi}),
@@ -439,6 +464,7 @@ $$
 &amp;&amp; \boldsymbol{\epsilon}\sim \mathcal{N}(0,\textbf{I})
 \end{aligned}
 $$
+&lt;br&gt;
 &lt;/p&gt;
 
 &lt;p class="body"&gt;
@@ -452,6 +478,7 @@ from the standard normal we can use it to calculate &lt;span class="math"&gt;
 variable still yields the same expected value and variance:
 
 &lt;div class="formula"&gt;
+&lt;br&gt;
 $$
 \begin{aligned}
 \mathbb{E}_{\boldsymbol{\epsilon}\sim\mathcal{N}(0,\textbf{I})}
@@ -481,6 +508,7 @@ $$
 &amp;=\boldsymbol{\Sigma}\textbf{I}
 \end{aligned}
 $$
+&lt;br&gt;
 &lt;/div&gt;
 
 &lt;p class="body"&gt;
@@ -490,17 +518,23 @@ Now let us update the computational graph.
 &lt;/p&gt;
 
 &lt;figure&gt;
-  &lt;img class="fig" src="/images/vae/vae-compgraph2.png" width="70%"&gt;
+&lt;br&gt;
+  &lt;img class="fig" src="/images/vae/vae-compgraph2.png" width="50%"&gt;
   &lt;figcaption class="figcaption"&gt; 
   Fig 4. Zoomed in computational graph of VAEs with the reparameterization trick applied
   &lt;/figcaption&gt;
+  &lt;br&gt;
 &lt;/figure&gt;
 
-&lt;p class="method"&gt;
+&lt;p class="body"&gt;
 We can now back propagate through all learnable parameters!
 &lt;/p&gt;
 
-&lt;h1 class="subhead"&gt; Conclusion &lt;/h1&gt;
+&lt;pre&gt;
+
+
+&lt;/pre&gt;
+&lt;h1 class="head"&gt; Conclusion &lt;/h1&gt;
 &lt;p class="body"&gt;
 Now that we understand the theory of VAEs, we are in position to train a model and be informed
 adjudicators of its performance. Luckily, &lt;a class="hyperlinks" href="https://www.tensorflow.org/beta/tutorials/generative/cvae"&gt; TensorFlow&lt;/a&gt; and &lt;a href="https://jmetzen.github.io/2015-11-27/vae.html" class="hyperlinks"&gt;
@@ -591,4 +625,4 @@ URL: &lt;a href="http://www.cs.toronto.edu/~fritz/absps/ws.pdf"&gt;http://www.cs
 Auto-encoding variational bayes.
 2014.
 URL: &lt;a href="https://arxiv.org/pdf/1312.6114.pdf"&gt;https://arxiv.org/pdf/1312.6114.pdf&lt;/a&gt;. &lt;a class="cite-backref" href="#ref-vae-1" title="Jump back to reference 1"&gt;↩&lt;/a&gt;&lt;a class="cite-backref" href="#ref-vae-1" title="Jump back to reference 1"&gt; &lt;sup&gt;1&lt;/sup&gt; &lt;/a&gt;&lt;a class="cite-backref" href="#ref-vae-2" title="Jump back to reference 2"&gt;&lt;sup&gt;2&lt;/sup&gt; &lt;/a&gt;&lt;/p&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Angel C. Hernandez</dc:creator><pubDate>Tue, 01 Jan 2019 00:00:00 -0500</pubDate><guid isPermaLink="false">tag:None,2019-01-01:/test-post.html</guid><category>pgm</category><category>generative_models</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Angel C. Hernandez</dc:creator><pubDate>Sat, 20 Jul 2019 00:00:00 -0400</pubDate><guid isPermaLink="false">tag:None,2019-07-20:/Variational Autoencoders.html</guid></item></channel></rss>

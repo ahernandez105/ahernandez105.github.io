@@ -8,7 +8,7 @@
 
   <title>  Variational Autoencoders | angel's blog
 </title>
-  <link rel="canonical" href="/test-post.html">
+  <link rel="canonical" href="/Variational Autoencoders.html">
 
 
   <link rel="stylesheet" href="/theme/css/bootstrap.min.css">
@@ -54,20 +54,17 @@
   <article class="article">
     <header>
       <ul class="list-inline">
-        <li class="list-inline-item text-muted" title="2019-01-01T00:00:00-05:00">
+        <li class="list-inline-item text-muted" title="2019-07-20T00:00:00-04:00">
           <i class="fa fa-clock-o"></i>
-          Tue 01 January 2019
+          Sat 20 July 2019
         </li>
         <li class="list-inline-item">
           <i class="fa fa-folder-open-o"></i>
-          <a href="/category/pgm.html">pgm</a>
+          <a href="/category/probabilistic-graphical-models.html">Probabilistic Graphical Models</a>
         </li>
           <li class="list-inline-item">
             <i class="fa fa-user-o"></i>
               <a href="/author/angel-c-hernandez.html">Angel C. Hernandez</a>          </li>
-          <li class="list-inline-item">
-            <i class="fa fa-files-o"></i>
-              <a href="/tag/pgm.html">#pgm</a>,               <a href="/tag/generative_models.html">#generative_models</a>          </li>
       </ul>
     </header>
     <div class="content">
@@ -77,10 +74,9 @@ href="/theme/css/md-style.css"></p>
 <h1 class="head">1. Introduction </h1>
 
 <p class="body">
-
 Like all 
 <a href="https://openai.com/blog/generative-models/" style="color:#FF7D33">
-generative models</a>, VAEs are concerned with learning a valid probability distribution from which our dataset was <i>generated</i> from. They do this by learning a set of latent variables, 
+generative models</a>, VAEs are concerned with learning a valid probability distribution from which our dataset was <i>generated</i> from. They do this by learning a set of latent variables,
 
 <span class="math">\(\boldsymbol{z}\)</span>,
 
@@ -108,8 +104,11 @@ Furthermore, it is challenging to learn the parameters of both distributions in 
 <a href="https://www.youtube.com/watch?v=VKpc_z7b9I0" style="color:#FF7D33"> 
 acknowledged</a>, and I quote, <b><i> "the basic idea behind these variational methods sounds crazy." </i></b> Luckily, <a href='#vae' id='ref-vae-1'>(Kingma and Welling, 2014)</a> offered a better solution using the <i>
 reparameterization trick </i> and deep generative models have really been in resurgence since! 
-
 </p>
+
+<pre>
+
+</pre>
 
 <h1 class="head"> 2. Problem Scenario </h1>
 
@@ -119,26 +118,26 @@ Let us begin by assuming two layers of latent variables where
 <span class="math">
 \(\boldsymbol{z}=\{\boldsymbol{z}^1,\boldsymbol{z}^2\}\)</span>.
 As a result, we have the following graphical model:
-
+<br>
 </p>
 
 <figure>
   <img class="fig" src="/images/vae/pgm.png" width="50%">
   <figcaption class="figcaption"> 
-  Fig 1. Graphical model in concern 
+  Fig 1. Graphical model in concern  
   </figcaption>
 </figure>
 
 </p>
 
 <p class="body">
-
+<br>
 It should be noted <a href='#iwae' id='ref-iwae-1'>(Burda et al., 2016)</a> proposed this architecture which is a mere generalization of the original architecture used in <a href='#vae' id='ref-vae-2'>(Kingma and Welling, 2014)</a>. The goal is to use maximum likelihood estimation to learn the parameters, 
 <span class="math">\(\boldsymbol{\theta}\)</span>, of the following distribution:
-
 </p>
 
 <div class="math">
+<br>
 <p class="formula">
 $$
 p(\boldsymbol{x}) =  \int p_{\boldsymbol{\theta}}(\boldsymbol{x|z})
@@ -148,14 +147,13 @@ $$
 </div>
 
 <p class = "body">
-
+<br>
 There are some underlining takeaways from the above distribution:
-
 </p>
 
 <ul class="body">
-
-<li> It tends to be intractable because our model assumes 
+<br>
+<li> It tends to be intractable because our model assumes
 
 <span class="math"> \(z_i^l \not\!\perp\!\!\!\perp z_j^l | \ \boldsymbol{x} \ \cup \
 \boldsymbol{z^{l-1}} \ 
@@ -167,6 +165,7 @@ This requires integration over <b>all</b> combinations our latent variables can 
 </li>
 
 <li> The probability density functions on the right tends to a traditional distribution, say a Gaussian, but is parameterized by some deep network. </li>
+<br>
 </ul>
 
 <p class="body">
@@ -175,6 +174,10 @@ Since our current distribution is intractable, we must resort to variational inf
 <span class = "math">\( \boldsymbol{\theta} \).</span>
 
 </p>
+
+<pre>
+
+</pre>
 
 <h1 class = "head"> 3. Variational Inference </h1>
 
@@ -188,7 +191,7 @@ If we recall, MLE is a simple optimization problem which returns a set of parame
 <p class="body">
 
 The derivation of the lower bound is a mere byproduct of  
-<a url = "https://www.probabilitycourse.com/chapter6/6_2_5_jensen's_inequality.php" style="color:#FF7D33">Jensen's Inequality</a>
+<a href = "https://www.probabilitycourse.com/chapter6/6_2_5_jensen's_inequality.php" style="color:#FF7D33">Jensen's Inequality</a>
 
 which simply states: for any concave function, 
 
@@ -200,7 +203,7 @@ So, we layout the following:
 
 <div class="math">
 <p class="formula">
-
+<br>
 $$
 \begin{aligned}
     \log p(\boldsymbol{x}) &= \log \int p_{\boldsymbol{\theta}}(\boldsymbol{x|z})
@@ -211,8 +214,8 @@ $$
     {q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x})} \ d\boldsymbol{z}
 \end{aligned}
 $$
-
 </p>
+<br>
 </div>
 
 <p class="body">
@@ -227,6 +230,7 @@ for a second, all we have done thus far is rewritten our log likelihood function
 
 <div class="math">
 <p class="formula">
+<br>
 $$
 \begin{aligned}
     u &= \frac{p_{\boldsymbol{\theta}}(\boldsymbol{x},\boldsymbol{z})}
@@ -245,7 +249,7 @@ $$
      \bigg] = \mathcal{L}(\boldsymbol{x}) && \textit{this is the ELBO} 
 \end{aligned}
 $$
-
+<br>
 </p>
 </div>
 
@@ -267,7 +271,7 @@ Now, we define the following for
 </p>
 
 <div class="formula">
-
+<br>
 $$
 \begin{aligned}
 q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x}) &= 
@@ -279,7 +283,7 @@ z_i^1 \perp z_j^1 | \boldsymbol{x}\}_{\forall \ i \neq j,l} && \textit{factors o
 random variables}
 \end{aligned}
 $$
-
+<br>
 </div>
 
 <p class="body">
@@ -296,6 +300,7 @@ Understanding some variations of the ELBO really sheds light on the underlining 
 
 <div class="math">
 <p class="formula">
+<br>
 $$
 \begin{aligned}
 \mathcal{L}(\boldsymbol{x}) &=  
@@ -323,7 +328,7 @@ $$
 p_{\boldsymbol{\theta}}(\boldsymbol{z|x}) )
 \end{aligned}
 $$
-
+<br>
 </p>
 </div>
 
@@ -339,10 +344,12 @@ has made an appearance—which is a non-negative number that quantifies the dist
 </p>
 
 <figure>
+<br>
   <img class="fig" src="/images/vae/kl-divergence.png" width="100%">
   <figcaption class="figcaption"> 
   Fig 2. Depiction of KL Divergence
   </figcaption>
+<br>
 </figure>
 
 <p class = "body">
@@ -357,6 +364,10 @@ and our lower bound would be <b>tight</b>!
 
 </p>
 
+<pre>
+
+
+</pre>
 <h1 class="head"> 4. Relationship to Autoencoders </h1>
 
 <p class = "body">
@@ -371,6 +382,7 @@ We define the following:
 </p>
 
 <div class="formula">
+<br>
 $$
 \begin{aligned}
 \text{Recognition Network }:= \ & q_{\boldsymbol{\phi}}(\boldsymbol{z|x}) =
@@ -387,6 +399,7 @@ $$
 \boldsymbol{\Sigma}(\boldsymbol{x},\boldsymbol{\phi})) \\
 \end{aligned}
 $$
+<br>
 </div>
 
 <p class="body">
@@ -409,6 +422,7 @@ We define the following:
 </p>
 
 <div class="formula">
+<br>
 $$
 \begin{aligned}
 \text{Generative Network } := \ & p_{\boldsymbol{\theta}}(\boldsymbol{x,z}) = 
@@ -423,6 +437,7 @@ p_{\boldsymbol{\theta}}(\boldsymbol{x}|\boldsymbol{z}^1) \\
 \boldsymbol{\Sigma}(\boldsymbol{z}^1,\boldsymbol{\theta}))
 \end{aligned}
 $$
+<br>
 </div>
 
 <p class="body">
@@ -443,9 +458,11 @@ In literature this is known as the <b> decoder network </b> because we
 decode the information in <span class="math"> \(\boldsymbol{z}\)</span> to generate a new example, <span class="math"> \(\boldsymbol{x}_{new}\)<span class="math">. <br><br>
 It should be noted the idea of a recognition and generative network is not new—where 
 Helmholtz Machines, <a href='#helmholtzMachines' id='ref-helmholtzMachines-1'>(Dayan, 1995)</a>, used an identical architecture but were trained using the Wake-sleep algorithm. 
-
 </p>
 
+<pre>
+
+</pre>
 <h1 class="head"> 5. The Learning Process </h1>
 <p class="body">
 Let us recall the objective function we are trying to maximize:
@@ -453,6 +470,7 @@ Let us recall the objective function we are trying to maximize:
 </p>
 
 <div class="formula">
+<br>
 $$
 \begin{aligned}
 \mathcal{L}(\boldsymbol{x}) &= 
@@ -470,6 +488,7 @@ $$
 (\boldsymbol{x})}
 \end{aligned}
 $$
+<br>
 </div>
 
 <p class="body">
@@ -480,10 +499,12 @@ We want to learn the parameters,
 </p>
 
 <figure>
+<br>
   <img class="fig" src="/images/vae/computational-graph1.png" width="80%">
   <figcaption class="figcaption"> 
   Fig 3. Computational graph of Variational Autoencoders
   </figcaption>
+  <br>
 </figure>
 
 <p class="body">
@@ -502,6 +523,7 @@ Let us now define <span class="math">
 \(\boldsymbol{z}^l\)</span> as a <b>deterministic</b> random variable:
 
 <div class="formula">
+<br>
 $$
 \begin{aligned}
 \boldsymbol{z}^l &= g\bigg(\boldsymbol{\mu}(i,\boldsymbol{\phi}),
@@ -511,6 +533,7 @@ $$
 && \boldsymbol{\epsilon}\sim \mathcal{N}(0,\textbf{I})
 \end{aligned}
 $$
+<br>
 </p>
 
 <p class="body">
@@ -524,6 +547,7 @@ from the standard normal we can use it to calculate <span class="math">
 variable still yields the same expected value and variance:
 
 <div class="formula">
+<br>
 $$
 \begin{aligned}
 \mathbb{E}_{\boldsymbol{\epsilon}\sim\mathcal{N}(0,\textbf{I})}
@@ -553,6 +577,7 @@ $$
 &=\boldsymbol{\Sigma}\textbf{I}
 \end{aligned}
 $$
+<br>
 </div>
 
 <p class="body">
@@ -562,17 +587,23 @@ Now let us update the computational graph.
 </p>
 
 <figure>
-  <img class="fig" src="/images/vae/vae-compgraph2.png" width="70%">
+<br>
+  <img class="fig" src="/images/vae/vae-compgraph2.png" width="50%">
   <figcaption class="figcaption"> 
   Fig 4. Zoomed in computational graph of VAEs with the reparameterization trick applied
   </figcaption>
+  <br>
 </figure>
 
-<p class="method">
+<p class="body">
 We can now back propagate through all learnable parameters!
 </p>
 
-<h1 class="subhead"> Conclusion </h1>
+<pre>
+
+
+</pre>
+<h1 class="head"> Conclusion </h1>
 <p class="body">
 Now that we understand the theory of VAEs, we are in position to train a model and be informed
 adjudicators of its performance. Luckily, <a class="hyperlinks" href="https://www.tensorflow.org/beta/tutorials/generative/cvae"> TensorFlow</a> and <a href="https://jmetzen.github.io/2015-11-27/vae.html" class="hyperlinks">
@@ -676,7 +707,6 @@ URL: <a href="https://arxiv.org/pdf/1312.6114.pdf">https://arxiv.org/pdf/1312.61
       <li class="list-inline-item"><a href="/authors.html">Authors</a></li>
     <li class="list-inline-item"><a href="/archives.html">Archives</a></li>
     <li class="list-inline-item"><a href="/categories.html">Categories</a></li>
-      <li class="list-inline-item"><a href="/tags.html">Tags</a></li>
   </ul>
   <p class="col-sm-6 text-sm-right text-muted">
     Generated by <a href="https://github.com/getpelican/pelican" target="_blank">Pelican</a>
