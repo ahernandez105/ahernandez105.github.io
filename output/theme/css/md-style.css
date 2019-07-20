@@ -1,10 +1,11 @@
 .body{
     font-family:"Sans-Serif";
-    font-size: 25px;
+    font-size: 22px;
+    color: #3b3b3b;
 }
 .head{
     font-family:"Sans-Serif";
-    font-size: 45px;
+    font-size: 25px;
     font-weight:bold;
 }
 .fig{
@@ -16,13 +17,14 @@
     text-align: center;
     font-family: "Sans-Serif";
     font-size: 20px;
+    color: #3b3b3b;
 }
 .formula{
     font-size: 20px;
 }
 .subhead{
     font-family: "Sans-Serif";
-    font-size: 40px;    
+    font-size: 23px;    
 }
 .hyperlinks{
     color:#FF7D33;
