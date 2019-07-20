@@ -50,5 +50,5 @@ DEFAULT_PAGINATION = 0
 STATIC_PATHS = ['images']
 THEME = 'themes/pelican-alchemy/alchemy'
 PLUGIN_PATHS=['/Users/angelhernandez/GitHub/ach_blog/pelican-plugins']
-PLUGINS = ['render_math','pelican-site','pelican-cite']
+PLUGINS = ['render_math','pelican-cite']
 PUBLICATIONS_SRC = 'content/bib.bib'
