@@ -1,0 +1,628 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>angel's blog - Probabilistic Graphical Models</title><link href="/" rel="alternate"></link><link href="/feeds/probabilistic-graphical-models.atom.xml" rel="self"></link><id>/</id><updated>2019-07-20T00:00:00-04:00</updated><subtitle>My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be an engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be a benefit to you.</subtitle><entry><title>Test</title><link href="/Test.html" rel="alternate"></link><published>2019-07-20T00:00:00-04:00</published><updated>2019-07-20T00:00:00-04:00</updated><author><name>Angel C. Hernandez</name></author><id>tag:None,2019-07-20:/Test.html</id><summary type="html"></summary><content type="html">&lt;p&gt;Here is some txt.&lt;/p&gt;</content></entry><entry><title>Variational Autoencoders</title><link href="/Variational%20Autoencoders.html" rel="alternate"></link><published>2019-07-20T00:00:00-04:00</published><updated>2019-07-20T00:00:00-04:00</updated><author><name>Angel C. Hernandez</name></author><id>tag:None,2019-07-20:/Variational Autoencoders.html</id><summary type="html">&lt;p&gt;TEXT TEXT&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;link rel="stylesheet" 
+type="text/css" 
+href="/theme/css/md-style.css"&gt;&lt;/p&gt;
+&lt;h1 class="head"&gt;1. Introduction &lt;/h1&gt;
+
+&lt;p class="body"&gt;
+Like all 
+&lt;a href="https://openai.com/blog/generative-models/" style="color:#FF7D33"&gt;
+generative models&lt;/a&gt;, VAEs are concerned with learning a valid probability distribution from which our dataset was &lt;i&gt;generated&lt;/i&gt; from. They do this by learning a set of latent variables,
+
+&lt;span class="math"&gt;\(\boldsymbol{z}\)&lt;/span&gt;,
+
+
+which are essentially the underlining features that best explain our observed data,
+
+&lt;span class = "math"&gt;\(\boldsymbol{x}\)&lt;/span&gt;.
+
+We can then condition on these variables and sample from the distribution, 
+&lt;span class = "math"&gt;
+\( 
+\boldsymbol{x}_{new} \sim 
+p(\boldsymbol{x}_{observed}|\boldsymbol{z}) \)&lt;/span&gt;, 
+
+to generate a new data point. This distribution happens to be tractable 
+but using the posterior,
+
+&lt;span class = "math"&gt;
+\( 
+\boldsymbol{z} \sim 
+p(\boldsymbol{z}|\boldsymbol{x}_{observed}) \)&lt;/span&gt;,
+
+is the distribution that has plagued machine learning since the beginning of time.
+Furthermore, it is challenging to learn the parameters of both distributions in an end-to-end fashion. &lt;a href='#wakeSleep' id='ref-wakeSleep-1'&gt;(Hinton et al., 1995)&lt;/a&gt; developed the Wake-sleep algorithm which was able to learn all parameters to this exact problem via two objective functions and back-propagation. While this algorithm &lt;i&gt; masked &lt;/i&gt; the problem at hand, even Geoffrey Hinton 
+&lt;a href="https://www.youtube.com/watch?v=VKpc_z7b9I0" style="color:#FF7D33"&gt; 
+acknowledged&lt;/a&gt;, and I quote, &lt;b&gt;&lt;i&gt; "the basic idea behind these variational methods sounds crazy." &lt;/i&gt;&lt;/b&gt; Luckily, &lt;a href='#vae' id='ref-vae-1'&gt;(Kingma and Welling, 2014)&lt;/a&gt; offered a better solution using the &lt;i&gt;
+reparameterization trick &lt;/i&gt; and deep generative models have really been in resurgence since! 
+&lt;/p&gt;
+
+&lt;pre&gt;
+
+&lt;/pre&gt;
+
+&lt;h1 class="head"&gt; 2. Problem Scenario &lt;/h1&gt;
+
+&lt;p class="body"&gt;
+
+Let us begin by assuming two layers of latent variables where
+&lt;span class="math"&gt;
+\(\boldsymbol{z}=\{\boldsymbol{z}^1,\boldsymbol{z}^2\}\)&lt;/span&gt;.
+As a result, we have the following graphical model:
+&lt;br&gt;
+&lt;/p&gt;
+
+&lt;figure&gt;
+  &lt;img class="fig" src="/images/vae/pgm.png" width="50%"&gt;
+  &lt;figcaption class="figcaption"&gt; 
+  Fig 1. Graphical model in concern  
+  &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p class="body"&gt;
+&lt;br&gt;
+It should be noted &lt;a href='#iwae' id='ref-iwae-1'&gt;(Burda et al., 2016)&lt;/a&gt; proposed this architecture which is a mere generalization of the original architecture used in &lt;a href='#vae' id='ref-vae-2'&gt;(Kingma and Welling, 2014)&lt;/a&gt;. The goal is to use maximum likelihood estimation to learn the parameters, 
+&lt;span class="math"&gt;\(\boldsymbol{\theta}\)&lt;/span&gt;, of the following distribution:
+&lt;/p&gt;
+
+&lt;div class="math"&gt;
+&lt;br&gt;
+&lt;p class="formula"&gt;
+$$
+p(\boldsymbol{x}) =  \int p_{\boldsymbol{\theta}}(\boldsymbol{x|z})
+p_{\boldsymbol{\theta}}(\boldsymbol{z}) \ d\boldsymbol{z}
+$$
+&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p class = "body"&gt;
+&lt;br&gt;
+There are some underlining takeaways from the above distribution:
+&lt;/p&gt;
+
+&lt;ul class="body"&gt;
+&lt;br&gt;
+&lt;li&gt; It tends to be intractable because our model assumes
+
+&lt;span class="math"&gt; \(z_i^l \not\!\perp\!\!\!\perp z_j^l | \ \boldsymbol{x} \ \cup \
+\boldsymbol{z^{l-1}} \ 
+\forall \ i \neq j,l \) &lt;/span&gt; 
+
+&lt;a href="https://sailinglab.github.io/pgm-spring-2019/notes/lecture-02/#active_trail" style="color:#FF7D33"&gt;
+(explaining away)&lt;/a&gt;.
+This requires integration over &lt;b&gt;all&lt;/b&gt; combinations our latent variables can take on.
+&lt;/li&gt;
+
+&lt;li&gt; The probability density functions on the right tends to a traditional distribution, say a Gaussian, but is parameterized by some deep network. &lt;/li&gt;
+&lt;br&gt;
+&lt;/ul&gt;
+
+&lt;p class="body"&gt;
+Since our current distribution is intractable, we must resort to variational inference to learn
+
+&lt;span class = "math"&gt;\( \boldsymbol{\theta} \).&lt;/span&gt;
+
+&lt;/p&gt;
+
+&lt;pre&gt;
+
+&lt;/pre&gt;
+
+&lt;h1 class = "head"&gt; 3. Variational Inference &lt;/h1&gt;
+
+&lt;p class="body"&gt;
+
+If we recall, MLE is a simple optimization problem which returns a set of parameters that maximizes the likelihood that our data came from some distribution of our choice. Our objective function is the log likelihood and variational inference simply replaces this function with a lower bound function (evidence lower bound or ELBO) that is  &lt;b&gt;tractable&lt;/b&gt;. So, as we learn a set of parameters that maximizes the likelihood of our lower bound we are also increasing the likelihood of our original distribution (this is the definition of a lower bound).
+&lt;/p&gt;
+
+&lt;h1 class="subhead"&gt; 3.1 Deriving the ELBO &lt;/h1&gt;
+
+&lt;p class="body"&gt;
+
+The derivation of the lower bound is a mere byproduct of  
+&lt;a href = "https://www.probabilitycourse.com/chapter6/6_2_5_jensen's_inequality.php" style="color:#FF7D33"&gt;Jensen's Inequality&lt;/a&gt;
+
+which simply states: for any concave function, 
+
+&lt;span class = "math"&gt;\(f,\) &lt;/span&gt;
+we have &lt;span class="math"&gt; \( f(\mathbb{E}[u]) \geq \mathbb{E}[f(u)]\). &lt;/span&gt; 
+
+So, we layout the following:
+&lt;/p&gt;
+
+&lt;div class="math"&gt;
+&lt;p class="formula"&gt;
+&lt;br&gt;
+$$
+\begin{aligned}
+    \log p(\boldsymbol{x}) &amp;= \log \int p_{\boldsymbol{\theta}}(\boldsymbol{x|z})
+    p_{\boldsymbol{\theta}}(\boldsymbol{z}) \ d\boldsymbol{z} \\
+    &amp;= \log \int p_{\boldsymbol{\theta}}(\boldsymbol{x},\boldsymbol{z}) \ d\boldsymbol{z} \\
+    &amp;= \log \int q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x})
+    \frac{p_{\boldsymbol{\theta}}(\boldsymbol{x},\boldsymbol{z})}
+    {q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x})} \ d\boldsymbol{z}
+\end{aligned}
+$$
+&lt;/p&gt;
+&lt;br&gt;
+&lt;/div&gt;
+
+&lt;p class="body"&gt;
+
+Ignoring 
+
+&lt;span class="math"&gt;\(q_{\boldsymbol{\phi}} \)&lt;/span&gt; 
+
+for a second, all we have done thus far is rewritten our log likelihood function in a &lt;i&gt;clever&lt;/i&gt; way. I emphasis clever because we can now invoke Jensen's Inequality where:
+
+&lt;/p&gt;
+
+&lt;div class="math"&gt;
+&lt;p class="formula"&gt;
+&lt;br&gt;
+$$
+\begin{aligned}
+    u &amp;= \frac{p_{\boldsymbol{\theta}}(\boldsymbol{x},\boldsymbol{z})}
+    {q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x})}  \\
+    \mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})} &amp;=
+    \int q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x}) \ d\boldsymbol{z} \\
+    f(\cdot) &amp;= \log(\cdot) \\
+     \log p(\boldsymbol{x}) &amp;= \log 
+     \mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}
+     \bigg[ \frac{p_{\boldsymbol{\theta}}(\boldsymbol{x},\boldsymbol{z})}
+     {q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x})}\bigg] \\
+     &amp;\geq  \mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}
+     \bigg[\log 
+     \frac{p_{\boldsymbol{\theta}}(\boldsymbol{x},\boldsymbol{z})}
+     {q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x})}
+     \bigg] = \mathcal{L}(\boldsymbol{x}) &amp;&amp; \textit{this is the ELBO} 
+\end{aligned}
+$$
+&lt;br&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p class="body"&gt;
+
+Going forward, we will use &lt;span class = "math"&gt; \(\mathcal{L}(\boldsymbol{x})\) &lt;/span&gt; as our objective function of concern where 
+
+&lt;span class="math"&gt; \(q_{\boldsymbol{\phi}}
+(\boldsymbol{z}|\boldsymbol{x})\) &lt;/span&gt; 
+
+is essentially a surrogate distribution for 
+
+&lt;span class="math"&gt; \(p_{\boldsymbol{\theta}}(\boldsymbol{z|x}) \)&lt;/span&gt;. 
+
+Now, we define the following for
+&lt;span class="math"&gt; 
+\(q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x})\)&lt;/span&gt;: 
+
+&lt;/p&gt;
+
+&lt;div class="formula"&gt;
+&lt;br&gt;
+$$
+\begin{aligned}
+q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x}) &amp;= 
+q_{\boldsymbol{\phi}}(\boldsymbol{z}^2|
+\boldsymbol{z}^1) q_{\boldsymbol{\phi}}(\boldsymbol{z}^1|
+\boldsymbol{x}) &amp;&amp; \textit{factors over layers} \\ 
+\{z_i^l \perp z_j^l | \boldsymbol{z}^{l-1} \ &amp;\cap \ 
+z_i^1 \perp z_j^1 | \boldsymbol{x}\}_{\forall \ i \neq j,l} &amp;&amp; \textit{factors over
+random variables}
+\end{aligned}
+$$
+&lt;br&gt;
+&lt;/div&gt;
+
+&lt;p class="body"&gt;
+
+This is known as &lt;a href="https://www.cs.cmu.edu/~epxing/Class/10708-17/notes-17/10708-scribe-lecture13.pdf" style="color:#FF7D33"&gt;mean field approximation&lt;/a&gt; which 
+yields a &lt;b&gt; tractable &lt;/b&gt; surrogate distribution.
+
+&lt;h1 class="subhead"&gt; 3.1.1 Making More Sense of the ELBO &lt;/h1&gt;
+&lt;p class="body"&gt;
+
+Understanding some variations of the ELBO really sheds light on the underlining intuitions of Variational Inference. For starters, we can rewrite the ELBO in the following form:
+
+&lt;/p&gt;
+
+&lt;div class="math"&gt;
+&lt;p class="formula"&gt;
+&lt;br&gt;
+$$
+\begin{aligned}
+\mathcal{L}(\boldsymbol{x}) &amp;=  
+\mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}
+\big[\log p_{\boldsymbol{\theta}}(\boldsymbol{z|x})
+ p_{\boldsymbol{\theta}}(\boldsymbol{x})\big]
+- \mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}
+\big[\log q_{\boldsymbol{\phi}}(\boldsymbol{z|x})\big] \\
+&amp;=  
+\mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}
+\big[\log p_{\boldsymbol{\theta}}(\boldsymbol{z|x})
++ \log p_{\boldsymbol{\theta}}(\boldsymbol{x})\big]
+- \mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}
+\big[\log q_{\boldsymbol{\phi}}(\boldsymbol{z|x})\big] \\
+&amp;= 
+\mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}
+\big[\log p_{\boldsymbol{\theta}}(\boldsymbol{z|x})\big]
++ \log p_{\boldsymbol{\theta}}(\boldsymbol{x})
+\mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}[] 
+- \mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}
+\big[\log q_{\boldsymbol{\phi}}(\boldsymbol{z|x})\big] \\
+&amp;= 
+ \log p_{\boldsymbol{\theta}}(\boldsymbol{x}) - 
+ \text{D}_{\text{KL}}(q_{\boldsymbol{\phi}}(\boldsymbol{z|x}) || 
+p_{\boldsymbol{\theta}}(\boldsymbol{z|x}) )
+\end{aligned}
+$$
+&lt;br&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p class="body"&gt; 
+Note, the second expectation on the third line does not touch 
+
+&lt;span class="math"&gt;\(p_{\boldsymbol{\theta}}(\boldsymbol{x})\) &lt;/span&gt;,
+
+so it evaluates to 1. Furthermore, we should notice in the last line 
+&lt;a href = "https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence" style="color:#FF7D33"&gt; KL Divergence&lt;/a&gt; 
+
+has made an appearance—which is a non-negative number that quantifies the distance between two distributions; where 0 is returned if the two distributions under concern are identical.
+&lt;/p&gt;
+
+&lt;figure&gt;
+&lt;br&gt;
+  &lt;img class="fig" src="/images/vae/kl-divergence.png" width="100%"&gt;
+  &lt;figcaption class="figcaption"&gt; 
+  Fig 2. Depiction of KL Divergence
+  &lt;/figcaption&gt;
+&lt;br&gt;
+&lt;/figure&gt;
+
+&lt;p class = "body"&gt;
+So, maximizing the lower bound is actually maximizing our original log probability and subtracting the distance between the intractable distribution and the surrogate distribution. Theoretically, we could set 
+
+&lt;span class = "math"&gt; \(
+q_{\boldsymbol{\phi}}(\boldsymbol{z|x})  = q_{\boldsymbol{\theta}}(\boldsymbol{z|x})
+\)
+&lt;/span&gt; 
+
+and our lower bound would be &lt;b&gt;tight&lt;/b&gt;!
+
+&lt;/p&gt;
+
+&lt;pre&gt;
+
+
+&lt;/pre&gt;
+&lt;h1 class="head"&gt; 4. Relationship to Autoencoders &lt;/h1&gt;
+
+&lt;p class = "body"&gt;
+Thus far, all we have done is explore the variational component of VAEs by understanding 
+the theoretical properties of the lower bound. Now, we will begin to understand the 
+learning process of VAEs and their relationship to autoencoders.
+&lt;/p&gt;
+
+&lt;h1 class="subhead"&gt; 4.1 Recognition Network &lt;/h1&gt;
+&lt;p class="body"&gt;
+We define the following:
+&lt;/p&gt;
+
+&lt;div class="formula"&gt;
+&lt;br&gt;
+$$
+\begin{aligned}
+\text{Recognition Network }:= \ &amp; q_{\boldsymbol{\phi}}(\boldsymbol{z|x}) =
+ q_{\boldsymbol{\phi}}(\boldsymbol{z}^2|
+\boldsymbol{z}^1) q_{\boldsymbol{\phi}}(\boldsymbol{z}^1|
+\boldsymbol{x}) \\
+&amp; q_{\boldsymbol{\phi}}
+(\boldsymbol{z}^2|\boldsymbol{z}^1) \sim \mathcal{N}
+(\boldsymbol{\mu}(\boldsymbol{z}^1,\boldsymbol{\phi}),
+\boldsymbol{\Sigma}(\boldsymbol{z}^1,\boldsymbol{\phi})) \\
+&amp; q_{\boldsymbol{\phi}}
+(\boldsymbol{z}^1|\boldsymbol{x}) \sim \mathcal{N}
+(\boldsymbol{\mu}(\boldsymbol{x},\boldsymbol{\phi}),
+\boldsymbol{\Sigma}(\boldsymbol{x},\boldsymbol{\phi})) \\
+\end{aligned}
+$$
+&lt;br&gt;
+&lt;/div&gt;
+
+&lt;p class="body"&gt;
+All of the distributions in the Recognition Network are Gaussians parameterized by
+a mean vector,
+&lt;span class="math"&gt;
+
+\(\boldsymbol{\mu}(\cdot)\)&lt;/span&gt;, and a diagonal covariance matrix,
+&lt;span class="math"&gt;
+\(\boldsymbol{\Sigma}(\cdot)\)&lt;/span&gt;. Each of these are deterministic neural networks, e.g., FFNN, CNN or RNN parameterized by &lt;span class="math"&gt;
+\(\boldsymbol{\phi}\)&lt;/span&gt;. The goal of the recognition network is to take in some observed data point, &lt;span class="math"&gt;\(\boldsymbol{x}\)&lt;/span&gt;, and learn the latent features, &lt;span class="math"&gt;\(\boldsymbol{z}\)&lt;/span&gt;, that best describe our data. In literature this is also known as the &lt;b&gt;encoder network&lt;/b&gt; because we are encoding
+information about &lt;span class="math"&gt; \(\boldsymbol{x}\)&lt;/span&gt; into 
+&lt;span class="math"&gt;\(\boldsymbol{z}\)&lt;/span&gt;.
+
+&lt;/p&gt;
+
+&lt;h1 class="subhead"&gt; 4.2 Generative Network &lt;/h1&gt;
+&lt;p class="body"&gt;
+We define the following:
+&lt;/p&gt;
+
+&lt;div class="formula"&gt;
+&lt;br&gt;
+$$
+\begin{aligned}
+\text{Generative Network } := \ &amp; p_{\boldsymbol{\theta}}(\boldsymbol{x,z}) = 
+p(\boldsymbol{z}^2)p_{\boldsymbol{\theta}}(\boldsymbol{z}^1|\boldsymbol{z}^2)
+p_{\boldsymbol{\theta}}(\boldsymbol{x}|\boldsymbol{z}^1) \\
+&amp; p(\boldsymbol{z}^2) \sim \mathcal{N}(\boldsymbol{0},\bf{I}) \\
+&amp;p_{\boldsymbol{\theta}}(\boldsymbol{z}^1|\boldsymbol{z}^2) \sim 
+\mathcal{N}(\boldsymbol{\mu}(\boldsymbol{z}^2,\boldsymbol{\theta}),
+\boldsymbol{\Sigma}(\boldsymbol{z}^2,\boldsymbol{\theta})) \\
+&amp; p_{\boldsymbol{\theta}}(\boldsymbol{x}|\boldsymbol{z}^1) \sim 
+\mathcal{N}(\boldsymbol{\mu}(\boldsymbol{z}^1,\boldsymbol{\theta}),
+\boldsymbol{\Sigma}(\boldsymbol{z}^1,\boldsymbol{\theta}))
+\end{aligned}
+$$
+&lt;br&gt;
+&lt;/div&gt;
+
+&lt;p class="body"&gt;
+We notice &lt;span class="math"&gt; 
+
+\(p(\boldsymbol{z}^2)\)&lt;span class="math"&gt; is just the standard normal distribution and all other distributions are equivalent to the ones in the Recognition Network. The Generative Network uses the latent features to maximize the likelihood over the 
+the joint distribution, 
+&lt;span class="math"&gt;
+\(p_{\boldsymbol{\theta}}(\boldsymbol{x,z})\)&lt;/span&gt;. After learning, we can sample from 
+&lt;span class="math"&gt; \(\boldsymbol{x}_{new} \sim 
+p_{\boldsymbol{\theta}}(\boldsymbol{x}_{observed}|\boldsymbol{z}^1)\)
+&lt;/span&gt; to generate a new example. Note,
+&lt;span class="math"&gt;
+\(p_{\boldsymbol{\theta}}(\boldsymbol{x}|\boldsymbol{z}^1)\) =
+\(p_{\boldsymbol{\theta}}(\boldsymbol{x}|\boldsymbol{z}^1,
+\boldsymbol{z}^2)\) &lt;span&gt;, as defined by our graphical model. 
+In literature this is known as the &lt;b&gt; decoder network &lt;/b&gt; because we 
+decode the information in &lt;span class="math"&gt; \(\boldsymbol{z}\)&lt;/span&gt; to generate a new example, &lt;span class="math"&gt; \(\boldsymbol{x}_{new}\)&lt;span class="math"&gt;. &lt;br&gt;&lt;br&gt;
+It should be noted the idea of a recognition and generative network is not new—where 
+Helmholtz Machines, &lt;a href='#helmholtzMachines' id='ref-helmholtzMachines-1'&gt;(Dayan, 1995)&lt;/a&gt;, used an identical architecture but were trained using the Wake-sleep algorithm. 
+&lt;/p&gt;
+
+&lt;pre&gt;
+
+&lt;/pre&gt;
+&lt;h1 class="head"&gt; 5. The Learning Process &lt;/h1&gt;
+&lt;p class="body"&gt;
+Let us recall the objective function we are trying to maximize:
+
+&lt;/p&gt;
+
+&lt;div class="formula"&gt;
+&lt;br&gt;
+$$
+\begin{aligned}
+\mathcal{L}(\boldsymbol{x}) &amp;= 
+\mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}
+     \bigg[\log 
+     \frac{p_{\boldsymbol{\theta}}(\boldsymbol{x},\boldsymbol{z})}
+     {q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x})}
+     \bigg] \\
+&amp;= \underbrace{
+\mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}
+     [\log p_{\boldsymbol{\theta}}(\boldsymbol{x},\boldsymbol{z})]}_{\large \mathcal{L}_{recogn}(\boldsymbol{x})} - 
+\underbrace{
+\mathbb{E}_{\boldsymbol{z}\sim q_{\boldsymbol{\phi}}(\boldsymbol{z|x})}
+[\log q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x})]}_{\large \mathcal{L}_{gen}
+(\boldsymbol{x})}
+\end{aligned}
+$$
+&lt;br&gt;
+&lt;/div&gt;
+
+&lt;p class="body"&gt;
+We want to learn the parameters,
+&lt;span class="math"&gt;
+
+\(\boldsymbol{\theta}\text{ and } \boldsymbol{\phi}\) &lt;/span&gt;, in an end-to-end fashion. With this at hand, we can layout the computational graph:
+&lt;/p&gt;
+
+&lt;figure&gt;
+&lt;br&gt;
+  &lt;img class="fig" src="/images/vae/computational-graph1.png" width="80%"&gt;
+  &lt;figcaption class="figcaption"&gt; 
+  Fig 3. Computational graph of Variational Autoencoders
+  &lt;/figcaption&gt;
+  &lt;br&gt;
+&lt;/figure&gt;
+
+&lt;p class="body"&gt;
+I will acknowledge this may appear overwhelming but I did not fully understand the learning process nor the reparameterization trick until stepping through this graph in its entirety. A forward pass begins, bottom left, by taking an observed data point and sending it through the recognition network. Along the way, we sample a latent vector,
+&lt;span class="math"&gt; 
+
+\(\boldsymbol{z}^l\)&lt;/span&gt;, send it through a deep network and generate the next set of parameters for an upstream distribution. After each latent layer has been sampled, we can forward propagate through the generative network. &lt;br&gt;&lt;br    &gt;
+
+Back propagation is actually fairly straightforward up until propagating through the latent nodes. Ultimately, the latent variables are &lt;b&gt;stochastic&lt;/b&gt; and we cannot differentiate through a stochastic operator, red nodes. As a result, we would have to rely on gradient estimates via MCMC sampling which typically leads to high variance gradients and poor learning.
+&lt;/p&gt;
+
+&lt;h1 class="subhead"&gt;5.1 Reparameterization Trick&lt;/h1&gt;
+&lt;p class="body"&gt;
+Let us now define &lt;span class="math"&gt; 
+
+\(\boldsymbol{z}^l\)&lt;/span&gt; as a &lt;b&gt;deterministic&lt;/b&gt; random variable:
+
+&lt;div class="formula"&gt;
+&lt;br&gt;
+$$
+\begin{aligned}
+\boldsymbol{z}^l &amp;= g\bigg(\boldsymbol{\mu}(i,\boldsymbol{\phi}),
+\boldsymbol{\Sigma}(i,\boldsymbol{\phi}),\boldsymbol{\epsilon}\bigg) \\
+&amp;=\boldsymbol{\mu}(i,\boldsymbol{\phi}) + 
+\boldsymbol{\Sigma}(i,\boldsymbol{\phi})^{\frac{1}{2}}\otimes \boldsymbol{\epsilon}
+&amp;&amp; \boldsymbol{\epsilon}\sim \mathcal{N}(0,\textbf{I})
+\end{aligned}
+$$
+&lt;br&gt;
+&lt;/p&gt;
+
+&lt;p class="body"&gt;
+&lt;span class="math"&gt;
+
+\(i\)&lt;span&gt; is just an argument and &lt;span class="math"&gt;\(\boldsymbol{\Sigma}(i,\boldsymbol{\phi})^{\frac{1}{2}}\)&lt;/span&gt; is the standard deviation as opposed to the variance. So, once we sample an &lt;span class="math"&gt;\(\boldsymbol{\epsilon}\)&lt;/span&gt;
+from the standard normal we can use it to calculate &lt;span class="math"&gt; 
+\(\boldsymbol{z}^l\)&lt;/span&gt;. &lt;b&gt; Ultimately, the stochasticity now lies in 
+&lt;span class="math"&gt;\(\boldsymbol{\epsilon}\)&lt;/span&gt; and not in &lt;span class="math"&gt;
+\(\boldsymbol{z}^l\)&lt;/span&gt;.&lt;/b&gt; Also, we can quickly show the reparameterized latent
+variable still yields the same expected value and variance:
+
+&lt;div class="formula"&gt;
+&lt;br&gt;
+$$
+\begin{aligned}
+\mathbb{E}_{\boldsymbol{\epsilon}\sim\mathcal{N}(0,\textbf{I})}
+[\boldsymbol{z}^l]&amp;=
+\boldsymbol{\mu} + 
+\boldsymbol{\Sigma}^{\frac{1}{2}}
+\mathbb{E}_{\boldsymbol{\epsilon}\sim\mathcal{N}(0,\textbf{I})}
+[\boldsymbol{\epsilon}] \\
+&amp;=\boldsymbol{\mu} + 0 \\ \\
+\text{Var}[\boldsymbol{z}^l]&amp;= 
+\mathbb{E}_{\boldsymbol{\epsilon}\sim\mathcal{N}(0,\textbf{I})}
+\bigg[
+\bigg(
+\boldsymbol{\mu} + 
+\boldsymbol{\Sigma}^{\frac{1}{2}}\boldsymbol{\epsilon}
+\bigg)^2
+\bigg] -  
+\mathbb{E}_{\boldsymbol{\epsilon}\sim\mathcal{N}(0,\textbf{I})}
+[\boldsymbol{z}^l]^2\\
+&amp;= \boldsymbol{\mu}^2 +
+2\boldsymbol{\mu}\boldsymbol{\Sigma}^{\frac{1}{2}}
+\mathbb{E}_{\boldsymbol{\epsilon}\sim\mathcal{N}(0,\textbf{I})}
+[\boldsymbol{\epsilon}] + 
+\boldsymbol{\Sigma}
+\mathbb{E}_{\boldsymbol{\epsilon}\sim\mathcal{N}(0,\textbf{I})}
+[\boldsymbol{\epsilon}^2] - \boldsymbol{\mu}^2 \\
+&amp;=\boldsymbol{\Sigma}\textbf{I}
+\end{aligned}
+$$
+&lt;br&gt;
+&lt;/div&gt;
+
+&lt;p class="body"&gt;
+where notation was simplified for brevity. &lt;br&gt; &lt;br&gt;
+
+Now let us update the computational graph.
+&lt;/p&gt;
+
+&lt;figure&gt;
+&lt;br&gt;
+  &lt;img class="fig" src="/images/vae/vae-compgraph2.png" width="50%"&gt;
+  &lt;figcaption class="figcaption"&gt; 
+  Fig 4. Zoomed in computational graph of VAEs with the reparameterization trick applied
+  &lt;/figcaption&gt;
+  &lt;br&gt;
+&lt;/figure&gt;
+
+&lt;p class="body"&gt;
+We can now back propagate through all learnable parameters!
+&lt;/p&gt;
+
+&lt;pre&gt;
+
+
+&lt;/pre&gt;
+&lt;h1 class="head"&gt; Conclusion &lt;/h1&gt;
+&lt;p class="body"&gt;
+Now that we understand the theory of VAEs, we are in position to train a model and be informed
+adjudicators of its performance. Luckily, &lt;a class="hyperlinks" href="https://www.tensorflow.org/beta/tutorials/generative/cvae"&gt; TensorFlow&lt;/a&gt; and &lt;a href="https://jmetzen.github.io/2015-11-27/vae.html" class="hyperlinks"&gt;
+Jan Hendrik Metzen&lt;/a&gt; have great tutorials on programmatic implementations. 
+&lt;/p&gt;
+
+
+
+
+&lt;script type="text/javascript"&gt;
+
+if (!document.getElementById('mathjaxscript_pelican_#%&amp;#64;#$&amp;#64;#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%&amp;#64;#$&amp;#64;#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        fonts: ['STIX', 'TeX']," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+
+&lt;/script&gt;&lt;hr&gt;
+&lt;h2&gt;Bibliography&lt;/h2&gt;
+&lt;p id='iwae'&gt;Yuri Burda, Roger Grosse, and Ruslan Salakhutdinovz.
+Impotance weigthed autoenocders.
+2016.
+URL: &lt;a href="https://arxiv.org/pdf/1509.00519.pdf"&gt;https://arxiv.org/pdf/1509.00519.pdf&lt;/a&gt;. &lt;a class="cite-backref" href="#ref-iwae-1" title="Jump back to reference 1"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p id='helmholtzMachines'&gt;Peter Dayan.
+Helholtz machines and wake-sleep learning.
+&lt;em&gt;Handbook of Brain Theory of Neural Networks, 2.&lt;/em&gt;, 1995.
+URL: &lt;a href="https://pdfs.semanticscholar.org/dd8c/da00ccb0af1594fbaa5d41ee639d053a9cb2.pdf"&gt;https://pdfs.semanticscholar.org/dd8c/da00ccb0af1594fbaa5d41ee639d053a9cb2.pdf&lt;/a&gt;. &lt;a class="cite-backref" href="#ref-helmholtzMachines-1" title="Jump back to reference 1"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p id='wakeSleep'&gt;Geoffrey Hinton, Peter Dayan, Brendan&amp;nbsp;J Frey, and Radford&amp;nbsp;M Neal.
+The wake-sleep alogrithm for unsupervised neural networks.
+1995.
+URL: &lt;a href="http://www.cs.toronto.edu/~fritz/absps/ws.pdf"&gt;http://www.cs.toronto.edu/~fritz/absps/ws.pdf&lt;/a&gt;. &lt;a class="cite-backref" href="#ref-wakeSleep-1" title="Jump back to reference 1"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p id='vae'&gt;Diederik Kingma and Max Welling.
+Auto-encoding variational bayes.
+2014.
+URL: &lt;a href="https://arxiv.org/pdf/1312.6114.pdf"&gt;https://arxiv.org/pdf/1312.6114.pdf&lt;/a&gt;. &lt;a class="cite-backref" href="#ref-vae-1" title="Jump back to reference 1"&gt;↩&lt;/a&gt;&lt;a class="cite-backref" href="#ref-vae-1" title="Jump back to reference 1"&gt; &lt;sup&gt;1&lt;/sup&gt; &lt;/a&gt;&lt;a class="cite-backref" href="#ref-vae-2" title="Jump back to reference 2"&gt;&lt;sup&gt;2&lt;/sup&gt; &lt;/a&gt;&lt;/p&gt;
+</content></entry></feed>
