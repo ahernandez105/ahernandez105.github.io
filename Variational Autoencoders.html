@@ -19,8 +19,7 @@
   <link rel="alternate" type="application/atom+xml" title="Full Atom Feed"
         href="/feeds/all.atom.xml">
   <link rel="alternate" type="application/rss+xml" title="Full RSS Feed"
-        href="/feeds/all.rss.xml">  <link rel="alternate" type="application/atom+xml" title="Categories Atom Feed"
-        href="/feeds/{slug}.atom.xml">  
+        href="/feeds/all.rss.xml">  
   <meta name="description" content="TEXT TEXT">
 
 
@@ -346,7 +345,7 @@ has made an appearance—which is a non-negative number that quantifies the dist
 
 <figure>
 <br>
-  <img class="fig" src="/images/vae/kl-divergence.png" width="100%">
+  <img class="fig" src="/images/vae/kl-divergence.png" width="80%">
   <figcaption class="figcaption"> 
   Fig 2. Depiction of KL Divergence
   </figcaption>
@@ -501,7 +500,7 @@ We want to learn the parameters,
 
 <figure>
 <br>
-  <img class="fig" src="/images/vae/computational-graph1.png" width="80%">
+  <img class="fig" src="/images/vae/computational-graph1.png" width="60%">
   <figcaption class="figcaption"> 
   Fig 3. Computational graph of Variational Autoencoders
   </figcaption>
@@ -676,7 +675,22 @@ if (!document.getElementById('mathjaxscript_pelican_#%&#64;#$&#64;#')) {
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 
-</script><hr>
+</script>
+
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+this.page.url = "https://ahernandez105.github.io/Variational%20Autoencoders.html";
+this.page.identifier =1;
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://angels-blog-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><hr>
 <h2>Bibliography</h2>
 <p id='iwae'>Yuri Burda, Roger Grosse, and Ruslan Salakhutdinovz.
 Impotance weigthed autoenocders.

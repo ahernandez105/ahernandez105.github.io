@@ -276,7 +276,7 @@ has made an appearance—which is a non-negative number that quantifies the dist
 
 &lt;figure&gt;
 &lt;br&gt;
-  &lt;img class="fig" src="/images/vae/kl-divergence.png" width="100%"&gt;
+  &lt;img class="fig" src="/images/vae/kl-divergence.png" width="80%"&gt;
   &lt;figcaption class="figcaption"&gt; 
   Fig 2. Depiction of KL Divergence
   &lt;/figcaption&gt;
@@ -431,7 +431,7 @@ We want to learn the parameters,
 
 &lt;figure&gt;
 &lt;br&gt;
-  &lt;img class="fig" src="/images/vae/computational-graph1.png" width="80%"&gt;
+  &lt;img class="fig" src="/images/vae/computational-graph1.png" width="60%"&gt;
   &lt;figcaption class="figcaption"&gt; 
   Fig 3. Computational graph of Variational Autoencoders
   &lt;/figcaption&gt;
@@ -606,7 +606,22 @@ if (!document.getElementById('mathjaxscript_pelican_#%&amp;#64;#$&amp;#64;#')) {
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 
-&lt;/script&gt;&lt;hr&gt;
+&lt;/script&gt;
+
+&lt;div id="disqus_thread"&gt;&lt;/div&gt;
+&lt;script&gt;
+var disqus_config = function () {
+this.page.url = "https://ahernandez105.github.io/Variational%20Autoencoders.html";
+this.page.identifier =1;
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://angels-blog-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+&lt;/script&gt;
+&lt;noscript&gt;Please enable JavaScript to view the &lt;a href="https://disqus.com/?ref_noscript"&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;&lt;hr&gt;
 &lt;h2&gt;Bibliography&lt;/h2&gt;
 &lt;p id='iwae'&gt;Yuri Burda, Roger Grosse, and Ruslan Salakhutdinovz.
 Impotance weigthed autoenocders.
