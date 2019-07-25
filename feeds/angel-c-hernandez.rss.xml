@@ -2,8 +2,14 @@
 <rss version="2.0"><channel><title>angel's blog - Angel C. Hernandez</title><link>/</link><description>My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be an engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be a benefit to you.</description><lastBuildDate>Sat, 20 Jul 2019 00:00:00 -0400</lastBuildDate><item><title>Test</title><link>/Test.html</link><description>&lt;p&gt;Here is some txt.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Angel C. Hernandez</dc:creator><pubDate>Sat, 20 Jul 2019 00:00:00 -0400</pubDate><guid isPermaLink="false">tag:None,2019-07-20:/Test.html</guid></item><item><title>Variational Autoencoders</title><link>/Variational%20Autoencoders.html</link><description>&lt;p&gt;&lt;link rel="stylesheet" 
 type="text/css" 
 href="/theme/css/md-style.css"&gt;&lt;/p&gt;
+&lt;p class="body"&gt;
+If you're a working data scientist then you have likely heard of Variational 
+Autoencoders (VAEs) and their interesting applications in data generation. While there are a lot of great posts on the VAEs, most tend to focus on the high-level intuition
+and brush over the theory. I firmly believe understanding the statistical makeup of 
+VAEs is a necessary exercise for any machine learning practitioner. As a result, I 
+have done my best to open up VAEs from a theoretical perspectives.
+&lt;p&gt;
 &lt;h1 class="head"&gt;1. Introduction &lt;/h1&gt;
-
 &lt;p class="body"&gt;
 Like all 
 &lt;a href="https://openai.com/blog/generative-models/" style="color:#FF7D33"&gt;
@@ -39,10 +45,10 @@ reparameterization trick &lt;/i&gt; and deep generative models have really been 
 
 &lt;pre&gt;
 
+
 &lt;/pre&gt;
 
 &lt;h1 class="head"&gt; 2. Problem Scenario &lt;/h1&gt;
-
 &lt;p class="body"&gt;
 
 Let us begin by assuming two layers of latent variables where
@@ -58,7 +64,6 @@ As a result, we have the following graphical model:
   Fig 1. Graphical model in concern  
   &lt;/figcaption&gt;
 &lt;/figure&gt;
-
 &lt;/p&gt;
 
 &lt;p class="body"&gt;
@@ -84,7 +89,7 @@ There are some underlining takeaways from the above distribution:
 
 &lt;ul class="body"&gt;
 &lt;br&gt;
-&lt;li&gt; It tends to be intractable because our model assumes
+&lt;li&gt; It tends to be intractable because our model assumes 
 
 &lt;span class="math"&gt; \(z_i^l \not\!\perp\!\!\!\perp z_j^l | \ \boldsymbol{x} \ \cup \
 \boldsymbol{z^{l-1}} \ 
@@ -100,7 +105,7 @@ This requires integration over &lt;b&gt;all&lt;/b&gt; combinations our latent va
 &lt;/ul&gt;
 
 &lt;p class="body"&gt;
-Since our current distribution is intractable, we must resort to variational inference to learn
+Since our current distribution is intractable, we must resort to variational inference to learn 
 
 &lt;span class = "math"&gt;\( \boldsymbol{\theta} \).&lt;/span&gt;
 
@@ -108,17 +113,15 @@ Since our current distribution is intractable, we must resort to variational inf
 
 &lt;pre&gt;
 
+
 &lt;/pre&gt;
-
 &lt;h1 class = "head"&gt; 3. Variational Inference &lt;/h1&gt;
-
 &lt;p class="body"&gt;
 
 If we recall, MLE is a simple optimization problem which returns a set of parameters that maximizes the likelihood that our data came from some distribution of our choice. Our objective function is the log likelihood and variational inference simply replaces this function with a lower bound function (evidence lower bound or ELBO) that is  &lt;b&gt;tractable&lt;/b&gt;. So, as we learn a set of parameters that maximizes the likelihood of our lower bound we are also increasing the likelihood of our original distribution (this is the definition of a lower bound).
 &lt;/p&gt;
 
 &lt;h1 class="subhead"&gt; 3.1 Deriving the ELBO &lt;/h1&gt;
-
 &lt;p class="body"&gt;
 
 The derivation of the lower bound is a mere byproduct of  
@@ -200,6 +203,7 @@ Now, we define the following for
 \(q_{\boldsymbol{\phi}}(\boldsymbol{z}|\boldsymbol{x})\)&lt;/span&gt;: 
 
 &lt;/p&gt;
+
 
 &lt;div class="formula"&gt;
 &lt;br&gt;
@@ -612,7 +616,7 @@ if (!document.getElementById('mathjaxscript_pelican_#%&amp;#64;#$&amp;#64;#')) {
 &lt;script&gt;
 var disqus_config = function () {
 this.page.url = "https://ahernandez105.github.io/Variational%20Autoencoders.html";
-this.page.identifier =1;
+this.page.identifier ="1";
 };
 (function() { // DON'T EDIT BELOW THIS LINE
 var d = document, s = d.createElement('script');
