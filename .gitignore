@@ -124,5 +124,4 @@ dmypy.json
 .pyre/
 
 # stuff to ignore in repo
-output/
 !output/theme/css/md-style.css

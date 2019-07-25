@@ -1,14 +1,76 @@
----
-Title: Variational Autoencoders
-Date: 07/20/2019
-Category: Probabilistic Graphical Models
-Slug: Variational Autoencoders
-Summary: TEXT TEXT
----
-<link rel="stylesheet" 
-type="text/css" 
-href="/theme/css/md-style.css">
+<!doctype html>
+<html lang="en">
 
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>  Variational Autoencoders | angel's blog
+</title>
+  <link rel="canonical" href="/Variational Autoencoders.html">
+
+
+  <link rel="stylesheet" href="/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/theme/css/pygments/default.min.css">
+  <link rel="stylesheet" href="/theme/css/theme.css">
+
+  <link rel="alternate" type="application/atom+xml" title="Full Atom Feed"
+        href="/feeds/all.atom.xml">
+  <link rel="alternate" type="application/rss+xml" title="Full RSS Feed"
+        href="/feeds/all.rss.xml">  
+  <meta name="description" content="TEXT TEXT">
+
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+<div class="row">
+    <div class="col-sm-4">
+      <a href="/">
+        <img class="img-fluid rounded" src=/images/me.png width=300 height=200 alt="angel's blog">
+      </a>
+    </div>
+  <div class="col-sm-8">
+    <h1 class="title"><a href="/">angel's blog</a></h1>
+      <p class="text-muted">My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be an engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be a benefit to you.</p>
+      <ul class="list-inline">
+          <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/ahernandez105" target="_blank"></a></li>
+          <li class="list-inline-item"><a class="fa fa-instagram" href="https://www.instagram.com/angel__christopher/" target="_blank"></a></li>
+          <li class="list-inline-item"><a class="fa fa-linkedin" href="https://www.linkedin.com/in/angel-c-hernandez/" target="_blank"></a></li>
+      </ul>
+  </div>
+</div>    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>  Variational Autoencoders
+</h1>
+      <hr>
+  <article class="article">
+    <header>
+      <ul class="list-inline">
+        <li class="list-inline-item text-muted" title="2019-07-20T00:00:00-04:00">
+          <i class="fa fa-clock-o"></i>
+          Sat 20 July 2019
+        </li>
+        <li class="list-inline-item">
+          <i class="fa fa-folder-open-o"></i>
+          <a href="/category/probabilistic-graphical-models.html">Probabilistic Graphical Models</a>
+        </li>
+          <li class="list-inline-item">
+            <i class="fa fa-user-o"></i>
+              <a href="/author/angel-c-hernandez.html">Angel C. Hernandez</a>          </li>
+      </ul>
+    </header>
+    <div class="content">
+      <p><link rel="stylesheet" 
+type="text/css" 
+href="/theme/css/md-style.css"></p>
 <p class="body">
 If you're a working data scientist then you have likely heard of Variational 
 Autoencoders (VAEs) and their interesting applications in data generation. While there are a lot of great posts on the VAEs, most tend to focus on the high-level intuition
@@ -20,7 +82,7 @@ have done my best to open up VAEs from a theoretical perspectives.
 <p class="body">
 Like all 
 <a href="https://openai.com/blog/generative-models/" style="color:#FF7D33">
-generative models</a>, VAEs are concerned with learning a valid probability distribution from which our dataset was <i>generated</i> from. They do this by learning a set of latent variables, 
+generative models</a>, VAEs are concerned with learning a valid probability distribution from which our dataset was <i>generated</i> from. They do this by learning a set of latent variables,
 
 <span class="math">\(\boldsymbol{z}\)</span>,
 
@@ -44,9 +106,9 @@ but using the posterior,
 p(\boldsymbol{z}|\boldsymbol{x}_{observed}) \)</span>,
 
 is the distribution that has plagued machine learning since the beginning of time.
-Furthermore, it is challenging to learn the parameters of both distributions in an end-to-end fashion. [@@wakeSleep] developed the Wake-sleep algorithm which was able to learn all parameters to this exact problem via two objective functions and back-propagation. While this algorithm <i> masked </i> the problem at hand, even Geoffrey Hinton 
+Furthermore, it is challenging to learn the parameters of both distributions in an end-to-end fashion. <a href='#wakeSleep' id='ref-wakeSleep-1'>(Hinton et al., 1995)</a> developed the Wake-sleep algorithm which was able to learn all parameters to this exact problem via two objective functions and back-propagation. While this algorithm <i> masked </i> the problem at hand, even Geoffrey Hinton 
 <a href="https://www.youtube.com/watch?v=VKpc_z7b9I0" style="color:#FF7D33"> 
-acknowledged</a>, and I quote, <b><i> "the basic idea behind these variational methods sounds crazy." </i></b> Luckily, [@@vae] offered a better solution using the <i>
+acknowledged</a>, and I quote, <b><i> "the basic idea behind these variational methods sounds crazy." </i></b> Luckily, <a href='#vae' id='ref-vae-1'>(Kingma and Welling, 2014)</a> offered a better solution using the <i>
 reparameterization trick </i> and deep generative models have really been in resurgence since! 
 </p>
 
@@ -75,7 +137,7 @@ As a result, we have the following graphical model:
 
 <p class="body">
 <br>
-It should be noted [@@iwae] proposed this architecture which is a mere generalization of the original architecture used in [@@vae]. The goal is to use maximum likelihood estimation to learn the parameters, 
+It should be noted <a href='#iwae' id='ref-iwae-1'>(Burda et al., 2016)</a> proposed this architecture which is a mere generalization of the original architecture used in <a href='#vae' id='ref-vae-2'>(Kingma and Welling, 2014)</a>. The goal is to use maximum likelihood estimation to learn the parameters, 
 <span class="math">\(\boldsymbol{\theta}\)</span>, of the following distribution:
 </p>
 
@@ -107,7 +169,7 @@ There are some underlining takeaways from the above distribution:
 This requires integration over <b>all</b> combinations our latent variables can take on.
 </li>
 
-<li> The probability density functions on the right tends to be a traditional distribution, say a Gaussian, but is parameterized by some deep network. </li>
+<li> The probability density functions on the right tends to a traditional distribution, say a Gaussian, but is parameterized by some deep network. </li>
 <br>
 </ul>
 
@@ -399,7 +461,7 @@ p_{\boldsymbol{\theta}}(\boldsymbol{x}_{observed}|\boldsymbol{z}^1)\)
 In literature this is known as the <b> decoder network </b> because we 
 decode the information in <span class="math"> \(\boldsymbol{z}\)</span> to generate a new example, <span class="math"> \(\boldsymbol{x}_{new}\)<span class="math">. <br><br>
 It should be noted the idea of a recognition and generative network is not new—where 
-Helmholtz Machines, [@@helmholtzMachines], used an identical architecture but was trained using the Wake-sleep algorithm. 
+Helmholtz Machines, <a href='#helmholtzMachines' id='ref-helmholtzMachines-1'>(Dayan, 1995)</a>, used an identical architecture but were trained using the Wake-sleep algorithm. 
 </p>
 
 <pre>
@@ -462,7 +524,7 @@ Back propagation is actually fairly straightforward up until propagating through
 <p class="body">
 Let us now define <span class="math"> 
 
-\(\boldsymbol{z}^l\)</span> as a <b>deterministic</b> variable:
+\(\boldsymbol{z}^l\)</span> as a <b>deterministic</b> random variable:
 
 <div class="formula">
 <br>
@@ -551,73 +613,98 @@ adjudicators of its performance. Luckily, <a class="hyperlinks" href="https://ww
 Jan Hendrik Metzen</a> have great tutorials on programmatic implementations. 
 </p>
 
+<pre>
 
 
+</pre>
+
+<h1 class="head">Bibliography</h1>
+<p class="body" id='iwae'>Yuri Burda, Roger Grosse, and Ruslan Salakhutdinovz.
+Impotance weigthed autoenocders.
+2016.
+URL: <a href="https://arxiv.org/pdf/1509.00519.pdf">https://arxiv.org/pdf/1509.00519.pdf</a>. <a class="cite-backref" href="#ref-iwae-1" title="Jump back to reference 1">↩</a></p>
+<p class="body" id='helmholtzMachines'>Peter Dayan.
+Helholtz machines and wake-sleep learning.
+<em>Handbook of Brain Theory of Neural Networks, 2.</em>, 1995.
+URL: <a href="https://pdfs.semanticscholar.org/dd8c/da00ccb0af1594fbaa5d41ee639d053a9cb2.pdf">https://pdfs.semanticscholar.org/dd8c/da00ccb0af1594fbaa5d41ee639d053a9cb2.pdf</a>. <a class="cite-backref" href="#ref-helmholtzMachines-1" title="Jump back to reference 1">↩</a></p>
+<p class="body" id='wakeSleep'>Geoffrey Hinton, Peter Dayan, Brendan&nbsp;J Frey, and Radford&nbsp;M Neal.
+The wake-sleep alogrithm for unsupervised neural networks.
+1995.
+URL: <a href="http://www.cs.toronto.edu/~fritz/absps/ws.pdf">http://www.cs.toronto.edu/~fritz/absps/ws.pdf</a>. <a class="cite-backref" href="#ref-wakeSleep-1" title="Jump back to reference 1">↩</a></p>
+<p class="body" id='vae'>Diederik Kingma and Max Welling.
+Auto-encoding variational bayes.
+2014.
+URL: <a href="https://arxiv.org/pdf/1312.6114.pdf">https://arxiv.org/pdf/1312.6114.pdf</a>. <a class="cite-backref" href="#ref-vae-1" title="Jump back to reference 1">↩</a><a class="cite-backref" href="#ref-vae-1" title="Jump back to reference 1"> <sup>1</sup> </a><a class="cite-backref" href="#ref-vae-2" title="Jump back to reference 2"><sup>2</sup> </a></p>
+
+<pre>
+
+    
+</pre>
 
 <script type="text/javascript">
 
-if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    if (!document.getElementById('mathjaxscript_pelican_#%&#64;#$&#64;#')) {
+        var align = "center",
+            indent = "0em",
+            linebreak = "false";
+    
+        if (false) {
+            align = (screen.width < 768) ? "left" : align;
+            indent = (screen.width < 768) ? "0em" : indent;
+            linebreak = (screen.width < 768) ? 'true' : linebreak;
+        }
+    
+        var mathjaxscript = document.createElement('script');
+        mathjaxscript.id = 'mathjaxscript_pelican_#%&#64;#$&#64;#';
+        mathjaxscript.type = 'text/javascript';
+        mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    
+        var configscript = document.createElement('script');
+        configscript.type = 'text/x-mathjax-config';
+        configscript[(window.opera ? "innerHTML" : "text")] =
+            "MathJax.Hub.Config({" +
+            "    config: ['MMLorHTML.js']," +
+            "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+            "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+            "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+            "    displayAlign: '"+ align +"'," +
+            "    displayIndent: '"+ indent +"'," +
+            "    showMathMenu: true," +
+            "    messageStyle: 'normal'," +
+            "    tex2jax: { " +
+            "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+            "        displayMath: [ ['$$','$$'] ]," +
+            "        processEscapes: true," +
+            "        preview: 'TeX'," +
+            "    }, " +
+            "    'HTML-CSS': { " +
+            "        fonts: ['STIX', 'TeX']," +
+            "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+            "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+            "    }, " +
+            "}); " +
+            "if ('default' !== 'default') {" +
+                "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                    "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                    "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                    "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                    "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                    "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+                "});" +
+                "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                    "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                    "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                    "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                    "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                    "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+                "});" +
+            "}";
+    
+        (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+        (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
     }
-
-    var mathjaxscript = document.createElement('script');
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-
-    var configscript = document.createElement('script');
-    configscript.type = 'text/x-mathjax-config';
-    configscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        fonts: ['STIX', 'TeX']," +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-
-</script>
+    
+    </script>
 
 <div id="disqus_thread"></div>
 <script>
@@ -632,5 +719,27 @@ s.setAttribute('data-timestamp', +new Date());
 (d.head || d.body).appendChild(s);
 })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-                            
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><hr>
+
+    </div>
+  </article>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+<div class="row">
+  <ul class="col-sm-6 list-inline">
+      <li class="list-inline-item"><a href="/authors.html">Authors</a></li>
+    <li class="list-inline-item"><a href="/archives.html">Archives</a></li>
+    <li class="list-inline-item"><a href="/categories.html">Categories</a></li>
+  </ul>
+  <p class="col-sm-6 text-sm-right text-muted">
+    Generated by <a href="https://github.com/getpelican/pelican" target="_blank">Pelican</a>
+    / <a href="https://github.com/nairobilug/pelican-alchemy" target="_blank">&#x2728;</a>
+  </p>
+</div>    </div>
+  </footer>
+</body>
+
+</html>
