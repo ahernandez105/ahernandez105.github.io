@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 AUTHOR = 'Angel C. Hernandez'
 SITENAME = "angel's blog"
 SITEURL = ''
-SITESUBTITLE = 'My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be an engineer for the army adhereing to initiatives in warfare simulation modeling at the TRADOC Analysis Center. I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be a benefit to you.' 
+SITESUBTITLE = 'My name is Angel C. Hernandez and I am a graduate student at Carnegie Mellon University focusing my studies in machine learning. I am also a recipient of the Science Mathematics and Research for Transformation (SMART) Fellowship, where upon graduation I will be an engineer for the army adhering to initiatives in warfare simulation modeling at The Research and Analysis Center (TRAC). I have found machine learning blog posts to be an excellent resource during my academic studies and I hope mine can be a benefit to you.' 
 SITEIMAGE = '/images/me.png width=300 height=200'
 ICONS = (
 	('github','https://github.com/ahernandez105'),

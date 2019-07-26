@@ -29,3 +29,10 @@
 .hyperlinks{
     color:#FF7D33;
 }
+.blogTitle{
+    font-family: 'CMS', 'Droid Serif', Georgia, Times, serif;
+    font-size: 300%;
+    line-height: 65px;
+    text-align: left;
+    color: #3b3b3b;
+}
