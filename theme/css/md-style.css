@@ -29,10 +29,32 @@
 .hyperlinks{
     color:#FF7D33;
 }
+.papers{
+    color:#0808ff;
+}
 .blogTitle{
     font-family: 'CMS', 'Droid Serif', Georgia, Times, serif;
     font-size: 300%;
     line-height: 65px;
     text-align: left;
     color: #3b3b3b;
+}
+.button, [role="button"] {
+    font-family: "Sans-Serif";
+    border: 1px solid rgba(75, 75, 75, 1);
+    border-radius: 4px;
+    color:#000000;
+    cursor: pointer;
+    background-color:#DCDCDC;
+    display: inline-block;
+    font-size: 12px;
+    line-height: 2.34;
+    margin: 0;
+    padding: 0 20px;
+    text-align: center;
+    transition: background-color .12s ease-in-out, border-color .12s ease-in-out, color .15s ease-in-out;
+    user-select: none;
+    white-space: nowrap;
+    width: 100%;
+    -webkit-touch-callout: none;
 }

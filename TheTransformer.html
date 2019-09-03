@@ -20,6 +20,8 @@
         href="/feeds/all.atom.xml">
   <link rel="alternate" type="application/rss+xml" title="Full RSS Feed"
         href="/feeds/all.rss.xml">  
+  <link rel="stylesheet" type="text/css"
+        href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
   <meta name="description" content="TEXT TEXT">
 
 
@@ -62,42 +64,159 @@ type="text/css"
 href="/theme/css/md-style.css"></p>
 
 
+<h1 class="head">1. Introduction</h1>
+<pre>
+???
+</pre>
 <h1 class="head">2. Recurrent Neural Network Review </h1>
+<p class="body">
+    We cannot really talk about attention and the Transformer without mentioning its
+    predecessor, Recurrent Neural Networks. As a result, I included a couple of mini
+    sections on RNNs. Hopefully these are a review for the audience but if not, links to different blogs and books that nicely summarize the different 
+    types of RNNs have been made available. 
+</p>
+<pre></pre>
 <h1 class="subhead">2.1 Vanilla RNN </h1> 
-<figure>
-    <img class="fig" src="/images/transformer/rnn.png" width="100%">
-    <figcaption class="figcaption"> 
-    Fig 1. Vanilla single layer recurrent neural network 
-    </figcaption>
-  </figure>
-  </p>
-<h1 class="subhead">2.2 Bidirectional RNN</h1>
-  <figure>
-    <img class="fig" src="/images/transformer/bidirectional-rnn.png" width="100%">
-    <figcaption class="figcaption"> 
-    Fig 2. Single layer bidirectional recurrent neural network 
-    </figcaption>
-  </figure>
-  </p>
-
-<h1 class="subhead">2.3 LSTM Network</h1>
 <p>
-We begin by defining the following linear combination:
+<figure>
+    <br>
+    <img class="fig" src="/images/transformer/rnn.png" width="90%">
+    <figcaption class="figcaption"> 
+    Fig 1. Vanilla single layer RNN
+    </figcaption>
+    <br>
+  </figure>
+</p>
+<pre></pre>
+<h1 class="subhead">2.2 Bidirectional RNN</h1>
+<p>
+  <figure>
+      <br>
+    <img class="fig" src="/images/transformer/bidirectional-rnn.png" width="90%">
+    <figcaption class="figcaption"> 
+    Fig 2. Single layer bidirectional RNN
+    </figcaption>
+    <br>
+  </figure>
+</p>
+<a href="https://www.deeplearningbook.org/" target="_blank">
+    <button class="button">For more on RNNs see Chapter 10 from Deep Learning book.</button>
+</a>
+<pre></pre>
+<h1 class="subhead">2.3 LSTM Network</h1>
+<p class="body">
+While standard RNNs can be powerful functions approximators, performance suffers on longer sequences 
+due to <a href="https://www.youtube.com/watch?v=qhXZsFVxGKo" target="_blank" class="hyperlinks">vanishing/exploding</a> gradients.
+LSTMs were developed to mitigate this issue and are probably one of the most popular types of RNNs. We begin by defining the following linear combination:
 </p>
 
-<div class="math">
-<p class="formula"></p>
-$$
-\begin{aligned}
-
-    \text{Information}: \mathcal{I}_t^j &= \mathrm{\boldsymbol{b}}^{j} + \boldsymbol{U}^j
-    \boldsymbol{x}_t^k +\boldsymbol{W}^j \boldsymbol{h}_{t-1} \\
-    &\log p(\boldsymbol{x}_t^k)
-\end{aligned}
-$$
-</p>
+<div class="formula">
+    <br>
+    $$
+    \text{Score}: \pmb{a}_t^j= \pmb{W}^j\pmb{h}_{t-1} + 
+    \pmb{U}^j\pmb{x}_{t} + \pmb{b}^j
+    $$
+    <br>
 </div>
 
+<p class="body">
+<span class="math">\( j \)</span> is simply the "type" of score where each type of score warrants a different set of parameters: 
+<span class="math">
+    \( \{\pmb{W}^j,\pmb{U}^j,\pmb{b}^j\} \)</span>. We can now define the 
+    formulas used to calculate the state of a given hidden unit, 
+    <span class="math">\( \pmb{h}_t \)</span>, within a LSTM:
+</p>
+
+<div class="formula">
+    <br>
+    $$
+    \begin{aligned}
+    \text{Forget Gate}&: \pmb{f}_t = \sigma(\pmb{a}_t^f) \\
+    \text{Input Gate}&: \pmb{i}_t = 1-\pmb{f}_t \\
+    \text{Output Gate}&: \pmb{\omega}_t = \sigma(\pmb{a}_t^\omega) \\ \\
+    \text{Candidate Values} &: \tilde{\pmb{C}}_t = \text{tanh}({\pmb{a}_t^c}) \\ 
+    \text{Cell State} &: \pmb{C}_t = \pmb{f}_t\odot \pmb{C}_{t-1} + 
+    \pmb{i}_t\odot\tilde{\pmb{C}}_t \\
+    \text{Hidden Unit}&: \pmb{h}_{t} = \pmb{\omega}_t\text{tanh}(\pmb{C}_t)
+    \end{aligned}
+    $$
+    <br>
+</div>
+
+<p class="body">
+    The <b>Cell State</b> encompasses a bulk of the work and is the reason LSTMs can 
+    <i>share</i> and <i>retain</i> information over distant time intervals. In the Cell State we 
+    have the <b>Forget Gate</b> and <b>Input Gate</b> which determine how much
+    information to utilize from the past and present, respectively. After calculating 
+    the Cell State, the network uses an <b>Output Gate</b> to determine how much information to send to the next time step,  
+    <span class="math">\( \pmb{h}_{t+1} \)</span>. All of this is done "internally" 
+    within a given hidden unit and the computational graph is identical to the ones 
+    defined above. 
+
+</p>
+<figure>
+        <br>
+        <img class="fig" src="/images/transformer/LSTM.png" width="100%">
+        <figcaption class="figcaption"> 
+        Fig 3. LSTM Network courtesy of 
+        <a class="hyperlinks" 
+        href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/"
+        target="_blank">
+        colah's blog</a>
+        </figcaption>
+        <br>
+</figure>
+<a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/" target="_blank">
+    <button class="button">For more on LSTMs see colah's blog.</button>
+</a>
+<pre></pre>
+
+<h1 class="subhead">2.4 Sequence to Sequence Model</h1>
+<p class="body">
+    Now we have the <b>seq2seq</b> model which was introduced by 
+    <a class="papers" 
+    href="https://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural-networks.pdf"
+    target="_blank">
+    Sutskever et al. 2014
+    </a> and is popular choice when performing 
+    <a class="hyperlinks" href="https://google.github.io/seq2seq/nmt/" target="_blank">
+    machine translation</a> tasks. The model feeds an input sequence, say a sentence,
+    into an <b>Encoder</b> network and the network learns to represent the input 
+    as a <i><b>thought vector</i></b>. This vector is then feed into 
+    the <b>Decoder</b> network and this network learns to predict the output sequence,
+    say the most likely reply to the input sequence. The Encoder and Decoder networks are RNNs 
+    of your choice, e.g., vanilla, bidirectional or LSTM. 
+    <figure>
+            <br>
+            <img class="fig" src="/images/transformer/seq2seq.png" width="100%">
+            <figcaption class="figcaption"> 
+            Fig 4. Seq2seq model with with bidirectional LSTM as encoder and standard LSTM as 
+            decoder. Note, boxes are LSTM hidden units.
+            </figcaption>
+            <br>
+    </figure>
+</p>
+<p class="body">
+    While seq2seq models perform great on <b>short</b> input sequences, 
+    <a class="papers" href="https://arxiv.org/pdf/1409.0473.pdf" target="_blank">
+    Cho et al. 2014</a> proved performance significantly suffers as the size of the
+    input sequence grows. 
+    <figure>
+            <br>
+            <img class="fig" src="/images/transformer/bleu-scores.png" width="100%">
+            <figcaption class="figcaption"> 
+            Fig 5. The BLEU scores achieved on different seq2seq models. Image taken
+            from 
+            <a class="papers" href="https://arxiv.org/pdf/1409.0473.pdf" target="_blank">
+            Cho et al. 2014</a>.
+            </figcaption>
+            <br>
+    </figure>
+</p>
+<a href="https://docs.chainer.org/en/stable/examples/seq2seq.html" target="_blank">
+    <button class="button">For more on seq2seq models see Chainer.</button>
+</a>
+<pre></pre>
 <script type="text/javascript">
 
     if (!document.getElementById('mathjaxscript_pelican_#%&#64;#$&#64;#')) {
@@ -162,6 +281,12 @@ $$
     }
     
     </script>
+
+<script>
+        $(document).ready(function(){
+          $('[data-toggle="tooltip"]').tooltip(); 
+        });
+</script>
 
 <div id="disqus_thread"></div>
 <script>
