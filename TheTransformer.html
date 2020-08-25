@@ -6,8 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>  The Transformer | angel's blog
-</title>
+  <title>  The Transformer | angel's blog </title>
   <link rel="canonical" href="/TheTransformer.html">
 
 
@@ -15,210 +14,303 @@
   <link rel="stylesheet" href="/theme/css/font-awesome.min.css">
   <link rel="stylesheet" href="/theme/css/pygments/default.min.css">
   <link rel="stylesheet" href="/theme/css/theme.css">
+  <link rel="stylesheet" href="/theme/css/md-style.css">
 
-  <link rel="alternate" type="application/atom+xml" title="Full Atom Feed"
-        href="/feeds/all.atom.xml">
-  <link rel="alternate" type="application/rss+xml" title="Full RSS Feed"
-        href="/feeds/all.rss.xml">  
-  <link rel="stylesheet" type="text/css"
-        href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
+  <link rel="alternate" type="application/atom+xml" title="Full Atom Feed" href="/feeds/all.atom.xml">
+  <link rel="alternate" type="application/rss+xml" title="Full RSS Feed" href="/feeds/all.rss.xml">  
+  <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
   <meta name="description" content="TEXT TEXT">
-
-
 </head>
 
 <body>
-  <header class="header">
-    <div class="container">
-<div class="row">
-  <div class="col-sm-8">
-    <h1 class="title"><a href="/">angel's blog</a></h1>
-  </div>
-</div>    
-</div>
-  </header>
-
-  <div class="main">
-    <div class="container">
-      <h1 class="blogTitle">The Transformer</h1>
-      <hr>
-  <article class="article">
-    <header>
-      <ul class="list-inline">
-        <li class="list-inline-item text-muted" title="2019-07-20T00:00:00-04:00">
-          <i class="fa fa-clock-o"></i>
-          ???
-        </li>
-        <li class="list-inline-item">
-          <i class="fa fa-folder-open-o"></i>
-          <a href="/category/probabilistic-graphical-models.html">Deep Learning</a>
-        </li>
-          <li class="list-inline-item">
-            <i class="fa fa-user-o"></i>
-              <a href="/author/angel-c-hernandez.html">Angel C. Hernandez</a>          </li>
-      </ul>
+    <header class="header">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h1 class="title"><a href="/">angel's blog</a></h1>
+                </div>
+            </div>    
+        </div>
     </header>
-    <div class="content">
-      <p><link rel="stylesheet" 
-type="text/css" 
-href="/theme/css/md-style.css"></p>
+    <div class="main">
+        <div class="container">
+            <h1 class="blogTitle">The Transformer</h1>
+            <hr>
+            <article class="article">
+                <header>
+                    <ul class="list-inline">
+                        <li class="list-inline-item text-muted" title="2019-07-20T00:00:00-04:00">
+                            <i class="fa fa-clock-o"></i>
+                            ???
+                        </li>
+                        <li class="list-inline-item">
+                            <i class="fa fa-folder-open-o"></i>
+                            <a href="/category/probabilistic-graphical-models.html">Deep Learning</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <i class="fa fa-user-o"></i>
+                            <a href="/author/angel-c-hernandez.html">Angel C. Hernandez</a>          
+                        </li>
+                    </ul>
+                </header>
+                <div class="content">
+                    <h1 class="head">1. Introduction </h1>
+                    <p class="body">???</p>
+                    <br>
+                    <h1 class="head">2. Recurrent Neural Network Review </h1>
+                    <p class="body">
+                        We cannot really talk about attention and the Transformer without mentioning its
+                        predecessor, Recurrent Neural Networks (RNNs). RNNs are typically your deep model of choice when you are 
+                        performing supervised learning on sequential data, e.g., you have an input sequence
+                        <span class="math"> \(\pmb{x} = (\pmb{x}_1, ..., \pmb{x}_T)\) </span> and a corresponding target sequence 
+                        of the same length, <span class="math"> \(\pmb{y} = (y_1, ..., y_T)\) </span>. We will assume
+                        a given input is a real-valued vector, <span class="math">\(\pmb{x}_t \in \mathcal{R}^D \)</span> and a given 
+                        target is a scalar token, <span class="math">\(y_t \in (1, 2,..., K)\)</span>. In this setting, we want to learn
+                        a network that will minimize the discriminative negative log likelihood: 
+                        <span class="math">\(-\log P(\pmb{y}|\pmb{x}) = -\sum_{t=1}^T \log P(y_t|\pmb{x}_1, ..., \pmb{x}_t)\)</span>.
+                        Moving forward, we will briefly review different RNN architectures with hope this is a review to the audience, but 
+                        if not follow up links which review RNNs in depth have been provided.  
+                    </p>
+                    <br>
+                    <h1 class="subhead">2.1 Vanilla RNN</h1>
+                    <p class="body">
+                        In the case of a vanilla rnn the model encodes each input, <span class="math">\( \pmb{x}_t\)</span>, 
+                        into a hidden state, <span class="math">\( \pmb{h}_t\)</span>, where the hidden state is a function 
+                        of the input and the previous hidden state, i.e., <span class="math">\( \pmb{h}_t = f(\pmb{h}_{t-1}, \pmb{x}_t)\)</span>.
+                        The function simply maps <span class="math">\(\pmb{h}_{t-1} \text{ and } \pmb{x}_t\)</span> to a new vector space by applying
+                        a linear combination using the learnable matrices, <span class="math">\(\pmb{W} \text{ and } \pmb{U}\)</span>, respectively.
+                        These learnable matrices are shared across all time steps in a given layer, where typically a RNN will have multiple 
+                        layers stacked on top of each other and each layer would have its own set of learnable matrices. The output at a given time step
+                        is linear combination of the last hidden state layer passed into the softmax function which generates the model's prediction,
+                        <span class="math"> \(\hat{y}_t\)</span>. Ultimately, each hidden state is sending information to the next hidden state which encodes 
+                        information of all inputs up until that point in time. As a result, the model is using encoded information about 
+                        <span class="math">\(\pmb{x}_1, \pmb{x}_2, ..., \pmb{x}_t\)</span> to generate the prediction, <span class="math"> \(\hat{y}_t\)</span>.
+                        The computational graph of a vanilla RNN can be found in Figure 1. 
+                        <figure>
+                            <br>
+                            <img class="fig" src="/images/transformer/rnn.png" width="70%", height="30%">
+                            <br>
+                            <figcaption class="figcaption"> 
+                            Fig 1. Vanilla single layer RNN.
+                            </figcaption>
+                            <br>
+                        </figure>
+                    </p>
+                    <br>
+                    <h1 class="subhead">2.2 Bidirectional RNN</h1>
+                    <p class="body">
+                        Bidirectional RNNs are similar to standard RNNs, except in a given layer there are hidden states traveling forwards, 
+                        <span class="math"> \(\overrightarrow{\pmb{h}}_t\)</span>, and backwards, <span class="math">\(\overleftarrow{\pmb{h}_t}\)</span>.
+                        Each direction has their own set of learnable matrices and a given layer at a given time step effectively encodes information 
+                        about the entire input sequence, <span class="math">\(\pmb{x}_1, \pmb{x}_2, ..., \pmb{x}_T\)</span>. The computational graph 
+                        of a bidirectional rnn can be found in Figure 2.
+                        <figure>
+                            <br>
+                            <img class="fig" src="/images/transformer/bidirectional-rnn.png" width="70%", height="30%">
+                            <br>
+                            <figcaption class="figcaption"> 
+                            Fig 2. Single layer bidirectional RNN.
+                            </figcaption>
+                            <br>
+                        </figure>
+                        <a href="https://www.deeplearningbook.org/" target="_blank">
+                            <button class="button">For more on RNNs see Chapter 10 from Deep Learning book.</button>
+                        </a>
+                    </p>
+                    <br>
+                    <h1 class="subhead">2.3 LSTM Network</h1>
+                    <p class="body">
+                        While standard RNNs can be powerful functions approximators, performance suffers on longer sequences 
+                        due to <a href="https://www.youtube.com/watch?v=qhXZsFVxGKo" target="_blank" class="hyperlinks">vanishing/exploding</a> gradients.
+                        LSTMs were developed to mitigate this issue and are probably one of the most popular types of RNNs. We begin by defining the following linear combination:
+                    </p>
 
+                    <div class="formula">
+                        <br>
+                        $$
+                        \text{Score}: \pmb{a}_t^j= \pmb{W}^j\pmb{h}_{t-1} + 
+                        \pmb{U}^j\pmb{x}_{t} + \pmb{b}^j
+                        $$
+                        <br>
+                    </div>
 
-<h1 class="head">1. Introduction</h1>
-<pre>
-???
-</pre>
-<h1 class="head">2. Recurrent Neural Network Review </h1>
-<p class="body">
-    We cannot really talk about attention and the Transformer without mentioning its
-    predecessor, Recurrent Neural Networks. As a result, I included a couple of mini
-    sections on RNNs. Hopefully these are a review for the audience but if not, links to different blogs and books that nicely summarize the different 
-    types of RNNs have been made available. 
-</p>
-<pre></pre>
-<h1 class="subhead">2.1 Vanilla RNN </h1> 
-<p>
-<figure>
-    <br>
-    <img class="fig" src="/images/transformer/rnn.png" width="90%">
-    <figcaption class="figcaption"> 
-    Fig 1. Vanilla single layer RNN
-    </figcaption>
-    <br>
-  </figure>
-</p>
-<pre></pre>
-<h1 class="subhead">2.2 Bidirectional RNN</h1>
-<p>
-  <figure>
-      <br>
-    <img class="fig" src="/images/transformer/bidirectional-rnn.png" width="90%">
-    <figcaption class="figcaption"> 
-    Fig 2. Single layer bidirectional RNN
-    </figcaption>
-    <br>
-  </figure>
-</p>
-<a href="https://www.deeplearningbook.org/" target="_blank">
-    <button class="button">For more on RNNs see Chapter 10 from Deep Learning book.</button>
-</a>
-<pre></pre>
-<h1 class="subhead">2.3 LSTM Network</h1>
-<p class="body">
-While standard RNNs can be powerful functions approximators, performance suffers on longer sequences 
-due to <a href="https://www.youtube.com/watch?v=qhXZsFVxGKo" target="_blank" class="hyperlinks">vanishing/exploding</a> gradients.
-LSTMs were developed to mitigate this issue and are probably one of the most popular types of RNNs. We begin by defining the following linear combination:
-</p>
+                    <p class="body">
+                        <span class="math">\( j \)</span> is simply the "type" of score where each type of score warrants a different set of parameters: 
+                        <span class="math">
+                            \( \{\pmb{W}^j,\pmb{U}^j,\pmb{b}^j\} \)</span>. We can now define the 
+                            formulas used to calculate the state of a given hidden unit, 
+                            <span class="math">\( \pmb{h}_t \)</span>, within a LSTM:
+                    </p>
 
-<div class="formula">
-    <br>
-    $$
-    \text{Score}: \pmb{a}_t^j= \pmb{W}^j\pmb{h}_{t-1} + 
-    \pmb{U}^j\pmb{x}_{t} + \pmb{b}^j
-    $$
-    <br>
-</div>
+                    <div class="formula">
+                        <br>
+                        $$
+                        \begin{aligned}
+                        \text{Forget Gate}&: \pmb{f}_t = \sigma(\pmb{a}_t^f) \\
+                        \text{Input Gate}&: \pmb{i}_t = 1-\pmb{f}_t \\
+                        \text{Output Gate}&: \pmb{\omega}_t = \sigma(\pmb{a}_t^\omega) \\ \\
+                        \text{Candidate Values} &: \tilde{\pmb{C}}_t = \text{tanh}({\pmb{a}_t^c}) \\ 
+                        \text{Cell State} &: \pmb{C}_t = \pmb{f}_t\odot \pmb{C}_{t-1} + 
+                        \pmb{i}_t\odot\tilde{\pmb{C}}_t \\
+                        \text{Hidden Unit}&: \pmb{h}_{t} = \pmb{\omega}_t\text{tanh}(\pmb{C}_t)
+                        \end{aligned}
+                        $$
+                        <br>
+                    </div>
 
-<p class="body">
-<span class="math">\( j \)</span> is simply the "type" of score where each type of score warrants a different set of parameters: 
-<span class="math">
-    \( \{\pmb{W}^j,\pmb{U}^j,\pmb{b}^j\} \)</span>. We can now define the 
-    formulas used to calculate the state of a given hidden unit, 
-    <span class="math">\( \pmb{h}_t \)</span>, within a LSTM:
-</p>
+                    <p class="body">
+                        The <b>Cell State</b> encompasses a bulk of the work and is the reason LSTMs can 
+                        <i>share</i> and <i>retain</i> information over distant time intervals. In the Cell State we 
+                        have the <b>Forget Gate</b> and <b>Input Gate</b> which determine how much
+                        information to utilize from the past and present, respectively. After calculating 
+                        the Cell State, the network uses an <b>Output Gate</b> to determine how much information to send to the next time step,  
+                        <span class="math">\( \pmb{h}_{t+1} \)</span>. All of this is done "internally" 
+                        within a given hidden unit and the computational graph is identical to the ones 
+                        defined above. 
+                        <figure>
+                            <br>
+                            <img class="fig" src="/images/transformer/LSTM.png" width="70%", height="30%">
+                            <br>
+                            <figcaption class="figcaption"> 
+                            Fig 3. LSTM Network extended from
+                            <a class="hyperlinks" 
+                            href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/"
+                            target="_blank">
+                            colah's blog</a>.
+                            </figcaption>
+                            <br>
+                    </figure>
+                    <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/" target="_blank">
+                        <button class="button">For more on LSTMs see colah's blog.</button>
+                    </a>
+                    </p>
+                    <br>
+                    <h1 class="subhead">2.4 Sequence to Sequence Model</h1>
+                    <p class="body">
+                        Now we have the <b>seq2seq</b> model which was introduced by 
+                        <a class="papers" 
+                        href="https://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural-networks.pdf"
+                        target="_blank">
+                        Sutskever et al. 2014
+                        </a> and is a popular choice when performing 
+                        <a class="hyperlinks" href="https://google.github.io/seq2seq/nmt/" target="_blank">
+                        machine translation</a> tasks. The model feeds an input sequence, say a sentence,
+                        into an <b>Encoder</b> network and the network learns to represent the input 
+                        as a <i><b>thought vector</i></b>; where this thought vector is suppose encode <b>all</b> the information 
+                        about the input sequence. Then, the vector is feed into the <b>Decoder</b> network and this network learns 
+                        to predict the output sequence, say the most likely reply to the input sequence. The hidden state in the Decoder,
+                        <span class="math"> \(\pmb{s}_t\)</span>, is a function of the previous ground truth target token, 
+                        <span class="math">\(y_{t-1}\)</span> (which acts as the input), and the previous decoder hidden state,
+                        <span class="math"> \(\pmb{s}_{t-1}\)</span>, i.e., <span class="math">\(\pmb{s}_t = f(y_{t-1}, \pmb{s}_{t-1})\)</span>.
+                        At training time you will typically randomly select the ground truth token or the predicted token, 
+                        <span class="math">\(\hat{y}_{t-1}\)</span>, to be the input to the decoder where this is known as 
+                        <a class="hyperlinks" target="_blank" href="https://machinelearningmastery.com/teacher-forcing-for-recurrent-neural-networks/">teacher forcing</a> and was 
+                        originally proposed in <a class="papers" target="_blank" href="https://arxiv.org/pdf/1506.03099.pdf">Bengio et al. 2015</a>.
+                        The Encoder and Decoder networks are RNNs of your choice, e.g. vanilla, bidirectional or LSTM, and a depiction of a seq2seq
+                        model can be found in Figure 4.
+                        <figure>
+                                <br>
+                                <img class="fig" src="/images/transformer/seq2seq.png" width="90%">
+                                <br>
+                                <figcaption class="figcaption"> 
+                                Fig 4. Seq2seq model with LSTM networks as the encoder and
+                                decoder. Note, boxes are LSTM hidden units.
+                                </figcaption>
+                                <br>
+                        </figure>
+                    </p>
+                    <p class="body">
+                        While seq2seq models perform great on <b>short</b> input sequences, 
+                        <a class="papers" href="https://arxiv.org/pdf/1409.0473.pdf" target="_blank">
+                        Cho et al. 2014</a> proved performance significantly suffers as the size of the
+                        input sequence grows (see Figure 5). Ultimately, encoding the entire input sequence 
+                        into a single thought vector is not adequate to achieve great accuracy on target sequences of longer length. 
+                        <figure>
+                                <br>
+                                <img class="fig" src="/images/transformer/bleu-scores.png" width="100%">
+                                <br>
+                                <figcaption class="figcaption"> 
+                                Fig 5. The BLEU scores achieved on different seq2seq models. Image taken
+                                from 
+                                <a class="papers" href="https://arxiv.org/pdf/1409.0473.pdf" target="_blank">
+                                Cho et al. 2014</a>.
+                                </figcaption>
+                                <br>
+                        </figure>
+                        <a href="https://docs.chainer.org/en/stable/examples/seq2seq.html" target="_blank">
+                            <button class="button">For more on seq2seq models see Chainer.</button>
+                        </a>
+                    </p>
+                    <br>
+                    <h1 class="subhead">2.5 Seq2Seq With Attention</h1>
+                    <p class="body">
+                        Now we get into attention which was first proposed in <a class="papers" target="_blank" href="https://arxiv.org/pdf/1409.0473.pdf">
+                        Bahdanau et al. 2015</a> and has been one of the most influential deep learning papers published in the last 10 years. 
+                        Paraphrasing the authors, the use of a fixed-length vector, <i>thought vector</i>, is a bottleneck in improving the performance of seq2seq models 
+                        and the decoder should be able to (soft-)search parts of the source input that are relevant to predicting a target token at a given time step.
+                        Letting <span class="math">\(\pmb{h}_x\)</span> be the set of hidden states in the final layer of the encoder, i.e. 
+                        <span class="math">\(\pmb{h}_x = (\pmb{h}_1^2, \pmb{h}_2^2..., \pmb{h}_{T_x}^2)\)</span>, attention proposes to computer a <b>score</b>,
+                        <span class="math"> \(e^i_t\)</span>, between a given encoder hidden state and the decoder hidden state at a given time step, i.e.
+                        <span class="math">\(e^i_t = f(\pmb{h}_i^2, \pmb{s}_t)\)</span>. We then apply the softmax function over all computed scores
+                        and take a weighted average between the softmax-scores, <span class="math">\(\pmb{\alpha}_t\)</span>, and encoder hidden states,
+                        <span class="math">\(\pmb{h}_x\)</span>, to obtain a context vector, <span clas="math">\(\pmb{c}_t\)</span>. The context vector 
+                        is used to generate a prediction at the time step, <i>t</i>, where the decoder's prediction for a given time step is computed as followed:
+                        <div class="formula">
+                            <br>
+                            $$
+                            \begin{aligned}
+                            \text{Decoder Hidden State}&: \pmb{s}_t = \text{LSTM}([y_{t-1};\pmb{c}_{t-1}], \pmb{s}_{t-1}) \\
+                            \text{MLP Score}&: e_t^i = \pmb{v}^\top\text{tanh}(\pmb{W}_e[\pmb{s}_t;\pmb{h}_i^2]) \\
+                            \text{Softmax Score}&: \alpha_t^i = \frac{\exp(e_t^i)}{\sum\limits_{k=1}^{T_x} \exp(e_t^k)}\\
+                            \text{Context Vector}&: \pmb{c}_t = \sum\limits_{i=1}^{T_x} \alpha_t^i\pmb{h}_i^2\\
+                            \text{Prediction}&: \hat{y}_t = \text{softmax}(\pmb{V}^\top[\pmb{s}_t;\pmb{c}_t] + \pmb{b})
+                            \end{aligned}
+                            $$
+                            <br>
+                        </div>
+                    </p>
+                    <p class="body">
+                        When analyzing the softmax-scores at a given time step the model typically learns a sharp distribution where most attention 
+                        was allocated to one or two input tokens. This adds a nice layer of interpretability and the softmax-scores typically yields intuitive
+                        results (see Figure 6). 
+                        <figure>
+                            <br>
+                            <img class="fig" src="/images/transformer/attention.png" width="70%", height="30%">
+                            <br>
+                            <figcaption class="figcaption"> 
+                            Fig 6. A machine translation example of attention taken from a
+                            <a class="hyperlinks" target="_blank" href="https://www.tensorflow.org/tutorials/text/nmt_with_attention">TensorFlow tutorial</a>.
+                            We notice this model paid most attention to the word <i>cold</i> when predicting <i>frio</i> which is the most 
+                            intuitive token we'd expect the model to allocate the most attention to.
+                            </figcaption>
+                            <br>
+                    </figure>
+                    <a href=https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html" target="_blank">
+                        <button class="button">For more on attention see Lil'Log.</button>
+                    </a>
+                    </p>
+                    <div id="disqus_thread"></div>
+                    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><hr>
+                </div>
+            </article>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <ul class="col-sm-6 list-inline">
+                    <li> 
+                        Generated by <a href="https://github.com/getpelican/pelican" target="_blank">Pelican</a>
+                        / <a href="https://github.com/nairobilug/pelican-alchemy" target="_blank">&#x2728;</a>
+                    </li>
+                </ul>
+            </div>    
+        </div>
+    </footer>
+</body>
 
-<div class="formula">
-    <br>
-    $$
-    \begin{aligned}
-    \text{Forget Gate}&: \pmb{f}_t = \sigma(\pmb{a}_t^f) \\
-    \text{Input Gate}&: \pmb{i}_t = 1-\pmb{f}_t \\
-    \text{Output Gate}&: \pmb{\omega}_t = \sigma(\pmb{a}_t^\omega) \\ \\
-    \text{Candidate Values} &: \tilde{\pmb{C}}_t = \text{tanh}({\pmb{a}_t^c}) \\ 
-    \text{Cell State} &: \pmb{C}_t = \pmb{f}_t\odot \pmb{C}_{t-1} + 
-    \pmb{i}_t\odot\tilde{\pmb{C}}_t \\
-    \text{Hidden Unit}&: \pmb{h}_{t} = \pmb{\omega}_t\text{tanh}(\pmb{C}_t)
-    \end{aligned}
-    $$
-    <br>
-</div>
-
-<p class="body">
-    The <b>Cell State</b> encompasses a bulk of the work and is the reason LSTMs can 
-    <i>share</i> and <i>retain</i> information over distant time intervals. In the Cell State we 
-    have the <b>Forget Gate</b> and <b>Input Gate</b> which determine how much
-    information to utilize from the past and present, respectively. After calculating 
-    the Cell State, the network uses an <b>Output Gate</b> to determine how much information to send to the next time step,  
-    <span class="math">\( \pmb{h}_{t+1} \)</span>. All of this is done "internally" 
-    within a given hidden unit and the computational graph is identical to the ones 
-    defined above. 
-
-</p>
-<figure>
-        <br>
-        <img class="fig" src="/images/transformer/LSTM.png" width="100%">
-        <figcaption class="figcaption"> 
-        Fig 3. LSTM Network courtesy of 
-        <a class="hyperlinks" 
-        href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/"
-        target="_blank">
-        colah's blog</a>
-        </figcaption>
-        <br>
-</figure>
-<a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/" target="_blank">
-    <button class="button">For more on LSTMs see colah's blog.</button>
-</a>
-<pre></pre>
-
-<h1 class="subhead">2.4 Sequence to Sequence Model</h1>
-<p class="body">
-    Now we have the <b>seq2seq</b> model which was introduced by 
-    <a class="papers" 
-    href="https://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural-networks.pdf"
-    target="_blank">
-    Sutskever et al. 2014
-    </a> and is popular choice when performing 
-    <a class="hyperlinks" href="https://google.github.io/seq2seq/nmt/" target="_blank">
-    machine translation</a> tasks. The model feeds an input sequence, say a sentence,
-    into an <b>Encoder</b> network and the network learns to represent the input 
-    as a <i><b>thought vector</i></b>. This vector is then feed into 
-    the <b>Decoder</b> network and this network learns to predict the output sequence,
-    say the most likely reply to the input sequence. The Encoder and Decoder networks are RNNs 
-    of your choice, e.g., vanilla, bidirectional or LSTM. 
-    <figure>
-            <br>
-            <img class="fig" src="/images/transformer/seq2seq.png" width="100%">
-            <figcaption class="figcaption"> 
-            Fig 4. Seq2seq model with with bidirectional LSTM as encoder and standard LSTM as 
-            decoder. Note, boxes are LSTM hidden units.
-            </figcaption>
-            <br>
-    </figure>
-</p>
-<p class="body">
-    While seq2seq models perform great on <b>short</b> input sequences, 
-    <a class="papers" href="https://arxiv.org/pdf/1409.0473.pdf" target="_blank">
-    Cho et al. 2014</a> proved performance significantly suffers as the size of the
-    input sequence grows. 
-    <figure>
-            <br>
-            <img class="fig" src="/images/transformer/bleu-scores.png" width="100%">
-            <figcaption class="figcaption"> 
-            Fig 5. The BLEU scores achieved on different seq2seq models. Image taken
-            from 
-            <a class="papers" href="https://arxiv.org/pdf/1409.0473.pdf" target="_blank">
-            Cho et al. 2014</a>.
-            </figcaption>
-            <br>
-    </figure>
-</p>
-<a href="https://docs.chainer.org/en/stable/examples/seq2seq.html" target="_blank">
-    <button class="button">For more on seq2seq models see Chainer.</button>
-</a>
-<pre></pre>
+<!-- mathjax script -->
 <script type="text/javascript">
-
     if (!document.getElementById('mathjaxscript_pelican_#%&#64;#$&#64;#')) {
         var align = "center",
             indent = "0em",
@@ -279,46 +371,24 @@ LSTMs were developed to mitigate this issue and are probably one of the most pop
         (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
         (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
     }
-    
-    </script>
-
+</script>
+<!--- not sure script ??? -->
 <script>
         $(document).ready(function(){
           $('[data-toggle="tooltip"]').tooltip(); 
         });
 </script>
-
-<div id="disqus_thread"></div>
+<!-- disque comments script -->
 <script>
-var disqus_config = function () {
-this.page.url = "https://ahernandez105.github.io/TheTransformer.html";
-this.page.identifier ="2";
-};
-(function() { // DON'T EDIT BELOW THIS LINE
-var d = document, s = d.createElement('script');
-s.src = 'https://angels-blog-1.disqus.com/embed.js';
-s.setAttribute('data-timestamp', +new Date());
-(d.head || d.body).appendChild(s);
-})();
+    var disqus_config = function () {
+    this.page.url = "https://ahernandez105.github.io/TheTransformer.html";
+    this.page.identifier ="2";
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://angels-blog-1.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><hr>
-
-    </div>
-  </article>
-    </div>
-  </div>
-  <footer class="footer">
-    <div class="container">
-<div class="row">
-  <ul class="col-sm-6 list-inline">
-    <li>
-        Generated by <a href="https://github.com/getpelican/pelican" target="_blank">Pelican</a>
-        / <a href="https://github.com/nairobilug/pelican-alchemy" target="_blank">&#x2728;</a>
-    </li>
-  </ul>
-</div>    
-</div>
-  </footer>
-</body>
-
 </html>
