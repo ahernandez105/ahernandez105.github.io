@@ -64,7 +64,7 @@
                         performing supervised learning on sequential data, e.g., you have an input sequence
                         <span class="math"> \(\pmb{x} = (\pmb{x}_1, ..., \pmb{x}_T)\) </span> and a corresponding target sequence 
                         of the same length, <span class="math"> \(\pmb{y} = (y_1, ..., y_T)\) </span>. We will assume
-                        a given input is a real-valued vector, <span class="math">\(\pmb{x}_t \in \mathcal{R}^D \)</span> and a given 
+                        a given input is a real-valued vector, <span class="math">\(\pmb{x}_t \in \mathbb{R}^D \)</span> and a given 
                         target is a scalar token, <span class="math">\(y_t \in (1, 2,..., K)\)</span>. In this setting, we want to learn
                         a network that will minimize the discriminative negative log likelihood: 
                         <span class="math">\(-\log P(\pmb{y}|\pmb{x}) = -\sum_{t=1}^T \log P(y_t|\pmb{x}_1, ..., \pmb{x}_t)\)</span>.
@@ -85,13 +85,13 @@
                         <span class="math"> \(\hat{y}_t\)</span>. Ultimately, each hidden state is sending information to the next hidden state which encodes 
                         information of all inputs up until that point in time. As a result, the model is using encoded information about 
                         <span class="math">\(\pmb{x}_1, \pmb{x}_2, ..., \pmb{x}_t\)</span> to generate the prediction, <span class="math"> \(\hat{y}_t\)</span>.
-                        The computational graph of a vanilla RNN can be found in Figure 1. 
+                        The computational graph of a vanilla RNN can be found in <span class="figtext">Figure 1</class>.
                         <figure>
                             <br>
                             <img class="fig" src="/images/transformer/rnn.png" width="70%", height="30%">
                             <br>
                             <figcaption class="figcaption"> 
-                            Fig 1. Vanilla single layer RNN.
+                            <span class="figtext">Fig. 1</span> Vanilla single layer RNN.
                             </figcaption>
                             <br>
                         </figure>
@@ -103,13 +103,13 @@
                         <span class="math"> \(\overrightarrow{\pmb{h}}_t\)</span>, and backwards, <span class="math">\(\overleftarrow{\pmb{h}_t}\)</span>.
                         Each direction has their own set of learnable matrices and a given layer at a given time step effectively encodes information 
                         about the entire input sequence, <span class="math">\(\pmb{x}_1, \pmb{x}_2, ..., \pmb{x}_T\)</span>. The computational graph 
-                        of a bidirectional rnn can be found in Figure 2.
+                        of a bidirectional rnn can be found in <span class="figtext">Figure 2</span>.
                         <figure>
                             <br>
                             <img class="fig" src="/images/transformer/bidirectional-rnn.png" width="70%", height="30%">
                             <br>
                             <figcaption class="figcaption"> 
-                            Fig 2. Single layer bidirectional RNN.
+                            <span class="figtext">Fig. 2</span> Single layer bidirectional RNN.
                             </figcaption>
                             <br>
                         </figure>
@@ -172,7 +172,7 @@
                             <img class="fig" src="/images/transformer/LSTM.png" width="70%", height="30%">
                             <br>
                             <figcaption class="figcaption"> 
-                            Fig 3. LSTM Network extended from
+                            <span class="figtext">Fig. 3</span> LSTM Network extended from
                             <a class="hyperlinks" 
                             href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/"
                             target="_blank">
@@ -207,13 +207,13 @@
                         <a class="hyperlinks" target="_blank" href="https://machinelearningmastery.com/teacher-forcing-for-recurrent-neural-networks/">teacher forcing</a> and was 
                         originally proposed in <a class="papers" target="_blank" href="https://arxiv.org/pdf/1506.03099.pdf">Bengio et al. 2015</a>.
                         The Encoder and Decoder networks are RNNs of your choice, e.g. vanilla, bidirectional or LSTM, and a depiction of a seq2seq
-                        model can be found in Figure 4.
+                        model can be found in <span class="figtext">Figure 4</span>.
                         <figure>
                                 <br>
                                 <img class="fig" src="/images/transformer/seq2seq.png" width="100%">
                                 <br>
                                 <figcaption class="figcaption"> 
-                                Fig 4. Seq2seq model with LSTM networks as the encoder and
+                                <span class="figtext">Fig. 4</span> Seq2seq model with LSTM networks as the encoder and
                                 decoder. Note, boxes are LSTM hidden units.
                                 </figcaption>
                                 <br>
@@ -223,14 +223,14 @@
                         While seq2seq models perform great on <b>short</b> input sequences, 
                         <a class="papers" href="https://arxiv.org/pdf/1409.0473.pdf" target="_blank">
                         Cho et al. 2014</a> proved performance significantly suffers as the size of the
-                        input sequence grows (see Figure 5). Ultimately, encoding the entire input sequence 
+                        input sequence grows (see <span class="figtext">Figure 5</span>). Ultimately, encoding the entire input sequence 
                         into a single thought vector is not adequate to achieve great accuracy on target sequences of longer length. 
                         <figure>
                                 <br>
                                 <img class="fig" src="/images/transformer/bleu-scores.png" width="100%">
                                 <br>
                                 <figcaption class="figcaption"> 
-                                Fig 5. The BLEU scores achieved on different seq2seq models. Image taken
+                                <span class="figtext">Fig. 5</span> The BLEU scores achieved on different seq2seq models. Image taken
                                 from 
                                 <a class="papers" href="https://arxiv.org/pdf/1409.0473.pdf" target="_blank">
                                 Cho et al. 2014</a>.
@@ -272,13 +272,13 @@
                     <p class="body">
                         When analyzing the softmax-scores at a given time step the model typically learns a sharp distribution where most attention 
                         was allocated to one or two input tokens. This adds a nice layer of interpretability and the softmax-scores typically yields intuitive
-                        results (see Figure 6). 
+                        results (see <span class="figtext">Figure 6</span>). 
                         <figure>
                             <br>
-                            <img class="fig" src="/images/transformer/attention.png" width="70%", height="30%">
+                            <img class="fig" src="/images/transformer/attention.png" width="50%", height="10%">
                             <br>
                             <figcaption class="figcaption"> 
-                            Fig 6. A machine translation example of attention taken from a
+                            <span class="figtext">Fig. 6</span> A machine translation example of attention taken from a
                             <a class="hyperlinks" target="_blank" href="https://www.tensorflow.org/tutorials/text/nmt_with_attention">TensorFlow tutorial</a>.
                             We notice this model paid most attention to the word <i>cold</i> when predicting <i>frio</i> which is the most 
                             intuitive token we'd expect the model to allocate the most attention to.
@@ -288,6 +288,110 @@
                     <a href=https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html" target="_blank">
                         <button class="button">For more on attention see Lil'Log.</button>
                     </a>
+                    </p>
+                    <br>
+                    <h1 class="head">3. The Transformer Architecture</h1>
+                    <p class="body">
+                        We will now review the The Transformer which was originally proposed in <a class="papers" target="_blank" href="https://arxiv.org/pdf/1706.03762.pdf">Vaswani et al. 2017</a> and 
+                        was the first of its kind to address traditional natural language processing problems, e.g. language models, machine translation, etc., while only using attention <b>not</b> in 
+                        a seq2seq setting. <span class="figtext">Figure 7</span> highlights the network's architecture where in the coming sections we will open up each layer of The Transformer. 
+                    <figure>
+                        <br>
+                        <img class="fig" src="/images/transformer/transformer.png" width="50%" height="10%">
+                        <br>
+                        <figcaption class="figcaption">
+                            <span class="figtext">Fig. 7</span> Transformer architecture taken from <a class="papers" target="_blank" href="https://arxiv.org/pdf/1706.03762.pdf">Vaswani et al. 2017</a>.
+                        </figcaption>
+                        <br>
+                    </figure>
+                    </p>
+                    <h1 class="subhead">3.1 Embedding and Positional Encoding</h1>
+                    <p class="body">
+                        Assume we are in a machine translation setting where an input sequence is a set of token words,
+                        <span class="math"> \(\pmb{x} = (x_0, ..., x_{T_x-1}) \text{ where } x_t \in (1, ..., K_{x})\)</span>, and the target variable 
+                        is also a set of token words of variable length, 
+                        <span class="math"> \(\pmb{y} = (y_0, ..., y_{T_y-1}) \text{ where } y_t \in (1, ..., K_{y})\)</span>. Referring to Figure 7, 
+                        the network's encoder (left side of the image) maps each input token to its own embedding, 
+                        <span class="math"> \(\pmb{\tilde{x}}_t, \text{where } \pmb{\tilde{x}}_t \in \mathbb{R}^{d_{\text{model}}} \text{ and } d_{\text{model}} = 512\)</span>. 
+                        Embeddings are a popular concept in neural networks as it allows you to represent a scalar, <span class="math">\(x_t\)</span>, in some high-dimensional space, in this case 
+                        512 dimensions. At the beginning of training each token will be assigned a random vector of size 512 and the model learns the best way to represent each 
+                        token by back propagating all to the input, <span class="math">\(\pmb{\tilde{x}}_t\)</span>, i.e. during training 
+                        <span class="math">\(\pmb{\tilde{x}}_t \leftarrow \pmb{\tilde{x}}_t - \alpha\nabla_{\pmb{\tilde{x}}_t}\mathcal{L}(\pmb{x})\)</span> where <span class="math">\(\alpha\)</span> is the learning rate. 
+                    </p>
+                    <p class="body">
+                        Next, the model calculates a positional encoding for each input token in the sequence and adds them to the corresponding input embedding. 
+                        Currently, the model has no notion of <b>word order</b> (1st word, 2nd word), so the model uses a positional encoding, 
+                        <span class="math">\(\pmb{pe} \text{ where } \pmb{pe}_t \in \mathbb{R}^{d_{\text{model}}}\)</span>, to inject this information.
+                        For a given input example, <span class="math">\(\pmb{x}^{(i)}\)</span>, the model will calculate <span class="math">\(T_{x^{(i)}}\)</span> different 
+                        positional encodings where a given positional encoding at a given dimension in the vector, <span class="math"> \(pe_t(n)\)</span> where <i>n</i> is the dimension, is calculated as followed:
+                        <div class="formula">
+                            <br>
+                            $$
+                            \begin{aligned}
+                            pe_t(2n) &= \text{sin}\bigg(\frac{t}{10000^{\frac{2n}{d_{\text{model}}}}}\bigg) \\
+                            pe_t(2n+1) &= \text{cos}\bigg(\frac{t}{10000^{\frac{2n}{d_{\text{model}}}}}\bigg)
+                            \end{aligned}
+                            $$
+                            <br>
+                        </div>
+                    </p>
+                    <p class="body">
+                        where <span class="math">\(t \in [0, T_{x^{(i)}}-1]\)</span> and <span class="math">\(n \in [0, \frac{d_{\text{model}}}{2})\)</span>. Ultimately, all 
+                        even dimensions of <span class="math">\(\pmb{pe}_t\)</span> would use the sin function and all odd dimensions would you use the cosine function. The model
+                        then adds <span class="math">\(\pmb{pe}_t\)</span> with <span class="math">\(\pmb{\tilde{x}}_t\)</span> to obtain a positional embedded vector, denoted as 
+                        <span class="math">\(\pmb{\hat{x}}_t\)</span>, where, for example, the <b>3rd</b> input token's positional embedded vector would be calculated as followed:
+                        <div class="formula">
+                            <br>
+                            $$
+                            \begin{aligned}
+                                \pmb{pe}_2 &= \bigg[\sin\big(\frac{2}{10000^{0}}\big), \cos\big(\frac{2}{10000^{0}}\big), ..., \cos\big(\frac{2}{10000^{\frac{2*255}{512}}}\big)\bigg] \\
+                                \pmb{\hat{x}}_2 &= \pmb{\tilde{x}}_2 + \pmb{pe}_2
+                            \end{aligned}
+                            $$
+                            <br>
+                        </div>
+                    </p>
+                    <p class="body">
+                        If the reader is curious as to why this encoding injects positional information, I would suggest they review this 
+                        <a class="hyperlinks" target="_blank" href="https://kazemnejad.com/blog/transformer_architecture_positional_encoding/">post</a>. 
+                    </p>
+                    <br>
+                    <h1 class="subhead">3.2.1 Self-Attention Intuition</h1>
+                    <p class="body">
+                        The next step in the encoder is multi-head attention but first we will dive into <b>self-attention</b>, as multi-head attention is self-attention replicated many times. The goal of self-attention is
+                        for each input vector, <span class="math">\(\pmb{\hat{x}}_t\)</span>, to learn a relationship between <b>itself</b> and the <b>entire sequence of inputs</b>, <span class="math">\((\pmb{\hat{x}}_0, ..., \pmb{\hat{x}}_{T_x-1})\)</span>.
+                        Before we dive into the math, let us review <span class="figtext">Figure 8</span> to gain some intuition into what self-attention is really doing. We notice the second word in the sentence, <i>Law</i>, is the subject and it learned to pay most attention to its own
+                        descriptors: <i>never be perfect</i> and <i>application</i>. While it isn't a perfect example, <span class="figtext">Figure 8</span> does highlight what self-attention is intended to accomplish. 
+                        <figure>
+                            <br>
+                            <img class="fig" src="/images/transformer/self-attention.png" width="80%" height="40%">
+                            <figcaption class="figcaption">
+                                <span class="figtext">Fig. 8</span> An example of self-attention taken from <a class="papers" target="_blank" href="https://arxiv.org/pdf/1706.03762.pdf">Vaswani et al. 2017</a>.
+                            </figcaption>
+                            <br>
+                        </figure>
+                    </p>
+                    <h1 class="subhead">3.2.2 Self-Attention at a Single Time Step</h1>
+                    <p class="body">
+                        We will now review the computational graph of self-attention for a given example at a given time step. Note, I have not seen a blog/tutorial describe self-attention the way I am about to,
+                        but I think it ties nicely with the attention we typically see within a traditional seq2seq setting (section 2.5). The authors of The Transformer paper describe attention using 
+                        keys (<span class="math">\(\pmb{k}_{x,t}^l\)</span>), queries (<span class="math">\(\pmb{q}_{x,t}^l\)</span>) and, values (<span class="math">\(\pmb{v}_{x,t}^l\)</span>) where the <i>x</i> 
+                        denotes we are in the encoder, <i>t</i> is a given time step and <i>l</i> is a given layer of the encoder (assume <i>l</i> = 1 in the following example). We are going to use these three variables to arrive at a context vector,
+                        <span class="math"> \(\pmb{c}_{x,t}^l\)</span>, which encodes a relationship between a given input token, <span class="math">\(x_t\)</span>, and the entire input sequence <span class="math">\(\pmb{x}\)</span>.
+                        First, we will obtain the <b>keys, queries</b> and <b>values</b> by applying three separate linear projections on the positional embedded vector, <span class="math">\(\pmb{\hat{x}}_t\)</span>, using three 
+                        learnable matrices, <span class="math">\(\pmb{W}_{x,k}^{l}, \pmb{W}_{x,q}^{l} \text{ and } \pmb{W}_{x,v}^{l} \text{ where } \pmb{W}_{x,\{k, q, v\}}^{l} \in \mathbb{R}^{64 \times 512}\).
+                        Note, we will need to compute respective key, queries and values for each token in the input sequence in order to arrive at a given context vector.
+                        After obtaining all key, queries and values we are in a traditional attention setting where softmax attention weights, <span class="math">\(\pmb{\alpha}_{x,t}^l\)</span> are derived from a score computed between 
+                        the <b>keys</b> and <b>queries</b>, i.e. <span class="math">\(\text{score} = f(\pmb{k}_{x,t}^l, \pmb{q}_{x,j}^l)\)</span>. Finally, we will arrive at a given context vector by computing the weighted average between
+                        the <b>softmax attention weights</b> and <b>values</b>. <span class="figtext">Figure 9</span> highlights the computational graph used to obtain the context vector at the 1st time step, <span class="math">\(\pmb{c}_{x,0}^1\)</span>.
+                        <figure>
+                            <br>
+                            <img class="fig" src="/images/transformer/self-attention-one-time-step.png" width="80%" height="40%">
+                            <figcaption class="figcaption">
+                                <span class="figtext">Fig. 9</span> An example of self-attention taken from <a class="papers" target="_blank" href="https://arxiv.org/pdf/1706.03762.pdf">Vaswani et al. 2017</a>.
+                            </figcaption>
+                            <br>
+                        </figure>
                     </p>
                     <div id="disqus_thread"></div>
                     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><hr>
