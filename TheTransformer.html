@@ -296,7 +296,6 @@
                         was the first of its kind to address traditional natural language processing problems, e.g. language models, machine translation, etc., while only using attention <b>not</b> in 
                         a seq2seq setting. <span class="figtext">Figure 7</span> highlights the network's architecture where in the coming sections we will open up each layer of The Transformer. 
                     <figure>
-                        <br>
                         <img class="fig" src="/images/transformer/transformer.png" width="50%" height="10%">
                         <br>
                         <figcaption class="figcaption">
@@ -379,16 +378,54 @@
                         denotes we are in the encoder, <i>t</i> is a given time step and <i>l</i> is a given layer of the encoder (assume <i>l</i> = 1 in the following example). We are going to use these three variables to arrive at a context vector,
                         <span class="math"> \(\pmb{c}_{x,t}^l\)</span>, which encodes a relationship between a given input token, <span class="math">\(x_t\)</span>, and the entire input sequence <span class="math">\(\pmb{x}\)</span>.
                         First, we will obtain the <b>keys, queries</b> and <b>values</b> by applying three separate linear projections on the positional embedded vector, <span class="math">\(\pmb{\hat{x}}_t\)</span>, using three 
-                        learnable matrices, <span class="math">\(\pmb{W}_{x,k}^{l}, \pmb{W}_{x,q}^{l} \text{ and } \pmb{W}_{x,v}^{l} \text{ where } \pmb{W}_{x,\{k, q, v\}}^{l} \in \mathbb{R}^{64 \times 512}\).
+                        learnable matrices, <span class="math">\(\pmb{W}_{x,k}^{l}, \pmb{W}_{x,q}^{l} \text{ and } \pmb{W}_{x,v}^{l} \text{ where } \pmb{W}_{x,\{k, q, v\}}^{l} \in \mathbb{R}^{512 \times 64}\).
                         Note, we will need to compute respective key, queries and values for each token in the input sequence in order to arrive at a given context vector.
-                        After obtaining all key, queries and values we are in a traditional attention setting where softmax attention weights, <span class="math">\(\pmb{\alpha}_{x,t}^l\)</span> are derived from a score computed between 
+                        After obtaining all key, queries and values we are in a traditional attention setting where softmax attention weights, <span class="math">\(\pmb{\alpha}_{x,t}^l\)</span>, are derived from a score computed between 
                         the <b>keys</b> and <b>queries</b>, i.e. <span class="math">\(\text{score} = f(\pmb{k}_{x,t}^l, \pmb{q}_{x,j}^l)\)</span>. Finally, we will arrive at a given context vector by computing the weighted average between
-                        the <b>softmax attention weights</b> and <b>values</b>. <span class="figtext">Figure 9</span> highlights the computational graph used to obtain the context vector at the 1st time step, <span class="math">\(\pmb{c}_{x,0}^1\)</span>.
+                        the <b>softmax attention weights</b> and <b>values</b>. <span class="figtext">Figure 9</span> highlights the computational graph used to obtain the context vector at the 1st time step in the 1st layer, <span class="math">\(\pmb{c}_{x,0}^1\)</span>.
                         <figure>
                             <br>
                             <img class="fig" src="/images/transformer/self-attention-one-time-step.png" width="80%" height="40%">
                             <figcaption class="figcaption">
-                                <span class="figtext">Fig. 9</span> An example of self-attention taken from <a class="papers" target="_blank" href="https://arxiv.org/pdf/1706.03762.pdf">Vaswani et al. 2017</a>.
+                                <span class="figtext">Fig. 9</span> Computational graph of self-attention at the first time step in the first layer of the Transformer encoder. Note, the subscript, <i>x</i>, which was 
+                                used in section 3.2.2 to denote encoder variables was omitted for brevity. 
+                            </figcaption>
+                            <br>
+                        </figure>
+                    </p>
+                    <p class="body">
+                        We notice the score function, <span class="math">\(\pmb{e}_{x,(t,j)}^l\)</span>, is simply a dot product between the query of concern,
+                        in this example <span class="math">\(\pmb{q}_{x,0}^1\)</span>, and a given key, <span class="math">\(\pmb{k}_{x,j}^1\)</span>, normalized 
+                        by the square root of the projection dimensionality, 64. Hopefully this example highlights self-attention is <b>identical</b> to traditional attention in seq2seq models, 
+                        where rather than computing a relationship between a given decoder hidden state and set of encoder hidden states, we are computing a relationship between 
+                        a given input token and set of all input tokens, using query, key and value projections.
+                    </p>
+                    <br>
+                    <h1 class="subhead">3.2.3 Self-Attention over an Entire Sequence</h1>
+                    <p class="body">
+                        One major advantage of the Transformer as opposed to seq2seq models is it computationally faster because it can compute context vectors for an entire 
+                        sequence in one go, using GPU optimized matrix multiplication. Let us define 
+                        <span class="math">\(\pmb{\hat{X}} = [\pmb{\hat{x}_0}^\top; ...; \pmb{\hat{x}_{T_x-1}}^\top]\)</span> which is just concatenating the sequence of positional 
+                        embeddings as row vectors where <span class="math">\(\pmb{\hat{X}} \in \mathbb{R}^{T_x-1\times 512}\)</span>. We can obtain the key, query and value matrices 
+                        by applying the linear transformation matrices to <span class="math">\(\pmb{\hat{X}}\)</span>, e.g., <span class="math">\(\pmb{Q}_x^1 = \pmb{\hat{X}}\pmb{W}_{x,q}^1\)</span>.
+                        Having the key, query and value matrices readily available the set of context vectors over the entire input sequence, <span class="math">\(\pmb{C}_x^1\)</span>, can be calculated
+                        as followed:
+                        <div class="formula">
+                            <br>
+                            $$
+                            \pmb{C}_x^1 = \text{softmax}\bigg(\frac{\pmb{Q}_x^1{\pmb{K}_x^1}^\top}{\sqrt{64}}\bigg)\pmb{V}_x^1
+                            $$
+                            <br>
+                        </div>
+                    </p>
+                    <p class="body">
+                        Furthermore, all operations used to calculate the context matrix are depicted in <span class="figtext">Figure 10</span>.
+                        <figure>
+                            <br>
+                            <img class="fig" src="/images/transformer/self-attention-entire-sequence.png" width="80%" height="40%">
+                            <figcaption class="figcaption">
+                                <span class="figtext">Fig. 10</span> All matrix operations used to obtain self-attention over an entire input sequence. Note, the subscript, <i>x</i>, which was 
+                                used in sections 3.2.2 and 3.2.3 to denote encoder variables was omitted for brevity. 
                             </figcaption>
                             <br>
                         </figure>
