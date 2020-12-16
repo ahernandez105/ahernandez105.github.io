@@ -39,6 +39,15 @@
     text-align: left;
     color: #3b3b3b;
 }
+
+.articleTitle{
+    font-family: 'CMS', 'Droid Serif', Georgia, Times, serif;
+    font-size: 200%;
+    line-height: 65px;
+    text-align: left;
+    color: #3b3b3b;
+}
+
 .figtext{
     color:	#8A2BE2;
 }
