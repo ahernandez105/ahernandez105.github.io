@@ -14,6 +14,9 @@
   <link rel="alternate" type="application/atom+xml" title="Full Atom Feed" href="/feeds/all.atom.xml">
   <link rel="alternate" type="application/rss+xml" title="Full RSS Feed" href="/feeds/all.rss.xml">  
   <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
+  <link rel="stylesheet" href="//codemirror.net/lib/codemirror.css">
+  <script src="//codemirror.net/addon/runmode/runmode-standalone.js"></script>
+  <script src="//codemirror.net/mode/python/python.js"></script>
   <meta name="description" content="TEXT TEXT">
 </head>
 <body>
@@ -74,6 +77,51 @@
                         Moving forward, we will step through how to train a Pixel CNN on both black and white images 
                         and color images using Pytorch.
                     </p>
+                    <pre style="background-color:#f8f9fa; margin: 0px; padding:0px"><code id="python_code">
+import torch
+from torch.utils.data import Dataset
+import numpy as np
+import pickle
+import pdb
+import matplotlib.pyplot as plt
+
+class Data(Dataset):
+    def __init__(self, array, device, mean=None, std=None):
+        self.N, self.C, self.H, self.W  = array.shape
+        self.array = array
+        self.device = device
+        if mean is None and std is None:
+            self.mean = np.mean(self.array, axis=(0,2,3))
+            self.std = np.std(self.array, axis=(0,2,3))
+        else:
+            self.mean = mean
+            self.std = std
+
+    def __len__(self):
+        return self.N
+
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.item()
+        
+        return {
+            'x': torch.tensor((self.array[idx] - self.mean)/self.std, dtype=torch.float).to(self.device),
+            'y': torch.tensor(self.array[idx], dtype=torch.long).to(self.device)}
+
+    @staticmethod
+    def collate_fn(batch):
+        bsize = len(batch)
+
+        return {
+            'x': torch.stack([batch[i]['x'] for i in range(bsize)], dim=0),
+            'y': torch.stack([batch[i]['y'] for i in range(bsize)], dim=0)}
+
+    @staticmethod
+    def read_pickle(fn):
+        with open(fn, 'rb') as file:
+            return pickle.load(file)
+                    </code>
+                    </pre>
                     <br>
                 </div>
             </article>
@@ -161,5 +209,22 @@
     s.setAttribute('data-timestamp', +new Date());
     (d.head || d.body).appendChild(s);
     })();
+</script>
+
+<script type="text/javascript">
+    window.onload = function(){
+        var codeElement = document.getElementById('python_code');
+        // Add code mirror class for coloring (default is the theme)
+        codeElement.classList.add( 'cm-s-default' );
+        var code = codeElement.innerText;
+
+        codeElement.innerHTML = "";
+
+        CodeMirror.runMode(
+          code,
+          'python',
+          codeElement
+        );
+    };
 </script>
 </html>
