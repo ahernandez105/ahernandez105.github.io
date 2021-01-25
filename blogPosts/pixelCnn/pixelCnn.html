@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>  Pixel CNN | angel's blog </title>
+  <link rel="canonical" href="/TheTransformer.html">
+  <link rel="stylesheet" href="/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/theme/css/pygments/default.min.css">
+  <link rel="stylesheet" href="/theme/css/theme.css">
+  <link rel="stylesheet" href="/theme/css/md-style.css">
+  <link rel="alternate" type="application/atom+xml" title="Full Atom Feed" href="/feeds/all.atom.xml">
+  <link rel="alternate" type="application/rss+xml" title="Full RSS Feed" href="/feeds/all.rss.xml">  
+  <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
+  <meta name="description" content="TEXT TEXT">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h1 class="title"><a href="/">angel's blog</a></h1>
+                </div>
+            </div>    
+        </div>
+    </header>
+    <div class="main">
+        <div class="container">
+            <h1 class="blogTitle">Pixel CNN</h1>
+            <hr>
+            <article class="article">
+                <header>
+                    <ul class="list-inline">
+                        <li class="list-inline-item text-muted" title="2019-07-20T00:00:00-04:00"><i class="fa fa-clock-o"></i> ???</li>
+                        <li class="list-inline-item text-muted"><i class="fa fa-user-o"></i> Angel C. Hernandez</li>
+                    </ul>
+                </header>
+                <div class="content">
+                    <!-- SECTION -->
+                    <h1 class="head">1. Introduction </h1>
+                    <p class="body">
+                        Pixel CNNs was proposed in <a class="papers" href="https://arxiv.org/pdf/1601.06759.pdf" target_="_blank">Oord et al. 2016</a>
+                        and is an auto-regressive generative model. The data consists of a set of images, 
+                        <span class="math">\(\mathcal{D} = \{\pmb{x}^{(t)}\}_{t=1}^T \text{ where } \pmb{x}_i \in \mathbb{R}^{c\times n\times n}\)</span>
+                        and <i>T</i> = number of examples, <i>c</i> = channels, and <i>n</i> = height = width of an image.
+                        The goal is to learn the joint distribution over all pixels using the chain rule of probability:
+                        <div class="formula">
+                            <br>
+                            $$
+                            p(\pmb{x}) = \prod_{i=1}^{n^2} p(x_i|x_1,...,x_{i-1})
+                            $$
+                            <br>
+                        </div>
+                    </p>
+                    <p class="body">
+                        The value <span class="math">\(p(x_i|x_1,...,x_{i-1})\)</span> is the likelihood of the <i>ith</i>
+                        pixel, <span class="math">\(x_i\)</span>, given the previous pixels 
+                        <span class="math">\(x_1,..., x_{i-1}\)</span>. Pixels are conditioned in a row-by-row pixel-by-pixel 
+                        fashion which is highlighted in <span class="figtext">Figure 1.</span>
+                        <figure>
+                            <br>
+                            <img class="fig" src="images/context.png" width="60%" height="30%">
+                            <figcaption class="figcaption">
+                                <span class="figtext">Fig. 1</span> To generate pixel <span class="math">\(x_i\)</span> one 
+                                conditions on all previously generated pixels left and above pixel <span class="math">\(x_i\)</span>.
+                                Image taken from <a class="papers" href="https://arxiv.org/pdf/1601.06759.pdf" target_="_blank">Oord et al. 2016</a>.
+                            </figcaption>
+                            <br>
+                        </figure>
+                    </p>
+                    <p class="body">
+                        Moving forward, we will step through how to train a Pixel CNN on both black and white images 
+                        and color images using Pytorch.
+                    </p>
+                    <br>
+                </div>
+            </article>
+        </div>
+    </div> 
+</body>
+<!-- mathjax script -->
+<script type="text/javascript">
+    if (!document.getElementById('mathjaxscript_pelican_#%&#64;#$&#64;#')) {
+        var align = "center",
+            indent = "0em",
+            linebreak = "false";
+    
+        if (false) {
+            align = (screen.width < 768) ? "left" : align;
+            indent = (screen.width < 768) ? "0em" : indent;
+            linebreak = (screen.width < 768) ? 'true' : linebreak;
+        }
+    
+        var mathjaxscript = document.createElement('script');
+        mathjaxscript.id = 'mathjaxscript_pelican_#%&#64;#$&#64;#';
+        mathjaxscript.type = 'text/javascript';
+        mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    
+        var configscript = document.createElement('script');
+        configscript.type = 'text/x-mathjax-config';
+        configscript[(window.opera ? "innerHTML" : "text")] =
+            "MathJax.Hub.Config({" +
+            "    config: ['MMLorHTML.js']," +
+            "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+            "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+            "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+            "    displayAlign: '"+ align +"'," +
+            "    displayIndent: '"+ indent +"'," +
+            "    showMathMenu: true," +
+            "    messageStyle: 'normal'," +
+            "    tex2jax: { " +
+            "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+            "        displayMath: [ ['$$','$$'] ]," +
+            "        processEscapes: true," +
+            "        preview: 'TeX'," +
+            "    }, " +
+            "    'HTML-CSS': { " +
+            "        fonts: ['STIX', 'TeX']," +
+            "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+            "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+            "    }, " +
+            "}); " +
+            "if ('default' !== 'default') {" +
+                "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                    "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                    "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                    "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                    "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                    "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+                "});" +
+                "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                    "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                    "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                    "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                    "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                    "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+                "});" +
+            "}";
+    
+        (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+        (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+    }
+</script>
+<!--- not sure script ??? -->
+<script>
+        $(document).ready(function(){
+          $('[data-toggle="tooltip"]').tooltip(); 
+        });
+</script>
+<!-- disque comments script -->
+<script>
+    var disqus_config = function () {
+    this.page.url = "https://ahernandez105.github.io/TheTransformer.html";
+    this.page.identifier ="2";
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://angels-blog-1.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+</html>
