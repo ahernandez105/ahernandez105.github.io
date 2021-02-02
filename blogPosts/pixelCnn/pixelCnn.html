@@ -14,9 +14,6 @@
   <link rel="alternate" type="application/atom+xml" title="Full Atom Feed" href="/feeds/all.atom.xml">
   <link rel="alternate" type="application/rss+xml" title="Full RSS Feed" href="/feeds/all.rss.xml">  
   <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
-  <link rel="stylesheet" href="//codemirror.net/lib/codemirror.css">
-  <script src="//codemirror.net/addon/runmode/runmode-standalone.js"></script>
-  <script src="//codemirror.net/mode/python/python.js"></script>
   <meta name="description" content="TEXT TEXT">
 </head>
 <body>
@@ -95,7 +92,7 @@
                         ground truth binary images.
                     </p>
 <pre style="background-color:#f8f9fa; font-size: 12px">
-<code id="python_code">
+<code>
 import torch
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
@@ -153,16 +150,17 @@ for batch in train:
     break
 </code>
 </pre>
-                    <p class="body">Output:</p>
-                    <div class="console">
-                        <pre style="white-space: pre-line; color: #ffffff">
-                        &ltclass 'dict'&gt
-                        torch.Size([128, 1, 28, 28])
-                        torch.Size([128, 1, 28, 28])
-                        </pre>
-                    </div>
-                    <br>
 
+<p class="body">Output:</p>
+<div class="console">
+    <pre style="white-space: pre-line; color: #ffffff">
+    &ltclass 'dict'&gt
+    torch.Size([128, 1, 28, 28])
+    torch.Size([128, 1, 28, 28])
+    </pre>
+</div>
+<br>
+                    <br>
                     <!-- SECTION -->
                     <h1 class="head">3.0 Pixel CNN Architecture Binary Images</h1>
                     <p class="body">
@@ -192,8 +190,8 @@ for batch in train:
                             </figure>
                         </div>
                     </div>
-                    <br>
 
+                    <br>
                     <!-- SECTION -->
                     <h1 class="subhead">3.1 Masked Convolution</h1>
                     <p class="body">
@@ -204,6 +202,7 @@ for batch in train:
                         the different types of masks, A and B.
                     </p>
 
+                    <br>
                     <!-- SECTION -->
                     <h1 class="subhead">3.1.1 Mask Type A Single Channel</h1>
                     <p class="body">
@@ -232,6 +231,263 @@ for batch in train:
                             <br>
                         </figure>
                     </p>
+                    <p class="body">
+                        Hopefully it is clear that each stride of the convolution is auto-encoding the current pixel, <span class="math">\(x_i\)</span>.
+                        We mask our kernel because all pixels to the right and below the current pixel essentially do not exist 
+                        at inference time. Finally, the reason this is <b>Mask A</b> is because 
+                        <span class="math">\(h_i = f(\pmb{x}_{< i})\)</span>, i.e. a given pixel in the hidden state is a function of the only the context.
+                    </p>
+
+                    <br>
+                    <!-- SECTION -->
+                    <h1 class="subhead">3.1.2 Mask B Single Channel</h1>
+                    <p class="body">
+                        In the case of <b>Mask B</b>, <span class="math">\(h_i = f(x_i, \pmb{x}_{< i})\)</span>, i.e. a given pixel in 
+                        the hidden state is a function of both the context and the current pixel being auto-encoded. As a result,
+                        below is mask type B for this toy example:
+                        <div class="formula">
+                            <br>
+                            $$
+                            \begin{bmatrix} 
+                                1 & 1 & 1 \\
+                                1 & 1 & 0 \\
+                                0 & 0 & 0 \\
+                            \end{bmatrix}
+                            $$
+                            <br>
+                        </div>
+                    </p>
+
+                    <br>
+                    <!-- SECTION -->
+                    <h1 class="subhead">3.1.3 Masked Convolution Pytorch Single Channel</h1>
+                    <p class="body">
+                        It is actually pretty simple to implement masked convolution into Pytorch, see below:
+                    </p>
+<pre style="background-color:#f8f9fa; font-size: 12px">
+<code>
+import torch
+from torch.nn import Conv2d
+
+class MaskedConv2dBinary(Conv2d):
+    def __init__(self, m_type, in_channels, out_channels, kernel_size, padding):
+        assert m_type=='A' or m_type=='B'
+        super().__init__(
+            in_channels=in_channels, out_channels=out_channels, 
+            kernel_size=kernel_size, stride=1, padding=padding)
+        self.register_buffer('mask', torch.zeros_like(self.weight)) # ensures mask is stored in state_dict
+
+        if m_type=='A':
+            self.mask[:, :, 0:kernel_size//2, :] = 1
+            self.mask[:, :, kernel_size//2, 0:kernel_size//2] = 1
+        else:
+            self.mask[:, :, 0:kernel_size//2, :] = 1
+            self.mask[:, :, kernel_size//2, 0:kernel_size//2 + 1] = 1
+    
+    def forward(self, x):
+        self.weight.data *= self.mask
+        return super().forward(x)
+
+conv_a = MaskedConv2dBinary('A', 1, 64, 7, 3)
+print('Mask A')
+print(conv_a.mask[0,:,:,:])
+
+conv_b = MaskedConv2dBinary('B', 64, 64, 7, 3)
+print('Mask B')
+print(conv_b.mask[0,0,:,:])
+</code>
+</pre>
+
+<p class="body">Output:</p>
+<div class="console">
+    <pre style="white-space: pre-line; color: #ffffff">
+        Mask A
+        tensor([[[1., 1., 1., 1., 1., 1., 1.],
+                    [1., 1., 1., 1., 1., 1., 1.],
+                    [1., 1., 1., 1., 1., 1., 1.],
+                    [1., 1., 1., 0., 0., 0., 0.],
+                    [0., 0., 0., 0., 0., 0., 0.],
+                    [0., 0., 0., 0., 0., 0., 0.],
+                    [0., 0., 0., 0., 0., 0., 0.]]])
+        Mask B
+        tensor([[1., 1., 1., 1., 1., 1., 1.],
+                [1., 1., 1., 1., 1., 1., 1.],
+                [1., 1., 1., 1., 1., 1., 1.],
+                [1., 1., 1., 1., 0., 0., 0.],
+                [0., 0., 0., 0., 0., 0., 0.],
+                [0., 0., 0., 0., 0., 0., 0.],
+                [0., 0., 0., 0., 0., 0., 0.]])
+    </pre>
+</div>
+                
+                 <br>
+                 <!-- SECTION -->
+                 <h1 class="subhead">3.2 Layer Normalization</h1>
+                 <p class="body">
+                    Layer normalization is popular in most deep networks to speed up training by transforming hidden layers to be
+                    centered around 0 mean and 1 std. Now, after a given masked convolution operation you will have an outputted 
+                    tensor with shape (bsize, filters, height, width) = (128, 64, 28, 28). When I first attempted to incorporate layer normalization
+                    I figured I should normalize each filter, i.e. calculate the statistics for each 28x28 matrix. <b>Do not do this!</b> Reason being,
+                    this violates the auto-regressive property because you are taking the mean and std over all pixels in a filter. Remember, 
+                    a given pixel, <span class="math">\(h^l_i\)</span> should not know anything about 
+                    <span class="math">\(h^l_{i+1}, h^l_{i+2}, ..., h^l_{n^2}\)</span>. As result, we must normalize over each pixel position 
+                    across all 64 filters. This results in <span class="math">\(28^2\)</span> layer norm operations.
+                </p>
+
+<pre style="background-color:#f8f9fa; font-size: 12px">
+<code>
+import torch
+from torch.nn import LayerNorm
+
+class LayerNormPixel(LayerNorm):
+    def __init__(self, n_filters, affine=True):
+        super().__init__([n_filters], elementwise_affine=affine)
+    
+    def forward(self, x):
+        # permute operation returns tensor of shape
+        # (bsize, height, width, filters)
+        x = super().forward(x.permute(0, 2, 3, 1).contiguous())
+
+        # return tensor is of shape (bsize, filters, height, width)
+        return x.permute(0, 3, 1, 2).contiguous()
+</code>
+</pre>
+                <br>
+                <!-- SECTION -->
+                <h1 class="subhead">3.3 Residual Block</h1>
+                <p class="body">
+                    Now that we our layer norm and masked convolution classes implmented, we can create the residual block class.
+                </p>
+
+<pre style="background-color:#f8f9fa; font-size: 12px">
+<code>
+import torch
+from torch.nn import ReLU, ModuleList, Module
+
+class ResBlock(Module):
+    def __init__(self, m_type, in_channels, out_channels, kernel_size, masked_conv_class):
+        super().__init__()
+        self.net = ModuleList()
+        self.net.append(masked_conv_class(m_type, in_channels, out_channels, 1, 0))
+        self.net.append(ReLU())
+        p = int((kernel_size - 1)/2)
+        self.net.append(masked_conv_class(m_type, in_channels, out_channels, kernel_size, p))
+        self.net.append(ReLU())
+        self.net.append(masked_conv_class(m_type, in_channels, out_channels, 1, 0))
+        self.net.append(LayerNormPixel(out_channels))
+        self.net.append(ReLU())
+    
+    def forward(self, x):
+        initial_x = x
+        for module in self.net:
+            x = module(x)
+        
+        return initial_x + x
+</code>
+</pre>
+                <br>
+                <!-- SECTION -->
+                <h1 class="subhead">3.4 Pixel CNN Pytorch</h1>
+                <p class="body">
+                    Using all created modules above, we can create the Pixel CNN class.
+                </p>
+
+<pre style="background-color:#f8f9fa; font-size: 12px">
+<code>
+class PixelCnn(Module):
+    def __init__(
+        self, in_dim, channels, kernel_size, layers, filters, 
+        dist_size, masked_conv_class):
+        super().__init__()
+        self.in_dim = in_dim
+        self.channels = channels
+        self.kernel_size = kernel_size
+        self.filters = filters
+        self.layers = layers
+        self.dist_size = dist_size
+        self.mconv = masked_conv_class
+        p = int((self.kernel_size - 1)/2)
+
+        self.net = ModuleList()
+        self.net.append(self.mconv('A', self.channels, self.filters, self.kernel_size, p))
+        self.net.append(LayerNormPixel(self.filters))
+        self.net.append(ReLU())
+        for _ in range(self.layers-1):
+            self.net.append(ResBlock(
+                'B', self.filters, self.filters, self.kernel_size, self.mconv))
+        self.net.append(self.mconv('B', self.filters, self.filters, 1, 0))
+        self.net.append(ReLU())
+        self.net.append(self.mconv('B', self.filters, self.dist_size*self.channels, 1, 0))
+        
+        self.log_softmax = LogSoftmax(dim=1)
+        self.loss = NLLLoss(reduction='mean')
+
+    def forward(self, x):
+        bsize, _, _, _ = x.shape
+        for module in self.net:
+            x = module(x)
+        
+        return self.log_softmax(x).view(bsize, self.dist_size, self.channels, self.in_dim, self.in_dim)
+
+    def get_loss(self, x, y):
+        bsize, _, _, _, _ = x.shape
+        x1 = x.view((bsize, self.dist_size, self.in_dim*self.in_dim*self.channels))
+        y1 = y.view((bsize, self.in_dim*self.in_dim*self.channels))
+
+        return self.loss(x1, y1)
+
+    def generate_samples(self, n, dev, mean, std):
+        self.eval()
+        samples_in = torch.zeros((n, self.channels, self.in_dim, self.in_dim), dtype=torch.float, device=dev)
+        samples_out = torch.zeros((n, self.channels, self.in_dim, self.in_dim), dtype=torch.float, device=dev)
+
+        for row in range(self.in_dim):
+            for col in range(self.in_dim):
+                for channel in range(self.channels):
+                    dist = Categorical(torch.exp(self(samples_in)[:, :, channel, row, col]))
+                    s = dist.sample().type(torch.float)
+                    samples_in[:, channel, row, col] = (s-mean[channel])/std[channel]
+                    samples_out[:, channel, row, col] = s
+        
+        return samples_out
+
+# two layers so printing area is smaller
+model = PixelCnn(28, 1, 7, 2, 64, 2, MaskedConv2dBinary)
+print(model)
+</code>
+</pre>
+
+<p class="body">Output:</p>
+<div class="console">
+<pre style="color: #ffffff">
+PixelCnn(
+    (net): ModuleList(
+        (0): MaskedConv2dBinary(1, 64, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3))
+        (1): LayerNormPixel(torch.Size([64]), eps=1e-05, elementwise_affine=True)
+        (2): ReLU()
+        (3): ResBlock(
+        (net): ModuleList(
+            (0): MaskedConv2dBinary(64, 64, kernel_size=(1, 1), stride=(1, 1))
+            (1): ReLU()
+            (2): MaskedConv2dBinary(64, 64, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3))
+            (3): ReLU()
+            (4): MaskedConv2dBinary(64, 64, kernel_size=(1, 1), stride=(1, 1))
+            (5): LayerNormPixel(torch.Size([64]), eps=1e-05, elementwise_affine=True)
+            (6): ReLU()
+            )
+        )
+        (4): MaskedConv2dBinary(64, 64, kernel_size=(1, 1), stride=(1, 1))
+        (5): ReLU()
+        (6): MaskedConv2dBinary(64, 2, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (log_softmax): LogSoftmax()
+    (loss): NLLLoss()
+)
+</pre>
+</div>
+                <br><br>
+                <div id="disqus_thread"></div>
+                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><hr>
                 </div>
             </article>
         </div>
