@@ -66,7 +66,7 @@
                             <figcaption class="figcaption">
                                 <span class="figtext">Fig. 1</span> To generate pixel <span class="math">\(x_i\)</span> one 
                                 conditions on all previously generated pixels left and above pixel <span class="math">\(x_i\)</span>.
-                                Image taken from <a class="papers" href="https://arxiv.org/pdf/1601.06759.pdf" target_="_blank">Oord et al. 2016</a>.
+                                Image taken from <a class="papers" href="https://arxiv.org/pdf/1601.06759.pdf" target="_blank">Oord et al. 2016</a>.
                             </figcaption>
                             <br>
                         </figure>
@@ -74,16 +74,16 @@
                     <p class="body">
                         Moving forward, we will step through how to train a Pixel CNN on both black and white images 
                         and color images using Pytorch. All code reviewed in this post can be found at this GitHub 
-                        <a class="hyperlinks" href="https://github.com/ahernandez105/pixelCnn" target_="blank">repo</a>.
+                        <a class="hyperlinks" href="https://github.com/ahernandez105/pixelCnn" target="_blank">repo</a>.
                         It should be noted that this blog post was inspired after I completed homework 1 of Berkeley's
                         <a class="hyperlinks" href="https://sites.google.com/view/berkeley-cs294-158-sp20/home">Deep Unsupervised Learning Course.</a>. 
-                        While my PixelCNN implementation is not identical to their solution, I do borrow their datasets and some helper methods.
+                        While my Pixel CNN implementation is not identical to their solution, I do borrow their datasets and some helper methods.
                     </p>
                     <br>
                     <!-- SECTION -->
                     <h1 class="head">2. Loading MNIST Dataset</h1>
                     <p class="body">
-                        In the repo you will find a pickled dictionary <code>mnist.pkl</code>. The keys
+                        In the repo you will find a pickled dictionary <code>data/mnist.pkl</code>. The keys
                         <code>'train'</code> and <code>'test'</code> will map you to the train and test numpy array of images, respectively. 
                         Each image is of shape (28, 28, 1) and takes on value between [0, 255]. To simplify the problem, we will make the images
                         binary by assigning pixels values > 127.5 value <b>1</b> and all other pixels value <b>0</b>. We then will create a Pytorch
@@ -91,7 +91,7 @@
                         The <code>'x'</code> tensor is a batch of images normalized to 0 mean 1 std and the <code>'y'</code> tensor is a batch of 
                         ground truth binary images.
                     </p>
-<pre style="background-color:#f8f9fa; font-size: 12px">
+<pre style="background-color:#f8f9fa; font-size: 11px">
 <code>
 import torch
 from torch.utils.data import Dataset, DataLoader
@@ -117,8 +117,12 @@ class Data(Dataset):
         if torch.is_tensor(idx):
             idx = idx.item()
         
+        x = self.array[idx].copy().astype(float)
+        for i in range(self.C):
+            x[i] = (x[i] - self.mean[i])/self.std[i]
+
         return {
-            'x': torch.tensor((self.array[idx] - self.mean)/self.std, dtype=torch.float).to(self.device),
+            'x': torch.tensor(x, dtype=torch.float).to(self.device),
             'y': torch.tensor(self.array[idx], dtype=torch.long).to(self.device)}
     
     @staticmethod
@@ -134,7 +138,8 @@ class Data(Dataset):
         assert dset=='train' or dset=='test'
         with open(fn, 'rb') as file:
             data = pickle.load(file)[dset]
-            data = (data > 127.5).astype('uint8')
+            if 'mnist.pkl' in fn:
+                data = (data > 127.5).astype('uint8')
             N, H, W, C = data.shape
 
             return data.reshape(N, C, H, W)
@@ -162,7 +167,7 @@ for batch in train:
 <br>
                     <br>
                     <!-- SECTION -->
-                    <h1 class="head">3.0 Pixel CNN Architecture Binary Images</h1>
+                    <h1 class="head">3.0 Pixel CNN Binary Images</h1>
                     <p class="body">
                         Now we will begin to open up the Pixel CNN architecture. We will review each component in the 
                         architecture which is highlighted in the below figures. Note, the below architecture is almost identical 
@@ -173,7 +178,7 @@ for batch in train:
                     <div class="rowFigure">
                         <div class="columnFigure">
                             <figure>
-                                <img class="fig" src="images/pixel-cnn.png" width="80%" height="80%">
+                                <img class="fig" src="images/pixel-cnn.png" width="70%" height="70%">
                                 <figcaption class="figcaption">
                                     <span class="figtext">Fig. 2</span> Pixel CNN architecture<br>used in 
                                     <a class="hyperlinks" href="https://sites.google.com/view/berkeley-cs294-158-sp20/home">Berkeley Deepul</a>. 
@@ -182,7 +187,7 @@ for batch in train:
                         </div>
                         <div class="columnFigure">
                             <figure>
-                                <img class="fig" src="images/residual-pixel-cnn.png" width="85%" height="85%">
+                                <img class="fig" src="images/residual-pixel-cnn.png" width="75%" height="75%">
                                 <figcaption class="figcaption">
                                     <span class="figtext">Fig. 3</span> Pixel CNN residual block <br>used in 
                                     <a class="hyperlinks" href="https://sites.google.com/view/berkeley-cs294-158-sp20/home">Berkeley Deepul</a>. 
@@ -190,6 +195,7 @@ for batch in train:
                             </figure>
                         </div>
                     </div>
+                    <br>
 
                     <br>
                     <!-- SECTION -->
@@ -235,14 +241,14 @@ for batch in train:
                         Hopefully it is clear that each stride of the convolution is auto-encoding the current pixel, <span class="math">\(x_i\)</span>.
                         We mask our kernel because all pixels to the right and below the current pixel essentially do not exist 
                         at inference time. Finally, the reason this is <b>Mask A</b> is because 
-                        <span class="math">\(h_i = f(\pmb{x}_{< i})\)</span>, i.e. a given pixel in the hidden state is a function of the only the context.
+                        <span class="math">\(h_i^1 = f(\pmb{x}_{< i})\)</span>, i.e. a given pixel in the hidden state is a function of the only the context.
                     </p>
 
                     <br>
                     <!-- SECTION -->
                     <h1 class="subhead">3.1.2 Mask B Single Channel</h1>
                     <p class="body">
-                        In the case of <b>Mask B</b>, <span class="math">\(h_i = f(x_i, \pmb{x}_{< i})\)</span>, i.e. a given pixel in 
+                        In the case of <b>Mask B</b>, <span class="math">\(h_i^l = f(h_i^{l-1}, \pmb{h}_{< i}^{l-1})\)</span>, i.e. a given pixel in 
                         the hidden state is a function of both the context and the current pixel being auto-encoded. As a result,
                         below is mask type B for this toy example:
                         <div class="formula">
@@ -264,7 +270,7 @@ for batch in train:
                     <p class="body">
                         It is actually pretty simple to implement masked convolution into Pytorch, see below:
                     </p>
-<pre style="background-color:#f8f9fa; font-size: 12px">
+<pre style="background-color:#f8f9fa; font-size: 11px">
 <code>
 import torch
 from torch.nn import Conv2d
@@ -334,7 +340,7 @@ print(conv_b.mask[0,0,:,:])
                     across all 64 filters. This results in <span class="math">\(28^2\)</span> layer norm operations.
                 </p>
 
-<pre style="background-color:#f8f9fa; font-size: 12px">
+<pre style="background-color:#f8f9fa; font-size: 11px">
 <code>
 import torch
 from torch.nn import LayerNorm
@@ -356,10 +362,10 @@ class LayerNormPixel(LayerNorm):
                 <!-- SECTION -->
                 <h1 class="subhead">3.3 Residual Block</h1>
                 <p class="body">
-                    Now that we our layer norm and masked convolution classes implmented, we can create the residual block class.
+                    Now that we our layer norm and masked convolution classes are implemented, we can create the residual block class.
                 </p>
 
-<pre style="background-color:#f8f9fa; font-size: 12px">
+<pre style="background-color:#f8f9fa; font-size: 11px">
 <code>
 import torch
 from torch.nn import ReLU, ModuleList, Module
@@ -392,7 +398,7 @@ class ResBlock(Module):
                     Using all created modules above, we can create the Pixel CNN class.
                 </p>
 
-<pre style="background-color:#f8f9fa; font-size: 12px">
+<pre style="background-color:#f8f9fa; font-size: 11px">
 <code>
 class PixelCnn(Module):
     def __init__(
@@ -427,7 +433,7 @@ class PixelCnn(Module):
         for module in self.net:
             x = module(x)
         
-        return self.log_softmax(x).view(bsize, self.dist_size, self.channels, self.in_dim, self.in_dim)
+        return self.log_softmax(x.view(bsize, self.dist_size, self.channels, self.in_dim, self.in_dim))
 
     def get_loss(self, x, y):
         bsize, _, _, _, _ = x.shape
@@ -485,7 +491,283 @@ PixelCnn(
 )
 </pre>
 </div>
-                <br><br>
+<br>
+                <!-- SECTION -->
+                <h1 class="subhead">3.4.1 Generating Samples</h1>
+                <p class="body">
+                    In the <code>PixelCnn</code> class you'll notice the <code>generate_samples</code> method. In order to generate
+                    <i>n</i> samples we start off of with a tensor of 0s of shape (n, 1, 28, 28). We are going to generate each pixel
+                    of the image starting at the top left, moving to the right and then down to the next row of pixels. The generation of 
+                    a given pixel requires an entire forward pass through the network. After we sample a given pixel, we update our original 
+                    tensor of 0s which is effectively updating the context for the next pixel generation. You'll notice there are two tensors
+                    in this method, <code>samples_in</code> and <code>samples_out</code>. <code>samples_in</code> is what goes into the 
+                    network and each pixel is standard normal because this is how our model was trained. <code>samples_out</code> 
+                    contains the actual generated pixel which in this case will either be a value of 0 or 1.
+                </p>
+
+                <!-- SECTION -->
+                <h1 class="subhead">3.4.2 Training Script</h1>
+                <p class="body">
+                    Now that all our modules are implemented we can write the training script, <code>train.py</code>.
+                </p>
+<pre style="background-color:#f8f9fa; font-size: 11px">
+<code>
+import numpy as np
+import torch
+from torch.utils.data import DataLoader
+import argparse
+
+import models
+from models import PixelCnn
+from dataset import Data
+from util import init_argparser, show_samples, save_training_plot
+
+def evaluate(test, model):
+    loss = 0
+    model.eval()
+
+    for batch in test:
+        bsize = batch['y'].shape[0]
+        loss += model.get_loss(model(batch['x']), batch['y']).item() * bsize
+    
+    return loss
+
+def train_batch(batch, model, optimizer):
+    optimizer.zero_grad()
+    preds = model(batch['x'])
+    loss = model.get_loss(preds, batch['y'])
+    loss.backward()
+    torch.nn.utils.clip_grad_norm_(model.parameters(), 1)
+    optimizer.step()
+
+    return loss.item()
+
+def training(train, test, model, optimizer, epochs):
+    nlls_train = []
+    nlls_test = []
+
+    for epoch in range(1, epochs+1):
+        model.train()
+        ttl_nll = 0
+        for batch in train:
+            bsize = batch['y'].shape[0]
+            nll = train_batch(batch, model, optimizer)
+            ttl_nll += nll * bsize
+            nlls_train.append(nll)
+        
+        nlls_test.append(evaluate(test, model)/len(test.dataset))
+        print('epoch '+str(epoch), 'train: '+str(ttl_nll/len(train.dataset)), 'test: '+str(nlls_test[epoch-1]))
+    
+    return np.array(nlls_train), np.array(nlls_test)
+
+def main(args: argparse.Namespace):
+    train_arr, test_arr = Data.read_pickle(args.pickle, 'train'), Data.read_pickle(args.pickle, 'test')
+    train = DataLoader(Data(train_arr, args.dev), batch_size=args.bsize, num_workers=args.workers, shuffle=True, collate_fn=Data.collate_fn)
+    test = DataLoader(Data(test_arr, args.dev, train.dataset.mean, train.dataset.std), batch_size=args.bsize, num_workers=args.workers,  shuffle=True, collate_fn=Data.collate_fn)
+    model = PixelCnn(train.dataset.W, train.dataset.C, args.kernel_size, args.layers, args.filters, args.dist_size, getattr(models, args.conv_class))
+    if args.dev=='cuda':
+        model.cuda()
+    
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    nlls_train, nlls_test = training(train, test, model, optimizer, args.epochs)
+    samples = model.generate_samples(args.n_samples, args.dev, train.dataset.mean, train.dataset.std).cpu().numpy()
+
+    save_training_plot(nlls_train, nlls_test, 'NLL (nats/dim)', args.nll_img_path)
+    show_samples(
+        samples.reshape(args.n_samples, train.dataset.H, train.dataset.W, train.dataset.C), 
+        args.samples_img_path)
+
+if __name__=='__main__':
+    main(init_argparser())  
+</code>
+</pre>
+<p class="body">Run:</p>
+<div class="console">
+<pre style="color: #ffffff">
+python train.py --layers 5 --dev cuda --conv_class MaskedConv2dBinary
+
+</pre>
+</div>
+                <p class="body">
+                    You will need to train the model using a GPU. You can import the source code into Google Colab and run the script in there.
+                    After the model finishes training, <code>binary_nll.png</code> and <code>binary_samples.png</code> can be found in the 
+                    <code>output/</code> directory. Below are those images after training the model for 10 epochs.
+                    <br>
+                    <div class="rowFigure">
+                        <div class="columnFigure">
+                            <figure>
+                                <img class="fig" src="images/binary_nll.png" width="100%" height="100%">
+                                <figcaption class="figcaption">
+                                    <span class="figtext">Fig. 5</span> NLL averaged over all pixels for binary MNIST dataset.
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <div class="columnFigure">
+                            <figure>
+                                <img class="fig" src="images/binary_sample.png" width="100%" height="100%">
+                                <figcaption class="figcaption">
+                                    <span class="figtext">Fig. 6</span> Generated images for binary MNIST dataset.
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </p>
+
+                <br>
+                <!-- SECTION -->
+                <h1 class="head">4.0 Pixel CNN Color Images</h1>
+                <p class="body">
+                    Now we will use the above modules to train a Pixel CNN on colored images. Unfortunately, my repo does not have enough storage 
+                    to store the <code>mnist_colored.pkl</code> dataset but you can obtain this dataset from the Berkeley Deep Unsupervised Learning
+                    <a class="hyperlinks" href="https://github.com/rll/deepul" target="_blank">repo</a> by unzipping 
+                    <code>deepul/homeworks/hw1/data/hw1_data.zip</code>. A given image within in this dataset is of shape (28, 28, 3) and a given pixel takes on a 
+                    value between [0, 3]. We will reuse a lot 
+                    of the modules we already built, but will need to create a new masked convolution module which is reviewed
+                    in the next section.
+                </p>
+
+                <br>
+                <!-- SECTION -->
+                <h1 class="subhead">4.1 Masked Convolution Color Images</h1>
+                <p class="body">
+                    Below is how the original paper defines Mask A and B for colored images.
+                    <figure>
+                        <br>
+                        <img class="fig" src="images/masks.png" width="40%" height="20%">
+                        <figcaption class="figcaption">
+                            <span class="figtext">Fig. 7</span> Diagram of the
+                            connectivity inside a masked convolution. In the first layer, each
+                            of the RGB channels is connected to previous channels and to the
+                            context, but is not connected to itself. In subsequent layers, the
+                            channels are also connected to themselves. Image taken from 
+                            <a class="papers" href="https://arxiv.org/pdf/1601.06759.pdf" target="_blank">Oord et al. 2016</a>.
+                        </figcaption>
+                        <br>
+                    </figure>
+                </p>
+                <p class="body">In the case of type A, this means:
+                    <div class="formula">
+                        <br>
+                        $$
+                        h_{i,R}^1 = f(\pmb{x}_{< i }) \qquad  h_{i,G}^1 = f(\pmb{x}_{< i },x_{i,R}) \qquad h_{i,B}^1 = f(\pmb{x}_{< i },x_{i,R}, x_{i,G})
+                        $$
+                        <br>
+                    </div>
+                </p>
+                <p class="body">
+                    Similar to the toy example in section 3.1.1, assume we have an input image of 3x5x5, kernel size of 3x3 and 
+                    3 filters. In this setting the convolution weight matrix, <i>W</i>, would be of shape (3, 3, 3, 3) = (n_filters, in_channels, kernel_height, kernel_width).
+                    <i>W</i>[0, :, :, :], <i>W</i>[1, :, :, :] and <i>W</i>[2, :, :, :] are in charge of auto-encoding the R, G and B channels of the input image,
+                    respectively. As a result, the mask, <i>M</i>, under type A masked convolution would be as followed:
+                    <figure>
+                        <br>
+                        <img class="fig" src="images/mask-type-A-colored.png" width="70%" height="70%">
+                        <figcaption class="figcaption">
+                            <span class="figtext">Fig. 8</span> Mask type A tensor for toy example in section 4.1.
+                        </figcaption>
+                        <br>
+                    </figure>
+                </p>
+                <p class="body">
+                    We notice Filter 1 zeros out everything but the context pixels because <span class="math">\(h^1_{i,R}\)</span> is only a function of the context.
+                    Filter 2 zeros out everything but the context and <span class="math">\(x_{i,R}\)</span>. Finally, Filter 3 zeros out everything but the context,
+                    <span class="math">\(x_{i,R}\)</span>, and <span class="math">\(x_{i,G}\)</span>.
+                </p>
+                <p class="body">Next we have the mathematical representation of Mask B based off <span class="figtext">Figure 7</span>:
+                    <div class="formula">
+                        <br>
+                        $$
+                        h_{i,R}^l = f(\pmb{h}^{l-1}_{< i }, h_{i,R}^{l-1}) \qquad   h_{i,G}^l = f(\pmb{h}^{l-1}_{< i }, h_{i,R}^{l-1}, h_{i,G}^{l-1}) \qquad h_{i,B}^l = f(\pmb{h}^{l-1}_{< i }, h_{i,R}^{l-1}, h_{i,G}^{l-1}, h_{i,B}^{l-1})
+                        $$
+                        <br>
+                    </div>
+                </p>
+                <p class="body">Where the corresponding image is below.
+                <figure>
+                    <img class="fig" src="images/mask-type-B-colored.png" width="70%" height="70%">
+                    <figcaption class="figcaption">
+                        <span class="figtext">Fig. 8</span> Mask type B tensor for toy example in section 4.1.
+                    </figcaption>
+                    <br>
+                </figure>
+                </p>
+
+                <!-- SECTION -->
+                <h1 class="subhead">4.2 Handling Large Input Channels and Filters</h1>
+                <p class="body">
+                    Now we need to generalize the above to cases where the number of model filters is greater than 3. Assume we train 
+                    our model to have 120 filters at each convolution in the network. As a result, each hidden layer, <span class="math">\(\pmb{h}^l\)</span>, 
+                    will have a tensor shape of (bsize, 120, 28, 28). What we do is split the input channels into 3 equal thirds, so 
+                    <span class="math">\(\pmb{h}^l\)</span>[:, 0:40, :, :] are <span style="color:red">Red</span> channels, <span class="math">\(\pmb{h}^l\)</span>[:, 40:80, :, :] are <span style="color:green">Green</span> 
+                    channels and <span class="math">\(\pmb{h}^l\)</span>[:, 80:, :, :] are <span style="color:navy">Blue</span> channels. Furthermore,
+                    Filters 0-39, 40-79 and 80-120 are in charge of the <span style="color:red">Red</span>, <span style="color:green">Green</span> and 
+                    <span style="color:navy">Blue</span> channels, respectively. In the of mask type B Filters 0-39, 40-79 and 80-120 would be similar to
+                    to Filters 1, 2 and 3 in <span class="figtext">Figure 8</span>, respectively. Below is the Pytorch implementation.
+                </p>
+<pre style="background-color:#f8f9fa; font-size: 11px">
+<code>
+class MaskedConv2dColor(MaskedConv2dBinary):
+    def __init__(self, m_type, in_channels, out_channels, kernel_size, padding):
+        super().__init__(m_type, in_channels, out_channels, kernel_size, padding)
+        in_idx = in_channels // 3
+        out_idx = out_channels // 3
+
+        if m_type=='A':
+            # allow R channels on 2nd third filters
+            self.mask[out_idx:out_idx*2, :in_idx, kernel_size//2, kernel_size//2] = 1
+            # allow R and G channels on 3rd third filters
+            self.mask[out_idx*2:, 0:in_idx*2, kernel_size//2, kernel_size//2 ] = 1
+        else:
+            # zero out the middle pixel across all input channels and filters
+            self.mask[:, :, kernel_size//2, kernel_size//2] = 0
+            # allow R channels on the 1st third filters
+            self.mask[:out_idx, :in_idx, kernel_size//2, kernel_size//2] = 1
+            # allow R and G channels on the 2nd third filters
+            self.mask[out_idx:out_idx*2, 0:in_idx*2, kernel_size//2, kernel_size//2] = 1
+            # allow R, G and B channels on the 3rd third filters
+            self.mask[out_idx*2:, :, kernel_size//2, kernel_size//2] = 1
+
+conv_b = MaskedConv2dColor('B', 120, 120, 7, 3)
+print(conv_b.mask.shape) # (n_filters, in_channels, 7, 7)
+print(conv_b.mask[50, [10, 50, 90], :, :])
+</code>
+</pre>
+<p class="body">Output:</p>
+<div class="console">
+<pre style="color: #ffffff">
+torch.Size([120, 120, 7, 7])
+tensor([[[1., 1., 1., 1., 1., 1., 1.],
+            [1., 1., 1., 1., 1., 1., 1.],
+            [1., 1., 1., 1., 1., 1., 1.],
+            [1., 1., 1., 1., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0.]],
+
+        [[1., 1., 1., 1., 1., 1., 1.],
+            [1., 1., 1., 1., 1., 1., 1.],
+            [1., 1., 1., 1., 1., 1., 1.],
+            [1., 1., 1., 1., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0.]],
+
+        [[1., 1., 1., 1., 1., 1., 1.],
+            [1., 1., 1., 1., 1., 1., 1.],
+            [1., 1., 1., 1., 1., 1., 1.],
+            [1., 1., 1., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0.]]])
+</pre>
+</div>
+<p class="body">Run:</p>
+<div class="console">
+<pre style="color: #ffffff">
+python train.py --pickle data/mnist_colored.pkl --filters 120 --layers 8 --dev cuda --dist_size 4 --conv_class MaskedConv2dColor --nll_img_path output/color_nll.png --samples_img_path output/color_samples.png 
+
+</pre>
+</div>
                 <div id="disqus_thread"></div>
                 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><hr>
                 </div>
@@ -493,6 +775,7 @@ PixelCnn(
         </div>
     </div> 
 </body>
+
 <!-- mathjax script -->
 <script type="text/javascript">
     if (!document.getElementById('mathjaxscript_pelican_#%&#64;#$&#64;#')) {
@@ -556,12 +839,14 @@ PixelCnn(
         (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
     }
 </script>
+
 <!--- not sure script ??? -->
 <script>
         $(document).ready(function(){
           $('[data-toggle="tooltip"]').tooltip(); 
         });
 </script>
+
 <!-- disque comments script -->
 <script>
     var disqus_config = function () {
