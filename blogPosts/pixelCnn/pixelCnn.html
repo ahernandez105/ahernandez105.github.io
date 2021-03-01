@@ -21,7 +21,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-8">
-                    <h1 class="title"><a href="/">angel's blog</a></h1>
+                    <h1 class="title"><a href="/">angel__christopher's blog</a></h1>
                 </div>
             </div>    
         </div>
@@ -33,8 +33,9 @@
             <article class="article">
                 <header>
                     <ul class="list-inline">
-                        <li class="list-inline-item text-muted" title="2019-07-20T00:00:00-04:00"><i class="fa fa-clock-o"></i> ???</li>
+                        <li class="list-inline-item text-muted" title="2019-07-20T00:00:00-04:00"><i class="fa fa-clock-o"></i> Last Edited: Sun 21 February 2021</li>
                         <li class="list-inline-item text-muted"><i class="fa fa-user-o"></i> Angel C. Hernandez</li>
+                        <li class="list-inline-item text-muted"><span class="fa fa-github"></span> <a class="text-muted" href="https://github.com/ahernandez105/pixelCnn" target="_blank"> GitHub Repo</a></li>
                     </ul>
                 </header>
                 <div class="content">
@@ -76,7 +77,7 @@
                         and color images using Pytorch. All code reviewed in this post can be found at this GitHub 
                         <a class="hyperlinks" href="https://github.com/ahernandez105/pixelCnn" target="_blank">repo</a>.
                         It should be noted that this blog post was inspired after I completed homework 1 of Berkeley's
-                        <a class="hyperlinks" href="https://sites.google.com/view/berkeley-cs294-158-sp20/home">Deep Unsupervised Learning Course.</a>. 
+                        <a class="hyperlinks" href="https://sites.google.com/view/berkeley-cs294-158-sp20/home">Deep Unsupervised Learning Course</a>. 
                         While my Pixel CNN implementation is not identical to their solution, I do borrow their datasets and some helper methods.
                     </p>
                     <br>
@@ -100,12 +101,13 @@ import pickle
 
 class Data(Dataset):
     def __init__(self, array, device='cpu', mean=None, std=None):
-        self.N, self.C, self.H, self.W  = array.shape
+        self.N, self.H, self.W, self.C  = array.shape
+        self.ttl_dims = self.C * self.H * self.W
         self.array = array
         self.device = device
         if mean is None and std is None:
-            self.mean = np.mean(self.array, axis=(0,2,3))
-            self.std = np.std(self.array, axis=(0,2,3))
+            self.mean = np.mean(self.array, axis=(0,1,2))
+            self.std = np.std(self.array, axis=(0,1,2))
         else:
             self.mean = mean
             self.std = std
@@ -119,19 +121,19 @@ class Data(Dataset):
         
         x = self.array[idx].copy().astype(float)
         for i in range(self.C):
-            x[i] = (x[i] - self.mean[i])/self.std[i]
+            x[:,:,i] = (x[:,:,i] - self.mean[i])/self.std[i]
 
         return {
-            'x': torch.tensor(x, dtype=torch.float).to(self.device),
-            'y': torch.tensor(self.array[idx], dtype=torch.long).to(self.device)}
+            'x': torch.tensor(x, dtype=torch.float).to(self.device).permute(2, 0, 1),
+            'y': torch.tensor(self.array[idx], dtype=torch.long).to(self.device).permute(2, 0, 1)}
     
     @staticmethod
     def collate_fn(batch):
         bsize = len(batch)
 
         return {
-            'x': torch.stack([batch[i]['x'] for i in range(bsize)], dim=0),
-            'y': torch.stack([batch[i]['y'] for i in range(bsize)], dim=0)}
+            'x': torch.stack([batch[i]['x'] for i in range(bsize)], dim=0).contiguous(),
+            'y': torch.stack([batch[i]['y'] for i in range(bsize)], dim=0).contiguous()}
     
     @staticmethod
     def read_pickle(fn, dset):
@@ -140,13 +142,15 @@ class Data(Dataset):
             data = pickle.load(file)[dset]
             if 'mnist.pkl' in fn:
                 data = (data > 127.5).astype('uint8')
-            N, H, W, C = data.shape
 
-            return data.reshape(N, C, H, W)
+            return data
 
-train_arr, test_arr = Data.read_pickle('mnist.pkl', 'train'), Data.read_pickle('mnist.pkl', 'test')
-train = DataLoader(Data(train_arr), batch_size=128, shuffle=True, collate_fn=Data.collate_fn)
-test = DataLoader(Data(test_arr, mean=train.dataset.mean, std=train.dataset.std), batch_size=128, shuffle=True, collate_fn=Data.collate_fn)
+train_arr, test_arr = Data.read_pickle('data/mnist.pkl', 'train'), Data.read_pickle('data/mnist.pkl', 'test')
+train = DataLoader(
+    Data(train_arr), batch_size=128, shuffle=True, collate_fn=Data.collate_fn)
+test = DataLoader(
+    Data(test_arr, mean=train.dataset.mean, std=train.dataset.std), 
+    batch_size=128, shuffle=True, collate_fn=Data.collate_fn)
 
 for batch in train:
     print(type(batch))
@@ -172,10 +176,9 @@ for batch in train:
                         Now we will begin to open up the Pixel CNN architecture. We will review each component in the 
                         architecture which is highlighted in the below figures. Note, the below architecture is almost identical 
                         to the one in the original paper. The only differences are we use a Conv 7x7 in the residual block (as opposed to 3x3),
-                        we use 64 convolution filters and include normalization layers.
-                    </p>
-                    <br>
+                        and we use 64 convolution filters.
                     <div class="rowFigure">
+                        <br>
                         <div class="columnFigure">
                             <figure>
                                 <img class="fig" src="images/pixel-cnn.png" width="70%" height="70%">
@@ -194,9 +197,9 @@ for batch in train:
                                 </figcaption>
                             </figure>
                         </div>
+                        <br>
                     </div>
-                    <br>
-
+                    </p>
                     <br>
                     <!-- SECTION -->
                     <h1 class="subhead">3.1 Masked Convolution</h1>
@@ -272,16 +275,12 @@ for batch in train:
                     </p>
 <pre style="background-color:#f8f9fa; font-size: 11px">
 <code>
-import torch
-from torch.nn import Conv2d
-
 class MaskedConv2dBinary(Conv2d):
     def __init__(self, m_type, in_channels, out_channels, kernel_size, padding):
         assert m_type=='A' or m_type=='B'
         super().__init__(
-            in_channels=in_channels, out_channels=out_channels, 
-            kernel_size=kernel_size, stride=1, padding=padding)
-        self.register_buffer('mask', torch.zeros_like(self.weight)) # ensures mask is stored in state_dict
+            in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=1, padding=padding)
+        self.register_buffer('mask', torch.zeros_like(self.weight))
 
         if m_type=='A':
             self.mask[:, :, 0:kernel_size//2, :] = 1
@@ -292,6 +291,7 @@ class MaskedConv2dBinary(Conv2d):
     
     def forward(self, x):
         self.weight.data *= self.mask
+        
         return super().forward(x)
 
 conv_a = MaskedConv2dBinary('A', 1, 64, 7, 3)
@@ -325,44 +325,11 @@ print(conv_b.mask[0,0,:,:])
                 [0., 0., 0., 0., 0., 0., 0.]])
     </pre>
 </div>
-                
-                 <br>
-                 <!-- SECTION -->
-                 <h1 class="subhead">3.2 Layer Normalization</h1>
-                 <p class="body">
-                    Layer normalization is popular in most deep networks to speed up training by transforming hidden layers to be
-                    centered around 0 mean and 1 std. Now, after a given masked convolution operation you will have an outputted 
-                    tensor with shape (bsize, filters, height, width) = (128, 64, 28, 28). When I first attempted to incorporate layer normalization
-                    I figured I should normalize each filter, i.e. calculate the statistics for each 28x28 matrix. <b>Do not do this!</b> Reason being,
-                    this violates the auto-regressive property because you are taking the mean and std over all pixels in a filter. Remember, 
-                    a given pixel, <span class="math">\(h^l_i\)</span> should not know anything about 
-                    <span class="math">\(h^l_{i+1}, h^l_{i+2}, ..., h^l_{n^2}\)</span>. As result, we must normalize over each pixel position 
-                    across all 64 filters. This results in <span class="math">\(28^2\)</span> layer norm operations.
-                </p>
-
-<pre style="background-color:#f8f9fa; font-size: 11px">
-<code>
-import torch
-from torch.nn import LayerNorm
-
-class LayerNormPixel(LayerNorm):
-    def __init__(self, n_filters, affine=True):
-        super().__init__([n_filters], elementwise_affine=affine)
-    
-    def forward(self, x):
-        # permute operation returns tensor of shape
-        # (bsize, height, width, filters)
-        x = super().forward(x.permute(0, 2, 3, 1).contiguous())
-
-        # return tensor is of shape (bsize, filters, height, width)
-        return x.permute(0, 3, 1, 2).contiguous()
-</code>
-</pre>
                 <br>
                 <!-- SECTION -->
                 <h1 class="subhead">3.3 Residual Block</h1>
                 <p class="body">
-                    Now that we our layer norm and masked convolution classes are implemented, we can create the residual block class.
+                    Next, we can create the residual block using our masked convolution module.
                 </p>
 
 <pre style="background-color:#f8f9fa; font-size: 11px">
@@ -380,7 +347,6 @@ class ResBlock(Module):
         self.net.append(masked_conv_class(m_type, in_channels, out_channels, kernel_size, p))
         self.net.append(ReLU())
         self.net.append(masked_conv_class(m_type, in_channels, out_channels, 1, 0))
-        self.net.append(LayerNormPixel(out_channels))
         self.net.append(ReLU())
     
     def forward(self, x):
@@ -395,7 +361,7 @@ class ResBlock(Module):
                 <!-- SECTION -->
                 <h1 class="subhead">3.4 Pixel CNN Pytorch</h1>
                 <p class="body">
-                    Using all created modules above, we can create the Pixel CNN class.
+                    Using all created modules above we can create the Pixel CNN class.
                 </p>
 
 <pre style="background-color:#f8f9fa; font-size: 11px">
@@ -416,7 +382,6 @@ class PixelCnn(Module):
 
         self.net = ModuleList()
         self.net.append(self.mconv('A', self.channels, self.filters, self.kernel_size, p))
-        self.net.append(LayerNormPixel(self.filters))
         self.net.append(ReLU())
         for _ in range(self.layers-1):
             self.net.append(ResBlock(
@@ -425,37 +390,53 @@ class PixelCnn(Module):
         self.net.append(ReLU())
         self.net.append(self.mconv('B', self.filters, self.dist_size*self.channels, 1, 0))
         
-        self.log_softmax = LogSoftmax(dim=1)
-        self.loss = NLLLoss(reduction='mean')
+        self.log_softmax = LogSoftmax(dim=2)
+        self.loss = NLLLoss(reduction='sum')
+        print(self)
 
     def forward(self, x):
         bsize, _, _, _ = x.shape
         for module in self.net:
             x = module(x)
-        
-        return self.log_softmax(x.view(bsize, self.dist_size, self.channels, self.in_dim, self.in_dim))
+
+        return self.log_softmax(x.view(bsize, self.channels, self.dist_size, self.in_dim, self.in_dim))
 
     def get_loss(self, x, y):
+        loss = 0
         bsize, _, _, _, _ = x.shape
-        x1 = x.view((bsize, self.dist_size, self.in_dim*self.in_dim*self.channels))
-        y1 = y.view((bsize, self.in_dim*self.in_dim*self.channels))
 
-        return self.loss(x1, y1)
+        for i in range(self.channels):
+            loss += self.loss(
+                x[:, i, :, :, :].view(bsize, self.dist_size, self.in_dim * self.in_dim),
+                y[:, i, :, :].view(bsize, self.in_dim * self.in_dim))
+
+        return loss
 
     def generate_samples(self, n, dev, mean, std):
         self.eval()
         samples_in = torch.zeros((n, self.channels, self.in_dim, self.in_dim), dtype=torch.float, device=dev)
         samples_out = torch.zeros((n, self.channels, self.in_dim, self.in_dim), dtype=torch.float, device=dev)
+        samples_in[:] = 1
 
         for row in range(self.in_dim):
             for col in range(self.in_dim):
                 for channel in range(self.channels):
-                    dist = Categorical(torch.exp(self(samples_in)[:, :, channel, row, col]))
+                    dist = Categorical(torch.exp(self(samples_in)[:, channel, :, row, col]))
                     s = dist.sample().type(torch.float)
                     samples_in[:, channel, row, col] = (s-mean[channel])/std[channel]
                     samples_out[:, channel, row, col] = s
         
         return samples_out
+
+    def load(self, path, cur_dev):
+        """
+        Assumes model was saved on GPU. Will load based off of cur_dev.
+        """
+        if cur_dev == 'cpu':
+            self.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
+        else:
+            self.load_state_dict(torch.load(path))
+            self.to(torch.device("cuda"))
 
 # two layers so printing area is smaller
 model = PixelCnn(28, 1, 7, 2, 64, 2, MaskedConv2dBinary)
@@ -467,31 +448,29 @@ print(model)
 <div class="console">
 <pre style="color: #ffffff">
 PixelCnn(
-    (net): ModuleList(
-        (0): MaskedConv2dBinary(1, 64, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3))
-        (1): LayerNormPixel(torch.Size([64]), eps=1e-05, elementwise_affine=True)
-        (2): ReLU()
-        (3): ResBlock(
-        (net): ModuleList(
-            (0): MaskedConv2dBinary(64, 64, kernel_size=(1, 1), stride=(1, 1))
-            (1): ReLU()
-            (2): MaskedConv2dBinary(64, 64, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3))
-            (3): ReLU()
-            (4): MaskedConv2dBinary(64, 64, kernel_size=(1, 1), stride=(1, 1))
-            (5): LayerNormPixel(torch.Size([64]), eps=1e-05, elementwise_affine=True)
-            (6): ReLU()
-            )
-        )
+  (net): ModuleList(
+    (0): MaskedConv2dBinary(1, 64, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3))
+    (1): ReLU()
+    (2): ResBlock(
+      (net): ModuleList(
+        (0): MaskedConv2dBinary(64, 64, kernel_size=(1, 1), stride=(1, 1))
+        (1): ReLU()
+        (2): MaskedConv2dBinary(64, 64, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3))
+        (3): ReLU()
         (4): MaskedConv2dBinary(64, 64, kernel_size=(1, 1), stride=(1, 1))
         (5): ReLU()
-        (6): MaskedConv2dBinary(64, 2, kernel_size=(1, 1), stride=(1, 1))
+      )
     )
-    (log_softmax): LogSoftmax()
-    (loss): NLLLoss()
+    (3): MaskedConv2dBinary(64, 64, kernel_size=(1, 1), stride=(1, 1))
+    (4): ReLU()
+    (5): MaskedConv2dBinary(64, 2, kernel_size=(1, 1), stride=(1, 1))
+  )
+  (log_softmax): LogSoftmax(dim=2)
+  (loss): NLLLoss()
 )
 </pre>
 </div>
-<br>
+                <br>
                 <!-- SECTION -->
                 <h1 class="subhead">3.4.1 Generating Samples</h1>
                 <p class="body">
@@ -504,6 +483,7 @@ PixelCnn(
                     network and each pixel is standard normal because this is how our model was trained. <code>samples_out</code> 
                     contains the actual generated pixel which in this case will either be a value of 0 or 1.
                 </p>
+                <br>
 
                 <!-- SECTION -->
                 <h1 class="subhead">3.4.2 Training Script</h1>
@@ -516,6 +496,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 import argparse
+import os
 
 import models
 from models import PixelCnn
@@ -528,7 +509,7 @@ def evaluate(test, model):
 
     for batch in test:
         bsize = batch['y'].shape[0]
-        loss += model.get_loss(model(batch['x']), batch['y']).item() * bsize
+        loss += model.get_loss(model(batch['x']), batch['y']).item() 
     
     return loss
 
@@ -542,7 +523,7 @@ def train_batch(batch, model, optimizer):
 
     return loss.item()
 
-def training(train, test, model, optimizer, epochs):
+def training(train, test, model, optimizer, epochs, save_path=''):
     nlls_train = []
     nlls_test = []
 
@@ -552,39 +533,51 @@ def training(train, test, model, optimizer, epochs):
         for batch in train:
             bsize = batch['y'].shape[0]
             nll = train_batch(batch, model, optimizer)
-            ttl_nll += nll * bsize
-            nlls_train.append(nll)
+            ttl_nll += nll
+            nlls_train.append(nll/(bsize * train.dataset.ttl_dims))
         
-        nlls_test.append(evaluate(test, model)/len(test.dataset))
-        print('epoch '+str(epoch), 'train: '+str(ttl_nll/len(train.dataset)), 'test: '+str(nlls_test[epoch-1]))
+        nlls_test.append(evaluate(test, model)/(test.dataset.N * test.dataset.ttl_dims))
+        print(
+            'epoch '+str(epoch), 
+            'train: '+str(ttl_nll/(train.dataset.N * train.dataset.ttl_dims)), 
+            'test: '+str(nlls_test[epoch-1]))
+
+        if len(save_path)>0:
+            torch.save(model.state_dict(), save_path)
     
     return np.array(nlls_train), np.array(nlls_test)
 
 def main(args: argparse.Namespace):
     train_arr, test_arr = Data.read_pickle(args.pickle, 'train'), Data.read_pickle(args.pickle, 'test')
-    train = DataLoader(Data(train_arr, args.dev), batch_size=args.bsize, num_workers=args.workers, shuffle=True, collate_fn=Data.collate_fn)
-    test = DataLoader(Data(test_arr, args.dev, train.dataset.mean, train.dataset.std), batch_size=args.bsize, num_workers=args.workers,  shuffle=True, collate_fn=Data.collate_fn)
-    model = PixelCnn(train.dataset.W, train.dataset.C, args.kernel_size, args.layers, args.filters, args.dist_size, getattr(models, args.conv_class))
-    if args.dev=='cuda':
+    train = DataLoader(
+        Data(train_arr, args.dev), batch_size=args.bsize, num_workers=args.workers, 
+        shuffle=True, collate_fn=Data.collate_fn)
+    test = DataLoader(
+        Data(test_arr, args.dev, train.dataset.mean, train.dataset.std), batch_size=args.bsize, 
+        num_workers=args.workers,  shuffle=True, collate_fn=Data.collate_fn)
+    model = PixelCnn(
+        train.dataset.W, train.dataset.C, args.kernel_size, args.layers, 
+        args.filters, args.dist_size, getattr(models, args.conv_class))
+    if os.path.exists(args.save_path):
+        model.load(args.save_path, args.dev)
+    elif args.dev == 'cuda':
         model.cuda()
     
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-    nlls_train, nlls_test = training(train, test, model, optimizer, args.epochs)
-    samples = model.generate_samples(args.n_samples, args.dev, train.dataset.mean, train.dataset.std).cpu().numpy()
+    nlls_train, nlls_test = training(train, test, model, optimizer, args.epochs, args.save_path)
+    samples = model.generate_samples(args.n_samples, args.dev, train.dataset.mean, train.dataset.std)
 
     save_training_plot(nlls_train, nlls_test, 'NLL (nats/dim)', args.nll_img_path)
-    show_samples(
-        samples.reshape(args.n_samples, train.dataset.H, train.dataset.W, train.dataset.C), 
-        args.samples_img_path)
+    show_samples(samples.cpu().numpy(), args.samples_img_path)
 
 if __name__=='__main__':
-    main(init_argparser())  
+    main(init_argparser())
 </code>
 </pre>
 <p class="body">Run:</p>
 <div class="console">
 <pre style="color: #ffffff">
-python train.py --layers 5 --dev cuda --conv_class MaskedConv2dBinary
+python train.py --layers 5 --dev cuda --conv_class MaskedConv2dBinary --save_path output/model_binary.pt
 
 </pre>
 </div>
@@ -592,8 +585,8 @@ python train.py --layers 5 --dev cuda --conv_class MaskedConv2dBinary
                     You will need to train the model using a GPU. You can import the source code into Google Colab and run the script in there.
                     After the model finishes training, <code>binary_nll.png</code> and <code>binary_samples.png</code> can be found in the 
                     <code>output/</code> directory. Below are those images after training the model for 10 epochs.
-                    <br>
                     <div class="rowFigure">
+                        <br>
                         <div class="columnFigure">
                             <figure>
                                 <img class="fig" src="images/binary_nll.png" width="100%" height="100%">
@@ -610,6 +603,7 @@ python train.py --layers 5 --dev cuda --conv_class MaskedConv2dBinary
                                 </figcaption>
                             </figure>
                         </div>
+                        <br>
                     </div>
                 </p>
 
@@ -684,6 +678,7 @@ python train.py --layers 5 --dev cuda --conv_class MaskedConv2dBinary
                 </p>
                 <p class="body">Where the corresponding image is below.
                 <figure>
+                    <br>
                     <img class="fig" src="images/mask-type-B-colored.png" width="70%" height="70%">
                     <figcaption class="figcaption">
                         <span class="figtext">Fig. 8</span> Mask type B tensor for toy example in section 4.1.
@@ -692,6 +687,7 @@ python train.py --layers 5 --dev cuda --conv_class MaskedConv2dBinary
                 </figure>
                 </p>
 
+                <br>
                 <!-- SECTION -->
                 <h1 class="subhead">4.2 Handling Large Input Channels and Filters</h1>
                 <p class="body">
@@ -728,7 +724,7 @@ class MaskedConv2dColor(MaskedConv2dBinary):
             self.mask[out_idx*2:, :, kernel_size//2, kernel_size//2] = 1
 
 conv_b = MaskedConv2dColor('B', 120, 120, 7, 3)
-print(conv_b.mask.shape) # (n_filters, in_channels, 7, 7)
+print(conv_b.mask.shape)
 print(conv_b.mask[50, [10, 50, 90], :, :])
 </code>
 </pre>
@@ -761,13 +757,65 @@ tensor([[[1., 1., 1., 1., 1., 1., 1.],
             [0., 0., 0., 0., 0., 0., 0.]]])
 </pre>
 </div>
+                <br>
+                <!-- SECTION -->
+                <h1 class="subhead">4.3 Color PixelCNN Results</h1>
+                <p class="body">
+                    Below will train our PixelCNN on colored mnist images.
+                </p>
 <p class="body">Run:</p>
 <div class="console">
 <pre style="color: #ffffff">
-python train.py --pickle data/mnist_colored.pkl --filters 120 --layers 8 --dev cuda --dist_size 4 --conv_class MaskedConv2dColor --nll_img_path output/color_nll.png --samples_img_path output/color_samples.png 
+python train.py --pickle data/mnist_colored.pkl --filters 120 --layers 8 --dev cuda --dist_size 4 --conv_class MaskedConv2dColor --lr 0.001 --nll_img_path output/color_nll.png --samples_img_path output/color_samples.png --save_path output/model_color.pt
 
 </pre>
 </div>
+                <p class="body">
+                    Below are the results after training the model for 10 epochs.
+                    <div class="rowFigure">
+                        <br>
+                        <div class="columnFigure">
+                            <figure>
+                                <img class="fig" src="images/color_nll.png" width="100%" height="100%">
+                                <figcaption class="figcaption">
+                                    <span class="figtext">Fig. 5</span> NLL averaged over all pixels for binary MNIST dataset.
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <div class="columnFigure">
+                            <figure>
+                                <img class="fig" src="images/color_samples.png" width="100%" height="100%">
+                                <figcaption class="figcaption">
+                                    <span class="figtext">Fig. 6</span> Generated images for binary MNIST dataset.
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <br>
+                    </div>
+                </p>
+
+                <br>
+                <!-- SECTION-->
+                <h1 class="head">5.0 Conclusion</h1>
+                <p class="body">
+                    Well, that is the PixelCNN. Hopefully this post provided you with some intuition on the model architecture that
+                    you couldn't find else where on the web. I highly encourage everyone to go and complete Berkeley's Deep Unsupervised
+                    Learning course. Assuming you are comfortable with independent learning, there is a lot of good content and 
+                    they do highlight the present day state-of-the-art. If you liked this post, drop a line in the comments. 
+                </p>
+
+                <br>
+                <!-- SECTION -->
+                <h1 class="head">References</h1>
+                <p class="body">
+                    [1] Aaron Van Oord, Nal Kalchbrenner, and Koray Kavukcuoglu. Pixel recurrent neural networks. 48:1747–1756, 20–22 Jun 2016.<br>
+                    [2] University of California, Berkeley CS294-158-SP20 Deep Unsupervised Learning Spring 2020
+                    <a href="https://sites.google.com/view/berkeley-cs294-158-sp20/home" target="_blank">https://sites.google.com/view/berkeley-cs294-158-sp20/home</a><br>
+                    [3] CS 294-158 Deep Unsupervised Learning GitHub Repository <a href="https://github.com/rll/deepul" target="_blank">https://github.com/rll/deepul</a>
+                </p>
+
+                <br>
+                <br>
                 <div id="disqus_thread"></div>
                 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><hr>
                 </div>

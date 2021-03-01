@@ -27,7 +27,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-8">
-                    <h1 class="title"><a href="/">angel's blog</a></h1>
+                    <h1 class="title"><a href="/">angel__christopher's blog</a></h1>
                 </div>
             </div>    
         </div>
@@ -39,9 +39,9 @@
             <article class="article">
                 <header>
                     <ul class="list-inline">
-                        <li class="list-inline-item text-muted" title="2019-07-20T00:00:00-04:00">
+                        <li class="list-inline-item text-muted">
                             <i class="fa fa-clock-o"></i>
-                            ???
+                            Last Edited: Sun 28 February 2021
                         </li>
                         <li class="list-inline-item text-muted">
                             <i class="fa fa-user-o"></i> Angel C. Hernandez          
@@ -50,8 +50,16 @@
                 </header>
                 <div class="content">
                     <!-- SECTION -->
-                    <h1 class="head">1. Introduction </h1>
-                    <p class="body">???</p>
+                    <h1 class="head">1. Introduction</h1>
+                    <p class="body">
+                        The Transformer, <a class="papers" href="https://arxiv.org/pdf/1706.03762.pdf" target="_blank">Attention Is All You Need</a>, 
+                        has taken the deep learning community by storm over the past three years and has not let up. Its applications ranges from 
+                        language models like <a class="hyperlinks" href="https://arxiv.org/pdf/1810.04805.pdf" target="_blank">BERT</a> and feature
+                        importance selection on tabular data like <a class="hyperlinks" href="https://arxiv.org/pdf/2012.06678.pdf" target="_blank">TabNet</a>.
+                        If you strive to stay current on state-of-the-art deep learning models, the Transformer is definitely a network
+                        you want to be comfortable with. This post will breakdown each module in the network and hopefully provided 
+                        sufficient insight on the network's architecture. 
+                    </p>
                     <br>
 
                     <!-- SECTION -->
@@ -66,8 +74,7 @@
                         target is a scalar token, <span class="math">\(y_t \in (1, 2,..., K)\)</span>. In this setting, we want to learn
                         a network that will minimize the discriminative negative log likelihood: 
                         <span class="math">\(-\log P(\pmb{y}|\pmb{x}) = -\sum_{t=1}^T \log P(y_t|\pmb{x}_1, ..., \pmb{x}_t)\)</span>.
-                        Moving forward, we will briefly review different RNN architectures with hope this is a review to the audience, but 
-                        if not follow up links which review RNNs in depth have been provided.  
+                        Moving forward, we will briefly review different RNN architectures with hope this is a review to the audience. If not, follow up links which review RNNs in-depth have been provided.  
                     </p>
                     <br>
 
@@ -96,8 +103,8 @@
                             <br>
                         </figure>
                     </p>
-                    <br>
 
+                    <br>
                     <!-- SECTION -->
                     <h1 class="subhead">2.2 Bidirectional RNN</h1>
                     <p class="body">
@@ -108,7 +115,7 @@
                         of a bidirectional rnn can be found in <span class="figtext">Figure 2</span>.
                         <figure>
                             <br>
-                            <img class="fig" src="images/bidirectional-rnn.png" width="70%", height="30%">
+                            <img class="fig" src="images/bidirectional-rnn.png" width="80%", height="40%">
                             <br>
                             <figcaption class="figcaption"> 
                             <span class="figtext">Fig. 2</span> Single layer bidirectional RNN.
@@ -119,16 +126,14 @@
                             <button class="button">For more on RNNs see Chapter 10 from Deep Learning book.</button>
                         </a>
                     </p>
+
                     <br>
-                    
                     <!-- SECTION -->
                     <h1 class="subhead">2.3 LSTM Network</h1>
                     <p class="body">
                         While standard RNNs can be powerful functions approximators, performance suffers on longer sequences 
                         due to <a href="https://www.youtube.com/watch?v=qhXZsFVxGKo" target="_blank" class="hyperlinks">vanishing/exploding</a> gradients.
                         LSTMs were developed to mitigate this issue and are probably one of the most popular types of RNNs. We begin by defining the following linear combination:
-                    </p>
-
                     <div class="formula">
                         <br>
                         $$
@@ -137,15 +142,13 @@
                         $$
                         <br>
                     </div>
-
+                    </p>
                     <p class="body">
                         <span class="math">\( j \)</span> is simply the "type" of score where each type of score warrants a different set of parameters: 
                         <span class="math">
                             \( \{\pmb{W}^j,\pmb{U}^j,\pmb{b}^j\} \)</span>. We can now define the 
                             formulas used to calculate the state of a given hidden unit, 
                             <span class="math">\( \pmb{h}_t \)</span>, within a LSTM:
-                    </p>
-
                     <div class="formula">
                         <br>
                         $$
@@ -161,7 +164,7 @@
                         $$
                         <br>
                     </div>
-
+                    </p>
                     <p class="body">
                         The <b>Cell State</b> encompasses a bulk of the work and is the reason LSTMs can 
                         <i>share</i> and <i>retain</i> information over distant time intervals. In the Cell State we 
@@ -188,8 +191,8 @@
                         <button class="button">For more on LSTMs see colah's blog.</button>
                     </a>
                     </p>
-                    <br>
 
+                    <br>
                     <!-- SECTION -->
                     <h1 class="subhead">2.4 Sequence to Sequence Model</h1>
                     <p class="body">
@@ -197,8 +200,7 @@
                         <a class="papers" 
                         href="https://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural-networks.pdf"
                         target="_blank">
-                        Sutskever et al. 2014
-                        </a> and is a popular choice when performing 
+                        Sutskever et al. 2014</a> and is a popular choice when performing 
                         <a class="hyperlinks" href="https://google.github.io/seq2seq/nmt/" target="_blank">
                         machine translation</a> tasks. The model feeds an input sequence, say a sentence,
                         into an <b>Encoder</b> network and the network learns to represent the input 
@@ -297,8 +299,8 @@
                         <button class="button">For more on attention see Lil'Log.</button>
                     </a>
                     </p>
-                    <br>
 
+                    <br>
                     <!-- SECTION -->
                     <h1 class="head">3. The Transformer Architecture</h1>
                     <p class="body">
@@ -306,7 +308,7 @@
                         was the first of its kind to address traditional natural language processing problems, e.g. language models, machine translation, etc., while only using attention <b>not</b> in 
                         a seq2seq setting. <span class="figtext">Figure 7</span> highlights the network's architecture where in the coming sections we will open up each layer of The Transformer. 
                     <figure>
-                        <img class="fig" src="images/transformer.png" width="50%" height="10%">
+                        <img class="fig" src="images/transformer.png" width="60%" height="20%">
                         <br>
                         <figcaption class="figcaption">
                             <span class="figtext">Fig. 7</span> Transformer architecture taken from <a class="papers" target="_blank" href="https://arxiv.org/pdf/1706.03762.pdf">Vaswani et al. 2017</a>.
@@ -315,8 +317,9 @@
                     </figure>
                     </p>
 
+                    <br>
                     <!-- SECTION -->
-                    <h1 class="subhead">4.0 Embedding and Positional Encoding</h1>
+                    <h1 class="head">4.0 Embedding and Positional Encoding</h1>
                     <p class="body">
                         Assume we are in a machine translation setting where an input sequence is a set of token words,
                         <span class="math"> \(\pmb{x} = (x_0, ..., x_{T_x-1}) \text{ where } x_t \in (1, ..., K_{x})\)</span>, and the target variable 
@@ -366,10 +369,10 @@
                         If the reader is curious as to why this encoding injects positional information, I would suggest they review this 
                         <a class="hyperlinks" target="_blank" href="https://kazemnejad.com/blog/transformer_architecture_positional_encoding/">post</a>. 
                     </p>
-                    <br>
 
+                    <br>
                     <!-- SECTION -->
-                    <h1 class="subhead">5.0 Self-Attention Intuition</h1>
+                    <h1 class="head">5.0 Self-Attention Intuition</h1>
                     <p class="body">
                         The next step in the encoder is multi-head attention but first we will dive into <b>self-attention</b>, as multi-head attention is self-attention replicated many times. The goal of self-attention is
                         for each input vector, <span class="math">\(\pmb{\hat{x}}_t\)</span>, to learn a relationship between <b>itself</b> and the <b>entire sequence of inputs</b>, <span class="math">\((\pmb{\hat{x}}_0, ..., \pmb{\hat{x}}_{T_x-1})\)</span>.
@@ -384,6 +387,9 @@
                             <br>
                         </figure>
                     </p>
+
+                    <br>
+                    <!-- SECTION -->
                     <h1 class="subhead">5.1 Self-Attention at a Single Time Step</h1>
                     <p class="body">
                         We will now review the computational graph of self-attention for a given example at a given time step. Note, I have not seen a blog/tutorial describe self-attention the way I am about to,
@@ -420,7 +426,7 @@
                     <h1 class="subhead">5.2 Self-Attention over an Entire Sequence and Multi-Head Attention</h1>
                     <p class="body">
                         One major advantage of the Transformer as opposed to seq2seq models is it computationally faster because it can compute context vectors for an entire 
-                        sequence in one go, using GPU optimized matrix multiplication. Let us define 
+                        sequence in one go. Let us define 
                         <span class="math">\(\pmb{\hat{X}} = [\pmb{\hat{x}_0}^\top; ...; \pmb{\hat{x}_{T_x-1}}^\top]\)</span> which is just concatenating the sequence of positional 
                         embeddings as row vectors where <span class="math">\(\pmb{\hat{X}} \in \mathbb{R}^{T_x\times 512}\)</span>. We can obtain the key, query and value matrices 
                         by applying the linear transformation matrices to <span class="math">\(\pmb{\hat{X}}\)</span>, e.g., <span class="math">\(\pmb{Q}_x^{1,1} = \pmb{\hat{X}}\pmb{W}_{x,q}^{1,1}\)</span>.
@@ -446,54 +452,40 @@
                             <br>
                         </figure>
                     </p>
-                    <br>
-                    
                     <p class="body">
                         Multi-head attention is simply self-attention computed <i>n</i> number of <b>heads</b> times (where <i>n</i> = 8 in the original paper). We simply concatenate each context vector head, 
                         <span class="math">\(\pmb{C}_x^{l,h}\)</span>, as column vectors and arrive at a matrix that contains all attention heads, i.e., 
                         <span class="math">\(\pmb{C}_x^{l} = \big[\pmb{C}_x^{l,1}; ...; \pmb{C}_x^{l,8}\big]\)</span> where <span class="math">\(\pmb{C}_x^{l} \in \mathbb{R}^{T_x\times8\cdot 64}\)</span>.
-                        Finally, the model multiplies <span class="math">\(\pmb{C}_x^{l}\)</span> by a linear transformation matrix, <span class="math">\(\pmb{W}_{x,\text{out}}^{l} \in \mathbb{R}^{512\times 512}\)</span> where
-                        we will refer to this matrix as <span class="math">\(\pmb{\hat{C}}_x^{l}\)</span>.
+                        Finally, the model multiplies <span class="math">\(\pmb{C}_x^{l}\)</span> by a linear transformation matrix, <span class="math">\(\pmb{W}_{x,\text{out}}^{l} \in \mathbb{R}^{512\times 512}\)</span>.
                     </p>
                     <br>
 
                     <!-- SECTION -->
-                    <h1 class="subhead">6.0 Residual Connection and Layer Normalization</h1>
+                    <h1 class="head">6.0 Residual Connection and Layer Normalization</h1>
                     <p class="body">
                         We first begin with a residual connection which is a staple connection in <b>deep</b> neural networks, and became most popular from ResNet, 
                         <a class="papers" href="https://arxiv.org/pdf/1512.03385.pdf" target="_blank"> He et al. 2015</a>. We simply add the output of multi-head attention
-                        with the inputted positional encoding matrix, i.e., <span class="math">\(\pmb{\tilde{C}}_x^l = \pmb{\hat{C}}_x^l + \pmb{\hat{X}}\)</span>. Empirically, this has proven
+                        with the inputted positional encoding matrix. Empirically, this has proven
                         to ensure gradients flow nicely through the entire network as more and more layers are added.
                     </p>
-                    <br>
                     <p class="body">
                         Next, we perform layer normalization which was originally proposed in <a class="papers" href="https://arxiv.org/pdf/1607.06450.pdf" target="_blank">Ba et al. 2016</a>. This significantly 
                         decreases training time as each hidden layer is to mapped 0 mean 1 standard deviation. Furthermore, it has become more popular than 
                         <a class="hyperlinks" target="_blank" href="https://en.wikipedia.org/wiki/Batch_normalization#:~:text=Batch%20normalization%20(also%20known%20as,and%20Christian%20Szegedy%20in%202015.">Batch Normalization</a> as statistics are calculated over 
-                        a given layer as opposed to a mini-batch. Layer Normalization at a single time step (<span class="math">\(\pmb{LN}_{x,t}^l\)</span>) is calculated as followed:
-
+                        a given layer as opposed to a mini-batch. The <b>Add & Norm</b> block in the encoder at at the first layer,
+                        <span class="math">\(\pmb{LN}_x^1\)</span>, is calculated as followed:
                         <div class="formula">
                             <br>
                             $$
-                            \begin{aligned}
-                            \mu_{x,t}^{l} &= \frac{1}{512}\sum\limits_{i=1}^{512} {\tilde{C}_{x,t, (i)}^l} \\
-                            \sigma_{x,t}^l &= \sqrt{\frac{1}{512}\sum\limits_{i=1}^{512} \big( \tilde{C}_{x,t, (i)}^l - \mu_{x,t}^{l}\big)^2} \\
-                            \pmb{LN}_{x,t}^l\ &= \frac{\pmb{g}^l_x}{\sigma_{x,t}^l}\odot(\tilde{C}_{x,t, (i)}^l - \mu_{x,t}^{l}) + \pmb{b}_{x,\text{LN}}^l
-                            \end{aligned}
+                            \pmb{LN}_x^l = \text{LayerNorm}(\pmb{C}_x^l\pmb{W}_{x,\text{out}}^l + \pmb{\hat{X}})
                             $$
                             <br>
                         </div>
+                    </p>
 
-                    </p>
-                    <p class="body">
-                        where <i>i</i> is a given dimension and <span class="math">\(\pmb{g}^l_x \text{ and } \pmb{b}_{x.\text{LN}}^l\)</span> are learnable vectors. After you have perform the above operations for each 
-                        row vector in <span class="math">\(\pmb{\tilde{C}}_{x}^l\)</span>, you will arrive at a normalized layer, <span class="math">\(\pmb{LN}_{x}^l\)</span> where 
-                        <span class="math">\(\pmb{LN}_{x}^l\in \mathbb{R}^{T_x\times512}\)</span>.
-                    </p>
                     <br>
-
                     <!-- SECTION -->
-                    <h1 class="subhead">7.0 Output of Encoder Layer</h1>
+                    <h1 class="head">7.0 Output of Encoder Layer</h1>
                     <p class="body">
                         In order to arrive at the output of a given encoder layer, <span math="class">\(\pmb{O}_x^l\)</span>, we perform a Feed Forward, residual connection and layer normalization (in that order).
                         The Feed Forward network is defined as followed:
@@ -501,7 +493,7 @@
                         <div class="formula">
                             <br>
                             $$
-                            \text{FF}_x^l(\pmb{x}) = \text{relu}(\pmb{x}\pmb{W}_{x,1}^l + \pmb{b}_{x,1}^l)\pmb{W}_{x,2}^l + \pmb{b}_{x,2}^l
+                            \text{FF}_x^l = \text{FeedForward}(\pmb{z}) = \text{relu}(\pmb{z}\pmb{W}_{x,1}^l + \pmb{b}_{x,1}^l)\pmb{W}_{x,2}^l + \pmb{b}_{x,2}^l
                             $$
                             <br>
                         </div>
@@ -512,14 +504,13 @@
                         <div class="formula">
                             <br>
                             $$
-                            \pmb{O}_x^l = \text{LayerNorm}\big(\text{FF}_x^l(\pmb{LN}_{x}^l) + \pmb{LN}_{x}^l\big)
+                            \pmb{O}_x^l = \text{LayerNorm}\big(\text{FeedForward}(\pmb{LN}_{x}^l) + \pmb{LN}_{x}^l\big)
                             $$
                             <br>
                         </div>
                     </p>
                     <p class="body">
                         It should be noted that the output of the <i>lth</i> layer is the input to <i>l</i> + 1 layer as highlighted in <span class="figtext">Figure 11</span>.
-                    </p>
                     <figure>
                         <br>
                         <img class="fig" src="images/enc-two-layers.png" width="50%" height="10%">
@@ -529,13 +520,95 @@
                         </figcaption>
                         <br>
                     </figure>
+                    </p>
 
+                    <br>
                     <!-- SECTION -->
-                    <h1 class="subhead">8.0 Transformer Decoder</h1>
+                    <h1 class="head">8.0 Formulaic Encoder Summary</h1>
+                    <p class="body"> 
+                        Below summarizes all calculations within a given layer of the encoder.
+                        <div class="formula">
+                            <br>
+                            \begin{alignat*}{3}
+                            \text{Input} &:= \pmb{\hat{X}} &&= \text{Embedding}(\pmb{x}) + \text{PE}(\pmb{x}) &&& {\scriptstyle \text{    where  } \pmb{\hat{X}} \ \in \ \mathbb{R}^{T_x \ \times \ 512}}\\
+                            \text{Key} &:= \pmb{K}_x^{l,h} &&= \pmb{\hat{X}}\pmb{W}_{x,k}^{l,h} &&& {\scriptstyle \text{    where  } \pmb{W}_{x,k}^{l,h} \ \in \ \mathbb{R}^{512\ \times \ 64}}\\
+                            \text{Query} &:= \pmb{Q}_x^{l,h} &&= \pmb{\hat{X}}\pmb{W}_{x,q}^{l,h} &&& {\scriptstyle \text{    where  } \pmb{W}_{x,q}^{l,h} \ \in \ \mathbb{R}^{512\ \times \ 64}}\\
+                            \text{Value} &:= \pmb{V}_x^{l,h} &&= \pmb{\hat{X}}\pmb{W}_{x,v}^{l,h} &&& {\scriptstyle \text{    where  } \pmb{W}_{x,v}^{l,h} \ \in \ \mathbb{R}^{512\ \times \ 64}}\\
+                            \text{Attention} &:=  \pmb{C}_x^{l,h} &&= \text{softmax}\bigg(\frac{\pmb{Q}_x^{l,h}{\pmb{K}_x^{l,h}}^\top}{\sqrt{64}}\bigg)\pmb{V}_x^{l,h} \\
+                            \text{Multi-Head Attention} &:= \pmb{C}_x^l &&= [\pmb{C}_x^{l,1};...;\pmb{C}_x^{l,8}] &&& {\scriptstyle \text{    where  } \pmb{C}_x^l \ \in \ \mathbb{R}^{T_x \ \times \ 512}}\\
+                            \text{Add & Norm} &:= \pmb{LN}_x^l &&= \text{LayerNorm}(\pmb{C}_x^l\pmb{W}_{x,\text{out}}^l + \pmb{\hat{X}}) &&& {\scriptstyle \text{    where  } \pmb{W}_{x,\text{out}}^l \ \in \ \mathbb{R}^{512 \ \times \ 512}}\\
+                            \text{Feed Forward} &:= \pmb{FF}_x^l &&= \text{FeedForward}(\pmb{LN}_x^l) \\
+                            \text{Output} &:= \pmb{O}_x^l &&= \text{LayerNorm}(\pmb{FF}_x^l + \pmb{LN}_x^l) &&& {\scriptstyle \text{    where  } \pmb{O}_{x}^l \ \in \ \mathbb{R}^{T_x \ \times \ 512}}
+                            \end{alignat*}
+                            <br>
+                        </div>
+                    </p>
+                    <p class="body">
+                        Lastly, for any layer greater than 1 you would omit the the Input calculation and replace 
+                        <span class="math">\(\pmb{\hat{X}}\)</span> with <span class="math">\(\pmb{O}_x^{l-1}\)</span>.
+                    </p>
+
+                    <br>
+                    <!-- SECTION -->
+                    <h1 class="head">9.0 Decoder Formulaic Summary</h1>
                     <p class="body">
                         The goal of the decoder is to generated a predicted target sequence using information from the encoder and information from predictions made up until the current point in time.
+                        The decoder is similar to seq2seq decoders in the sense that it is <b>auto-regressive</b>, consuming previously
+                        generated symbols as additional input when generating the next prediction. The Transformer reuses all modules from the 
+                        encoder in the decoder using separate learnable matrices, subscript <i>y</i>. Below is the formulaic summary of the decoder.
+                        <div class="formula">
+                            <br>
+                            \begin{alignat*}{3}
+                            \text{Input} &:= \pmb{\hat{Y}} &&= \text{Embedding}(\pmb{y}) + \text{PE}(\pmb{y}) &&& {\scriptstyle \text{where  } \pmb{\hat{y}} \ \in \ \mathbb{R}^{T_y \ \times \ 512}}\\
+                            \text{Key} &:= \pmb{K}_{y,t}^{l,h} &&= \pmb{\hat{Y}}\pmb{W}_{y,k}^{l,h} &&& {\scriptstyle \text{where  } \pmb{W}_{y,k}^{l,h} \ \in \ \mathbb{R}^{512\ \times \ 64}}\\
+                            \text{Query} &:= \pmb{Q}_{y,t}^{l,h} &&= \pmb{\hat{Y}}\pmb{W}_{y,q}^{l,h} &&& {\scriptstyle \text{where  } \pmb{W}_{y,q}^{l,h} \ \in \ \mathbb{R}^{512\ \times \ 64}}\\
+                            \text{Value} &:= \pmb{V}_{y,t}^{l,h} &&= \pmb{\hat{Y}}\pmb{W}_{y,v}^{l,h} &&& {\scriptstyle \text{where  } \pmb{W}_{y,v}^{l,h} \ \in \ \mathbb{R}^{512\ \times \ 64}}\\
+                            \text{Masked Attention} &:=  \pmb{C}_{y,t}^{l,h} &&= \text{softmax}\bigg(\frac{\pmb{Q}_{y,t}^{l,h}{\pmb{K}_{y,t}^{l,h}}^\top}{\sqrt{64}}\bigg)\pmb{V}_{y,t}^{l,h} \otimes \pmb{mask}_t\\
+                            \text{Masked MH Attention} &:= \pmb{C}_{y,t}^l &&= [\pmb{C}_{y,t}^{l,1};...;\pmb{C}_{y,t}^{l,8}] &&& {\scriptstyle \text{where  } \pmb{C}_{y,t}^l \ \in \ \mathbb{R}^{T_y \ \times \ 512}}\\
+                            \text{Add & Norm} &:= \pmb{LN}_{y,t}^{\text{one},l} &&= \text{LayerNorm}(\pmb{C}_{y,t}^l\pmb{W}_{y,\text{out}}^l + \pmb{\hat{Y}}) &&& {\scriptstyle \text{where  } \pmb{W}_{y,\text{out}}^l \ \in \ \mathbb{R}^{512 \ \times \ 512}}\\
+                            \text{EncDec MH Attention} &:= \pmb{\tilde{C}}_{y,t}^{l} &&= \text{softmax}\bigg(\frac{\pmb{LN}_{y,t}^{\text{one},l}{\pmb{O}_{x}^{l}}^\top}{\sqrt{512}}\bigg)\pmb{O}_{x}^{l} &&& {\scriptstyle \text{where } \pmb{O}_x^l \ \in \ \mathbb{R}^{T_x \ \times \ 512}}\\
+                            \text{Add & Norm} &:= \pmb{LN}_{y,t}^{\text{two},l} &&= \text{LayerNorm}(\pmb{\tilde{C}}_{y,t}^l + \pmb{LN}_{y,t}^{\text{one},l}) \\
+                            \text{Feed Forward} &:= \pmb{FF}_{y,t}^l &&= \text{FeedForward}(\pmb{LN}_{y,t}^{\text{two},l}) \\
+                            \text{Output} &:= \pmb{O}_{y,t}^l &&= \text{LayerNorm}(\pmb{FF}_{y,t}^l + \pmb{LN}_{y,t}^{\text{two},l}) &&& {\scriptstyle \text{where  } \pmb{O}_{y,t}^l \ \in \ \mathbb{R}^{T_y \ \times \ 512}} \\
+                            \text{Prediction} &:= \pmb{P}_{y,t} &&= \text{softmax}(\pmb{O}_{y,t}^L\pmb{W}_{\text{pred}}) &&& {\scriptstyle \text{where } \pmb{W}_{\text{pred}} \ \in \mathbb{R}^{512 \ \times \ \text{Vocab}}}
+                            \end{alignat*}
+                            <br>
+                        </div>
+                    </p>
+                    <p class="body">
+                        You'll notice we added a subscript of <i>t</i> which indicates the given timestep we are at within the decoder. Assume the ground truth tokens are
+                        <code>&#60bos&#62 this notation is a bit much &#60eos&#62</code>. Next, assume we are at timestep 
+                        3, so we have already generated predictions for the tokens <code>&#60bos&#62 this notation</code>. We will calculate the Input, Key, Query and Value matrices and arrive 
+                        at <b>Masked Attention</b>. We need to apply a mask to our attention matrix, so the decoder only attends to tokens in previous timesteps. Knowing
+                        <span class="math">\(\pmb{mask}_t \in \mathbb{R}^{8\times 512}\)</span>, rows 0-2 would be set to <b>1</b> and rows 3-7 would be set to <b>0</b>. The <b>EncDec Multi-Head Attention</b> module is where 
+                        we apply attention on the input sequence, <span class="math">\(\pmb{x}\)</span>. Finally, the prediction at a given timestep is generated by taking the softmax of 
+                        a linear mapping of the last layer in of the decoder, <i>L</i>.
                     </p>
                     
+                    <br>
+                    <!-- SECTION -->
+                    <h1 class="head">10.0 Conclusion</h1>
+                    <p class="body">
+                        That right there is the Transformer in all its formulaic entirety. While the notation can be overwhelming, knowing how each matrix/tensor 
+                        is calculated was necessary for me to fully understand this architecture. If you are curious about implementing the network, from scratch, 
+                        in Pytorch, then this <a class="hyperlinks" href="http://nlp.seas.harvard.edu/2018/04/03/attention.html" target="_blank">post</a> by Harvard's NLP group is place to go. Cheers!!
+                    </p>
+
+                    <br>
+                    <!-- SECTION -->
+                    <h1 class="head">References</h1>
+                    <p class="body">
+                        [1] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, L ukasz Kaiser, and Illia Polosukhin. Attention is all you need. 30, 2017.<br>
+                        [2] Ilya Sutskever, Oriol Vinyals, and Quoc V Le. Sequence to sequence learning with neural networks. 27, 2014. <br>
+                        [3] Samy Bengio, Oriol Vinyals, Navdeep Jaitly, and Noam Shazeer. Scheduled sampling for sequence prediction with recurrent neural networks, 2015. <br>
+                        [4] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. Neural machine translation by jointly learning to align and translate. 2014.<br>
+                        [5] K. He, X. Zhang, S. Ren, and J. Sun. Deep residual learning for image recognition. pages 770–778, 2016.<br>
+                        [6] Jimmy Lei Ba, Jamie Ryan Kiros, and Geoffrey E. Hinton. Layer normalization. 2016<br>
+                        [7] Ian J. Goodfellow, Yoshua Bengio, and Aaron Courville. Deep Learning. MIT Press, Cambridge, MA, USA, 2016. http://www.deeplearningbook.org<br>
+                        [8] Understanding LSTM Networks colah's blog <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/" target="_blank">https://colah.github.io/posts/2015-08-Understanding-LSTMs/</a><br>
+                        [9] The Illustrated Transformer Jay Alammar Visualizing machine learning one concept at a time <a href="http://jalammar.github.io/illustrated-transformer/" target="_blank">http://jalammar.github.io/illustrated-transformer/</a><br>
+                        [10] Attention? Attention! Lil'Log <a href="https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html" target="_blank">https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html</a>
+                    </p>
                     <br><br>
                     <div id="disqus_thread"></div>
                     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><hr>

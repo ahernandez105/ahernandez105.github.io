@@ -1,0 +1,55 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: cite.aux
+The style file: unsrt.bst
+Database file #1: bib.bib
+Warning--entry type for "NIPS2015_e995f98d" isn't style-file defined
+--line 23 of file bib.bib
+Warning--empty journal in transformer
+Warning--empty journal in NIPS2014_a14ac55a
+Warning--empty journal in bahdanau2014neural
+Warning--empty journal in 7780459
+Warning--empty journal in ba2016layer
+Warning--empty journal in pmlr-v48-oord16
+You've used 8 entries,
+            1791 wiz_defined-function locations,
+            498 strings with 5288 characters,
+and the built_in function-call counts, 1703 in all, are:
+= -- 130
+> -- 109
+< -- 1
++ -- 39
+- -- 31
+* -- 106
+:= -- 290
+add.period$ -- 25
+call.type$ -- 8
+change.case$ -- 7
+chr.to.int$ -- 0
+cite$ -- 14
+duplicate$ -- 74
+empty$ -- 148
+format.name$ -- 31
+if$ -- 367
+int.to.chr$ -- 0
+int.to.str$ -- 8
+missing$ -- 8
+newline$ -- 44
+num.names$ -- 8
+pop$ -- 35
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 38
+stack$ -- 0
+substring$ -- 59
+swap$ -- 11
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 6
+while$ -- 12
+width$ -- 9
+write$ -- 83
+(There were 7 warnings)
